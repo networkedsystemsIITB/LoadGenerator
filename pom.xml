@@ -1,0 +1,295 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>webQ.LoadGen1</groupId>
+  <artifactId>LoadGen1</artifactId>
+  <packaging>war</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>LoadGen1 Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <servlet.port>8080</servlet.port>
+    <quasar.version>0.7.2</quasar.version>
+    <comsat.version>0.4.0</comsat.version>
+    <slf4j.version>1.7.12</slf4j.version>
+    <tomcat8.version>8.0.23</tomcat8.version>
+    <tomcat7.version>7.0.62</tomcat7.version>
+    <servlet.version>3.0.1</servlet.version>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>co.paralleluniverse</groupId>
+      <artifactId>quasar-core</artifactId>
+      <version>${quasar.version}</version>
+      <classifier>jdk8</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>co.paralleluniverse</groupId>
+      <artifactId>comsat-spring-webmvc</artifactId>
+      <version>${comsat.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>${servlet.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <!--  	<dependency>
+        <groupId>co.paralleluniverse</groupId>
+        <artifactId>comsat-spring-boot</artifactId>
+        <version>0.4.0</version>
+    </dependency> -->
+    <!--
+      <dependency>
+        <groupId>co.paralleluniverse</groupId>
+        <artifactId>comsat-spring-security</artifactId>
+        <version>0.4.0</version>
+    </dependency> -->
+
+    <dependency>
+      <groupId>co.paralleluniverse</groupId>
+      <artifactId>comsat-tomcat-loader</artifactId>
+      <version>${comsat.version}</version>
+      <classifier>jdk8</classifier>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>co.paralleluniverse</groupId>
+      <artifactId>comsat-httpclient</artifactId>
+      <version>${comsat.version}</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.2</version>
+          <configuration>
+            <source>1.8</source>
+            <target>1.8</target>
+          </configuration>
+        </plugin>
+
+        <!-- Collecting classpath entries as properties in the form groupId:artifactId:type:[classifier]
+             as per http://maven.apache.org/plugins/maven-dependency-plugin/properties-mojo.html -->
+        <plugin>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>2.10</version>
+          <executions>
+            <execution>
+              <id>getClasspathFilenames</id>
+              <phase>initialize</phase>
+              <goals>
+                <goal>properties</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>2.16</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <!--plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <id>enforce</id>
+            <configuration>
+              <rules>
+                <dependencyConvergence/>
+              </rules>
+            </configuration>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin-->
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.12</version>
+        <executions>
+          <execution>
+            <id>perform-it</id>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+            <configuration>
+              <systemProperties>
+                <property>
+                  <name>servlet.port</name>
+                  <value>${servlet.port}</value>
+                </property>
+              </systemProperties>
+              <!-- Debug -->
+              <!-- argLine>-Xdebug</argLine -->
+              <!-- argLine>-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5006</argLine -->
+
+              <!-- Configure memory settings as needed -->
+              <!-- argLine>-Xmx1000m</argLine -->
+
+              <!-- Turn off before production -->
+              <!-- argLine>-Dco.paralleluniverse.fibers.verifyInstrumentation=true</argLine-->
+
+              <!-- Quasar Agent for JDK 8 -->
+              <argLine>-javaagent:${co.paralleluniverse:quasar-core:jar:jdk8}</argLine>
+            </configuration>
+          </execution>
+          <execution>
+            <id>verify-it</id>
+            <goals>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.cargo</groupId>
+        <artifactId>cargo-maven2-plugin</artifactId>
+        <version>1.4.11</version>
+        <configuration>
+          <configuration>
+            <properties>
+              <cargo.jvmargs>
+                -server
+                -Xmixed
+                -XX:+TieredCompilation
+                -XX:+AggressiveOpts
+                -Xmx10G
+
+                -Dwar.location="${project.build.directory}/comsat-testprj-1.0-SNAPSHOT.war"
+
+                <!-- Debug --> <!-- -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005 -->
+
+                <!-- Turn off before production --> <!-- -Dco.paralleluniverse.fibers.verifyInstrumentation=true -->
+                -Dco.paralleluniverse.fibers.disableAgentWarning
+              </cargo.jvmargs>
+              <cargo.servlet.port>${servlet.port}</cargo.servlet.port>
+            </properties>
+          </configuration>
+        </configuration>
+        <executions>
+          <execution>
+            <id>start-cargo</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>start</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>stop-cargo</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+    <finalName>LoadGen1</finalName>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>tomcat8x</id>
+
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.codehaus.cargo</groupId>
+              <artifactId>cargo-maven2-plugin</artifactId>
+              <configuration>
+                <container>
+                  <containerId>tomcat8x</containerId>
+                  <zipUrlInstaller>
+                    <url>http://archive.apache.org/dist/tomcat/tomcat-8/v${tomcat8.version}/bin/apache-tomcat-${tomcat8.version}.zip</url>
+                  </zipUrlInstaller>
+                  <!-- Class-loading-based instrumentation -->
+                  <dependencies>
+                    <!-- Will copy into common/lib, stuff shared by both server and apps -->
+                    <dependency>
+                      <groupId>co.paralleluniverse</groupId>
+                      <artifactId>comsat-tomcat-loader</artifactId>
+                      <classifier>jdk8</classifier>
+                    </dependency>
+                  </dependencies>
+                </container>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+
+    <profile>
+      <id>tomcat7x</id>
+
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.codehaus.cargo</groupId>
+              <artifactId>cargo-maven2-plugin</artifactId>
+              <configuration>
+                <container>
+                  <containerId>tomcat7x</containerId>
+                  <zipUrlInstaller>
+                    <url>http://archive.apache.org/dist/tomcat/tomcat-7/v${tomcat7.version}/bin/apache-tomcat-${tomcat7.version}.zip</url>
+                  </zipUrlInstaller>
+                  <!-- Class-loading-based instrumentation -->
+                  <dependencies>
+                    <!-- Will copy into common/lib, stuff shared by both server and apps -->
+                    <dependency>
+                      <groupId>co.paralleluniverse</groupId>
+                      <artifactId>comsat-tomcat-loader</artifactId>
+                      <classifier>jdk8</classifier>
+                    </dependency>
+                  </dependencies>
+                </container>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+  </profiles>
+</project>

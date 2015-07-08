@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <Context antiJARLocking="true" path="/web"> -->
+<!--load the webApp with quasar class loader for insturmentation purposes-->
+<Context path="/LoadGen">
+  <Loader loaderClass="co.paralleluniverse.comsat.tomcat.QuasarWebAppClassLoader"/>
+</Context>
