@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>webQ.LoadGen1</groupId>
-  <artifactId>LoadGen1</artifactId>
+  <groupId>webQ.LoadGen</groupId>
+  <artifactId>LoadGen</artifactId>
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
-  <name>LoadGen1 Maven Webapp</name>
+  <name>LoadGen Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -220,7 +220,7 @@
       </plugin>
     </plugins>
 
-    <finalName>LoadGen1</finalName>
+    <finalName>LoadGen</finalName>
   </build>
 
   <profiles>
@@ -260,36 +260,6 @@
       </build>
     </profile>
 
-    <profile>
-      <id>tomcat7x</id>
 
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.codehaus.cargo</groupId>
-              <artifactId>cargo-maven2-plugin</artifactId>
-              <configuration>
-                <container>
-                  <containerId>tomcat7x</containerId>
-                  <zipUrlInstaller>
-                    <url>http://archive.apache.org/dist/tomcat/tomcat-7/v${tomcat7.version}/bin/apache-tomcat-${tomcat7.version}.zip</url>
-                  </zipUrlInstaller>
-                  <!-- Class-loading-based instrumentation -->
-                  <dependencies>
-                    <!-- Will copy into common/lib, stuff shared by both server and apps -->
-                    <dependency>
-                      <groupId>co.paralleluniverse</groupId>
-                      <artifactId>comsat-tomcat-loader</artifactId>
-                      <classifier>jdk8</classifier>
-                    </dependency>
-                  </dependencies>
-                </container>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
   </profiles>
 </project>
