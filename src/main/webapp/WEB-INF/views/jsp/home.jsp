@@ -17,23 +17,26 @@
 </head>
 <body>
 	<div class="container">
+	<center>
 		<div class="row">
-			<center>
+		
+			<br>
 				<img src="resources/images/heading.png"><br> <br> <input
 					id="testplan" type="image" src="resources/images/testplan.png"
 					alt="Create TestPlan">
-			</center>
 		</div>
+		</center>
 		<div id="params" class="row" style="display:none">
-			<center>
-				
+		
+				<center>
 				<div class="form-group">
 					<form:form method="POST" action="/LoadGen/loadgen">
 					
 						<table class="table table-striped table-bordered table-condensed well"  style="width:500px">
-						<thead>
-						<th colspan="2" class="ui-helper-center">LoadGen Parameters</th></thead>
+						
+					
 						<tbody>
+							<tr><th colspan="2" class="ui-helper-center">LoadGen Parameters</th></tr>
 							<tr>
 								<td><form:label path="reqRate">Request Rate(reqs/sec):</form:label></td>
 								<td><form:input class="form-control"
@@ -56,8 +59,9 @@
 						</table>
 					</form:form>
 					</div>
+					</center>
 				
-			</center>
+			
 			
 		</div>
 
@@ -104,6 +108,9 @@
 		</div>
 		<div class="col-lg-4">
 			<div id="status" class="well" style="display: none"></div>
+		</div>
+		<div id="output" class="col-lg-10 well" style="display: none">
+			
 		</div>
 
 	</div>

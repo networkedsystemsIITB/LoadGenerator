@@ -26,6 +26,11 @@
       <version>1.2</version>
     </dependency>
     <dependency>
+    <groupId>net.objecthunter</groupId>
+    <artifactId>exp4j</artifactId>
+    <version>0.4.5</version>
+</dependency>
+    <dependency>
       <groupId>co.paralleluniverse</groupId>
       <artifactId>quasar-core</artifactId>
       <version>${quasar.version}</version>
