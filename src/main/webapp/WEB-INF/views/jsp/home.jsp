@@ -112,7 +112,52 @@
 			</div>
 		</center>
 
+<div id="features" class="row" style="display: none">
 
+			<div class="col-lg-3">
+
+				<table
+					class="table table-striped table-bordered table-condensed well">
+					<tr>
+						<td><input id="httpreq" type="image"
+							src="resources/images/httpreq.png" alt="Http Request"
+							width="250px"></td>
+					</tr>
+					<tr>
+						<td><input id="consttimer" type="image"
+							src="resources/images/timer.png" alt="Constant Timer"
+							width="250px"></td>
+					</tr>
+					<tr>
+						<td><input id="regexex" type="image"
+							src="resources/images/regexext.png" alt="Regex Extractor"
+							width="250px"></td>
+					</tr>
+					<!-- 		<button id="httpreq" width="200px">Http Request</button></br>
+		<button id="consttimer" width="200px">Constant Timer</button></br>
+		<button id="regexex" width="200px">Regex Extractor</button></br> -->
+				</table>
+
+			</div>
+
+			<div id="testtable" class="col-lg-8 well" style="display: none">
+				<!-- 		<div id="resizable" class="ui-widget-content"> -->
+				<table id="ttable"
+					class="table table-striped table-bordered table-condensed">
+					<thead>
+						<tr>
+							<th>Test Feature</th>
+							<th>Parameters</th>
+							<th></th>
+						</tr>
+					</thead>
+
+					<tbody id="tbody"></tbody>
+				</table>
+
+				<!-- </div> -->
+			</div>
+		</div>
 		<div id="features" class="row" style="display: none">
 
 			<div class="col-lg-3">
