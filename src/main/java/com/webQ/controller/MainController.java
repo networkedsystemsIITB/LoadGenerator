@@ -4,6 +4,7 @@ import co.paralleluniverse.fibers.Fiber;
 import co.paralleluniverse.fibers.SuspendExecution;
 import co.paralleluniverse.fibers.httpclient.FiberHttpClientBuilder;
 
+import com.webQ.Serializers.Serializer;
 import com.webQ.Validator.FileUploadValidator;
 import com.webQ.model.ConstantTimer;
 import com.webQ.model.FileUpload;
@@ -36,8 +37,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -49,20 +54,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Controller
-public class MainController {
-	
+public class MainController implements Serializable{
 
-	//private List<Object> testPlan = new ArrayList<Object>();
+	private List<TestPlan> testPlans = new ArrayList<TestPlan>();
 	private static final HttpContext BASIC_RESPONSE_HANDLER = null;
 	private final Logger logger = LoggerFactory.getLogger(MainController.class);
 	private final HelloWorldService helloWorldService;
-	//private List<Object> testPlan = new ArrayList<Object>();
-	public static final CloseableHttpClient client = FiberHttpClientBuilder.create(2)
-			.setMaxConnPerRoute(100).setMaxConnTotal(10).build();
+	private List<Object> testPlan = new ArrayList<Object>();
+	private List<Integer> httpreqlist = new ArrayList<Integer>();
+	public static Boolean test=true;
 
-	  FileUpload ufile;
-	
-	 
+	// private int testplancount;
+	public static final CloseableHttpClient client = FiberHttpClientBuilder
+			.create(2).setMaxConnPerRoute(100).setMaxConnTotal(10).build();
+
+	FileUpload ufile;
 
 	@Autowired
 	public MainController(HelloWorldService helloWorldService) {
@@ -72,79 +78,100 @@ public class MainController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView home() {
 		ufile = new FileUpload();
+		testPlans.clear();
+		testPlan.clear();
+		httpreqlist.clear();
+
+		// testplancount=0;
+		// System.out.println(testPlan.size());
 		return new ModelAndView("home", "command", new TestPlan());
 	}
 
 	@RequestMapping(value = "/consttimer", method = RequestMethod.POST)
 	public @ResponseBody void home_page(
-			@ModelAttribute("SpringWeb") ConstantTimer timer,@RequestParam("rownum") int rownum,
-			BindingResult result) {
-		//System.out.println(rownum);
-		if(rownum==TestPlan.testPlan.size())
-			TestPlan.testPlan.add(timer);
+			@ModelAttribute("SpringWeb") ConstantTimer timer,
+			@RequestParam("rownum") int rownum, BindingResult result) {
+		// System.out.println(rownum);
+		if (rownum == testPlan.size())
+			testPlan.add(timer);
 		else
-			TestPlan.testPlan.set(rownum,timer);
-		//TestPlan.displayPlan();
-		//return "Constant Timer";
+			testPlan.set(rownum, timer);
+		// TestPlan.displayPlan();
+		// return "Constant Timer";
 	}
 
 	@RequestMapping(value = "/regexextractor", method = RequestMethod.POST)
 	public @ResponseBody void home_page(
-			@ModelAttribute("SpringWeb") RegexExtractor regexex,@RequestParam("rownum") int rownum,
-			BindingResult result) {
-		//System.out.println(rownum);
-		if(rownum==TestPlan.testPlan.size())
-			TestPlan.testPlan.add(regexex);
+			@ModelAttribute("SpringWeb") RegexExtractor regexex,
+			@RequestParam("rownum") int rownum, BindingResult result) {
+		// System.out.println(rownum);
+		if (rownum == testPlan.size())
+			testPlan.add(regexex);
 		else
-			TestPlan.testPlan.set(rownum,regexex);
-		//TestPlan.displayPlan();
-		//return "Regex Extractor";
+			testPlan.set(rownum, regexex);
+		// TestPlan.displayPlan();
+		// return "Regex Extractor";
 	}
 
 	@RequestMapping(value = "/httpreq", method = RequestMethod.POST)
 	public @ResponseBody void home_page(
-			@ModelAttribute("SpringWeb") HttpRequest req,@RequestParam("rownum") int rownum, BindingResult result) {
-		
-		
-		if(rownum==TestPlan.testPlan.size()){
-			TestPlan.testPlan.add(req);
-			TestPlan.httpreqlist.add(rownum);
-		}
-		else
-			TestPlan.testPlan.set(rownum,req);
-		
-		//TestPlan.displayPlan();
-		
+			@ModelAttribute("SpringWeb") HttpRequest req,
+			@RequestParam("rownum") int rownum, BindingResult result) {
+
+		if (rownum == testPlan.size()) {
+			testPlan.add(req);
+			httpreqlist.add(rownum);
+		} else
+			testPlan.set(rownum, req);
+
+		// TestPlan.displayPlan();
 
 	}
 
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)
 	public @ResponseBody void home_page(@RequestParam("rownum") int rownum) {
-		//System.out.println(rownum);
-			int flag=0;
-			if(rownum<TestPlan.testPlan.size()){
-				TestPlan.testPlan.remove(rownum);
-				for (int i = 0; i < TestPlan.httpreqlist.size(); i++) {
-					if(flag==1){
-						TestPlan.httpreqlist.set(i, TestPlan.httpreqlist.get(i)-1);
-					}
-					
-					else if(TestPlan.httpreqlist.get(i)>=rownum){
-						if(TestPlan.httpreqlist.get(i)==rownum){
-							TestPlan.httpreqlist.remove(i);
-							
-						}
-						i--;
-						flag=1;
-			
-					}
-					
+		// System.out.println(rownum);
+		int flag = 0;
+		if (rownum < testPlan.size()) {
+			testPlan.remove(rownum);
+			for (int i = 0; i < httpreqlist.size(); i++) {
+				if (flag == 1) {
+					httpreqlist.set(i, httpreqlist.get(i) - 1);
 				}
+
+				else if (httpreqlist.get(i) >= rownum) {
+					if (httpreqlist.get(i) == rownum) {
+						httpreqlist.remove(i);
+
+					}
+					i--;
+					flag = 1;
+
+				}
+
 			}
-			//TestPlan.displayPlan();
-		
+		}
+		// TestPlan.displayPlan();
+
 	}
-	
+
+	@RequestMapping(value = "/savetestplan", method = RequestMethod.POST)
+	public @ResponseBody void home_page(
+			@ModelAttribute("SpringWeb") TestPlan newTestPlan) {
+		newTestPlan.setTestPlan(testPlan);
+		newTestPlan.setHttpreqlist(httpreqlist);
+		/*
+		 * for(int i=0;i<httpreqlist.size();i++)
+		 * System.out.println(httpreqlist.get(i)); newTestPlan.displayPlan();
+		 */
+		testPlans.add(newTestPlan);
+
+		testPlan = new ArrayList<Object>();
+
+		httpreqlist = new ArrayList<Integer>();
+
+	}
+
 	@RequestMapping(value = "/hello", method = RequestMethod.GET)
 	public String index(Map<String, Object> model) throws SuspendExecution,
 			InterruptedException {
@@ -192,142 +219,179 @@ public class MainController {
 		Matcher m = p.matcher(data);
 		return m;
 	}
-	/*@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public void upload(@ModelAttribute("SpringWeb") FileUpload files,BindingResult result)
-			throws Exception {
-		System.out.println("hai");
-	 
-			//FileUpload file = (FileUpload)command;
-		System.out.println(files.getFile());
-			
-			MultipartFile multipartFile = files.getFile();
-			
-			String fileName="";
-	 )
-			if(multipartFile!=null){
-				fileName = multipartFile.getOriginalFilename();
-				//do whatever you want
-				
-				System.out.println(fileName);
-			}
-	 
-			
-		}*/
-	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	   public @ResponseBody void upload(MultipartHttpServletRequest request, HttpServletResponse response) {                 
-	 
-	     //0. notice, we have used MultipartHttpServletRequest
-		System.out.println("hai");
-	     //1. get the files from the request object
-	     Iterator<String> itr =  request.getFileNames();
-	 
-	     MultipartFile mpf = request.getFile(itr.next());
-	     System.out.println(mpf.getOriginalFilename() +" uploaded!");
-	 
-	     try {
-	                //just temporary save file info into ufile
-	        ufile.length = mpf.getBytes().length;
-	        ufile.bytes= mpf.getBytes();
-	        ufile.type = mpf.getContentType();
-	        ufile.name = mpf.getOriginalFilename();
-	 
-	    } catch (IOException e) {
-	        // TODO Auto-generated catch block
-	        e.printStackTrace();
-	    }
-	 
-	     //2. send it back to the client as <img> that calls get method
-	     //we are using getTimeInMillis to avoid server cached image 
-	 
-	     //return "<img src='http://localhost:8080/spring-mvc-file-upload/rest/cont/get/"+Calendar.getInstance().getTimeInMillis()+"' />";
-	 
-	  }
+
+
 	@RequestMapping(value = "/loadgen", method = RequestMethod.POST)
-	public void execute(@ModelAttribute("SpringWeb") TestPlan executor, ModelMap model)
-			throws SuspendExecution, InterruptedException {
-	//	PrintWriter out = response.getWriter();
+	public void execute(ModelMap model) throws SuspendExecution,
+			InterruptedException {
+		// PrintWriter out = response.getWriter();
+		//System.out.println("dddddd");
+		/*
+		 * model.addAttribute("reqRate", load.getReqRate());
+		 * model.addAttribute("duration", load.getDuration());
+		 */
 
-		/*model.addAttribute("reqRate", load.getReqRate());
-		model.addAttribute("duration", load.getDuration());*/
-		
-		
-		//int run_wait = 1000000000 / load.getReqRate();
-		
-	
+		// int run_wait = 1000000000 / load.getReqRate();
 
-		/*value val = new value();
-		val.req=0;
-		 val.resp=0;*/
+		/*
+		 * value val = new value(); val.req=0; val.resp=0;
+		 */
 		System.out.println("");
-		System.out.println("<------------------------LoadGen Starting-------------------------->");
+		System.out
+				.println("<------------------------LoadGen Starting-------------------------->");
 		System.out.println("");
-		System.out.println("Testplan");
-		System.out.println("");
-		TestPlan.displayPlan();
-		System.out.println("");
-		//TestPlan executor=new TestPlan();
-		
-		executor.execute(null);
-		/*for (int i = 0; i < load.getDuration(); ++i) {
-			 
-			for (int j = 0; j < load.getReqRate(); ++j) {
-				Fiber<Void> f1 = new Fiber<Void>(
-						() -> {
-						try{
-							
-								TestPlan executor=new TestPlan();
-								
-								executor.execute(null);*/
-							/*	//HttpResponse tokengen_response = httpRequest("http://10.129.26.133:8000/proxy1?limit=100");
-								//val.req++;
-							HttpResponse tokengen_response = httpRequest("http://www.google.com");
-							HttpRequest obj=new HttpRequest();
-							System.out.println("Request: "
-									+ Fiber.currentFiber().getName()
-									+ " "
-									+ tokengen_response
-											.getStatusLine());
-							obj.setUrl("http://www.google.com");
-							obj.execute(null);
-								Matcher m = regexExtractor(
-										"JMeter: (.*?); url=(.+?),",
-										tokengen_response.toString());
-								
-								
-								if (m.find()) {
-									
-									System.out.println("Request: "
-											+ Fiber.currentFiber().getName()
-											+ " ,Waittime:" + m.group(1)
-											+ " ,URL :" + m.group(2));
-									constantTimer((long) (Float.parseFloat(m
-											.group(1)) * 1000));
-									HttpResponse tokencheck_response = httpRequest(m
-											.group(2));
-									//val.resp++;
-									System.out.println("Request: "
-											+ Fiber.currentFiber().getName()
-											+ " "
-											+ tokencheck_response
-													.getStatusLine());
-									
-									
-									
-									
-								}
-*//*
-							} catch (Exception ex) {
-								System.out.println(ex.getLocalizedMessage());
-							}
+		// for(int i=0;i<testPlans.size();++i){
+		int i = 1;
+		/*Serializer objwriter=new Serializer();*/
+		/*Serializer.serializeObject(testPlans,"/home/stanly/Project/LoadGenerator/src/main/webapp/resources/tmpFiles/objfile");
+		List<TestPlan> testlist = new ArrayList<TestPlan>();
+		testlist=Serializer.deserialzeAddress("/home/stanly/Project/LoadGenerator/src/main/webapp/resources/tmpFiles/objfile");*/
+		for (TestPlan currtestplan : testPlans) {
+			if(test){
+			System.out.println("Testplan" + i);
+			
+			System.out.println("");
+			currtestplan.displayPlan();
+			System.out.println("");
+			currtestplan.setFilenum(i);
+			i++;
+			Fiber<Void> testplansfiber = new Fiber<Void>(() -> {
 
-						}).start();
-
-				Fiber.sleep(0, run_wait);
+				currtestplan.execute(null);
+				}).start();
 			}
-			//System.out.println("Req: "+val.req/(i+1)+" "+"Resp: "+val.resp/(i+1));
-		}*/
+			else{
+				test=true;
+				break;
+			}
+		}
+		
+		// testPlans.clear();
+		/*
+		 * executor.setTestPlan(testPlan); executor.setHttpreqlist(httpreqlist);
+		 * 
+		 * 
+		 * executor.displayPlan(); System.out.println(""); //TestPlan
+		 * executor=new TestPlan();
+		 * 
+		 * executor.execute(null);
+		 */
+		/*
+		 * for (int i = 0; i < load.getDuration(); ++i) {
+		 * 
+		 * for (int j = 0; j < load.getReqRate(); ++j) { Fiber<Void> f1 = new
+		 * Fiber<Void>( () -> { try{
+		 * 
+		 * TestPlan executor=new TestPlan();
+		 * 
+		 * executor.execute(null);
+		 */
+		/*
+		 * //HttpResponse tokengen_response =
+		 * httpRequest("http://10.129.26.133:8000/proxy1?limit=100");
+		 * //val.req++; HttpResponse tokengen_response =
+		 * httpRequest("http://www.google.com"); HttpRequest obj=new
+		 * HttpRequest(); System.out.println("Request: " +
+		 * Fiber.currentFiber().getName() + " " + tokengen_response
+		 * .getStatusLine()); obj.setUrl("http://www.google.com");
+		 * obj.execute(null); Matcher m = regexExtractor(
+		 * "JMeter: (.*?); url=(.+?),", tokengen_response.toString());
+		 * 
+		 * 
+		 * if (m.find()) {
+		 * 
+		 * System.out.println("Request: " + Fiber.currentFiber().getName() +
+		 * " ,Waittime:" + m.group(1) + " ,URL :" + m.group(2));
+		 * constantTimer((long) (Float.parseFloat(m .group(1)) * 1000));
+		 * HttpResponse tokencheck_response = httpRequest(m .group(2));
+		 * //val.resp++; System.out.println("Request: " +
+		 * Fiber.currentFiber().getName() + " " + tokencheck_response
+		 * .getStatusLine());
+		 * 
+		 * 
+		 * 
+		 * 
+		 * }
+		 *//*
+			 * } catch (Exception ex) {
+			 * System.out.println(ex.getLocalizedMessage()); }
+			 * 
+			 * }).start();
+			 * 
+			 * Fiber.sleep(0, run_wait); }
+			 * //System.out.println("Req: "+val.req/(
+			 * i+1)+" "+"Resp: "+val.resp/(i+1)); }
+			 */
 	}
-	
-	
-	
+
+    /**
+     * Upload single file using Spring Controller
+     */
+    @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
+    public @ResponseBody
+    String uploadFileHandler(@RequestParam("fileName") MultipartFile file) {
+
+        if (!file.isEmpty()) {
+            try {
+                byte[] bytes = file.getBytes();
+                //System.out.println(file.getName());
+               // System.out.println(file.getOriginalFilename());
+ 
+                // Creating the directory to store file
+               // String rootPath = System.getProperty("/home/stanly");
+                File dir = new File("/home/stanly/Project/LoadGenerator/src/main/webapp/resources/tmpFiles");
+                //System.out.println(dir.getPath());
+                if (!dir.exists())
+                    dir.mkdirs();
+ 
+                // Create the file on server
+                File serverFile = new File(dir.getAbsolutePath()
+                        + File.separator + file.getOriginalFilename());
+                BufferedOutputStream stream = new BufferedOutputStream(
+                        new FileOutputStream(serverFile));
+                stream.write(bytes);
+                stream.close();
+                testPlans.clear();
+                testPlans=Serializer.deserialzeAddress(dir.getAbsolutePath()
+                        + File.separator + file.getOriginalFilename());
+                for(int i=0;i<testPlans.size();i++){
+            		System.out.println(testPlans.get(i));
+            	}
+                logger.info("Server File Location="
+                        + serverFile.getAbsolutePath());
+ 
+                return "You successfully uploaded file=" + file.getOriginalFilename();
+            } catch (Exception e) {
+                return "You failed to upload " + file.getOriginalFilename() + " => " + e.getMessage();
+            }
+        } else {
+            return "You failed to upload " + file.getOriginalFilename()
+                    + " because the file was empty.";
+        }
+    }
+ 
+
+
+@RequestMapping(value = "/savetofile", method = RequestMethod.POST)
+public @ResponseBody
+String saveToFile() {
+	File downloadtest=new File("/home/stanly/Project/LoadGenerator/src/main/webapp/resources/tmpFiles/test.wlg");
+	//System.out.println(downloadtest.getAbsolutePath());
+	Serializer.serializeObject(testPlans, downloadtest.getAbsolutePath());
+	/*List<TestPlan> testlist = new ArrayList<TestPlan>();
+	testlist=Serializer.deserialzeAddress(downloadtest.getAbsolutePath());
+	for(int i=0;i<testlist.size();i++){
+		System.out.println(testlist.get(i));
+	}*/
+    return downloadtest.getAbsolutePath();
+    }
+
+@RequestMapping(value = "/stop", method = RequestMethod.POST)
+public @ResponseBody void stopTest() {
+
+	test=false;
+
 }
+
+}
+

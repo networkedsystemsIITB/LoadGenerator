@@ -1,10 +1,12 @@
 package com.webQ.config;
 
 import co.paralleluniverse.springframework.web.servlet.config.annotation.FiberWebMvcConfigurationSupport;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -25,6 +27,14 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
     viewResolver.setViewClass(JstlView.class);
     viewResolver.setPrefix("/WEB-INF/views/jsp/");
     viewResolver.setSuffix(".jsp");
+    
     return viewResolver;
+  }
+  @Bean
+  public CommonsMultipartResolver multipartResolver(){
+	  CommonsMultipartResolver multiResolver=new CommonsMultipartResolver();
+	  multiResolver.setMaxUploadSize(100000);
+	  return multiResolver;
+	  
   }
 }
