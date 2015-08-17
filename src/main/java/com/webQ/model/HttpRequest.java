@@ -3,6 +3,7 @@ package com.webQ.model;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,11 +33,16 @@ import co.paralleluniverse.fibers.SuspendExecution;
 import co.paralleluniverse.fibers.httpclient.FiberHttpClientBuilder;
 
 public class HttpRequest  implements Feature,Serializable {
+	
+	
 	private String url;
 	private static final HttpContext BASIC_RESPONSE_HANDLER = null;
 	/*final CloseableHttpClient client = FiberHttpClientBuilder.create(2)
 			.setMaxConnPerRoute(100).setMaxConnTotal(10).build();*/
 	private static final String USER_AGENT = null;
+	private Map<String,String> postParamList=new HashMap<String,String>(); 
+	private String httpType;
+	private String postBody;
 	
 	public String getUrl() {
 		return url;
@@ -44,6 +50,28 @@ public class HttpRequest  implements Feature,Serializable {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	public Map<String, String> getPostParamList() {
+		return postParamList;
+	}
+
+	public void setPostParamList(Map<String, String> postParamList) {
+		this.postParamList = postParamList;
+	}
+
+	public String getHttpType() {
+		return httpType;
+	}
+
+	public void setHttpType(String httpType) {
+		this.httpType = httpType;
+	}
+	public String getPostBody() {
+		return postBody;
+	}
+
+	public void setPostBody(String postBody) {
+		this.postBody = postBody;
 	}
 	@Override
 	public void execute(Response resp) throws InterruptedException, SuspendExecution {

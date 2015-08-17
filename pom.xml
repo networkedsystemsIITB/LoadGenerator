@@ -102,7 +102,32 @@
             <target>1.8</target>
           </configuration>
         </plugin>
+      
 
+
+<plugin>
+    <groupId>com.googlecode.mavenfilesync</groupId>
+    <artifactId>maven-filesync-plugin</artifactId>
+    <version>1.0.0</version>
+    <configuration>
+      <defaultDestination>/home/marek/destination</defaultDestination>
+      <mappings>
+        <mapping>
+          <sourceFolder>src/main/resources</sourceFolder>
+        </mapping>
+        <mapping>
+          <sourceFolder>target/classes</sourceFolder>
+          <inclPatternList>
+            <include>**/*.class</include>
+          </inclPatternList>
+          <exclPatternList> 
+            <exclude>**/*Test*</exclude>
+            <exclude>**/*.html</exclude>
+          </exclPatternList>
+        </mapping>
+      </mappings>
+    </configuration>
+  </plugin>
         <!-- Collecting classpath entries as properties in the form groupId:artifactId:type:[classifier]
              as per http://maven.apache.org/plugins/maven-dependency-plugin/properties-mojo.html -->
         <plugin>
@@ -199,6 +224,39 @@
         <artifactId>cargo-maven2-plugin</artifactId>
         <version>1.4.11</version>
         <configuration>
+        
+<!--  
+  <container>
+    <containerId>resin3x</containerId>
+    <home>c:/apps/resin-3.0.9</home> or
+    <zipUrlInstaller>
+      <url>http://www.caucho.com/download/resin-3.0.9.zip</url>
+      <downloadDir>${project.build.directory}/downloads</downloadDir>
+      <extractDir>${project.build.directory}/extracts</extractDir>
+    </zipUrlInstaller>
+  </container>
+
+  Configuration to use with the container (which will also configure the deployer)
+  <configuration>
+    <type>existing</type>
+    <properties>
+      [...]
+    </properties>
+  </configuration>
+
+  Deployables configuration
+  <deployables>
+    <deployable>
+      <groupId>webQ.LoadGen</groupId>
+      <artifactId>LoadGen</artifactId>
+      <type>war</type>
+      <properties>
+        
+      </properties>
+      
+    </deployable>
+    
+  </deployables> -->
           <configuration>
             <properties>
               <cargo.jvmargs>

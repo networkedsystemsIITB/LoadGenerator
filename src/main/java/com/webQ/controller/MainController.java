@@ -113,10 +113,13 @@ public class MainController implements Serializable{
 		// return "Regex Extractor";
 	}
 
-	@RequestMapping(value = "/httpreq", method = RequestMethod.POST)
+	@RequestMapping(value = "/httpgetreq", method = RequestMethod.POST)
 	public @ResponseBody void home_page(
 			@ModelAttribute("SpringWeb") HttpRequest req,
 			@RequestParam("rownum") int rownum, BindingResult result) {
+		System.out.println(req.getUrl());
+		System.out.println(req.getHttpType());
+		System.out.println(req.getPostBody());
 
 		if (rownum == testPlan.size()) {
 			testPlan.add(req);
@@ -127,7 +130,21 @@ public class MainController implements Serializable{
 		// TestPlan.displayPlan();
 
 	}
+	@RequestMapping(value = "/httppostreq", method = RequestMethod.POST)
+	public @ResponseBody void home_page(
+			@ModelAttribute("SpringWeb") HttpRequest req,
+			BindingResult result) {
+		System.out.println("inside post");
+		System.out.println(req.getHttpType());
+		/*if (rownum == testPlan.size()) {
+			testPlan.add(req);
+			httpreqlist.add(rownum);
+		} else
+			testPlan.set(rownum, req);*/
 
+		// TestPlan.displayPlan();
+
+	}
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)
 	public @ResponseBody void home_page(@RequestParam("rownum") int rownum) {
 		// System.out.println(rownum);
@@ -374,8 +391,8 @@ public class MainController implements Serializable{
 
 @RequestMapping(value = "/savetofile", method = RequestMethod.POST)
 public @ResponseBody
-String saveToFile() {
-	File downloadtest=new File("/home/stanly/Project/LoadGenerator/src/main/webapp/resources/tmpFiles/test.wlg");
+String saveToFile() throws Exception {
+	File downloadtest=new File("/home/stanly/Project/LoadGenerator/src/main/webapp/resources/tmpFiles/test.xml");
 	//System.out.println(downloadtest.getAbsolutePath());
 	Serializer.serializeObject(testPlans, downloadtest.getAbsolutePath());
 	/*List<TestPlan> testlist = new ArrayList<TestPlan>();

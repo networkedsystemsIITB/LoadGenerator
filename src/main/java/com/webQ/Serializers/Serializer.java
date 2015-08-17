@@ -1,6 +1,11 @@
 package com.webQ.Serializers;
 
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -10,9 +15,20 @@ import java.util.List;
 import com.webQ.model.TestPlan;
 
 public class Serializer {
-	 public static void serializeObject(List<TestPlan> testPlans,String path){
+	 public static void serializeObject(List<TestPlan> testPlans,String path) throws Exception{
 		 
-		  
+		        XMLEncoder encoder =
+		           new XMLEncoder(
+		              new BufferedOutputStream(
+		                new FileOutputStream(path)));
+		        encoder.writeObject(testPlans);
+		        encoder.close();
+		    
+
+		   
+		       
+		   
+		 /* 
 		   try{
 	 
 			FileOutputStream fout = new FileOutputStream(path);
@@ -26,11 +42,17 @@ public class Serializer {
 	 
 		   }catch(Exception ex){
 			   ex.printStackTrace();
-		   }
+		   }*/
 	   }
-	 public static List<TestPlan> deserialzeAddress(String path){
-		 
-		   TestPlan testplan;
+	 public static List<TestPlan> deserialzeAddress(String path) throws FileNotFoundException{
+		 XMLDecoder decoder =
+		            new XMLDecoder(new BufferedInputStream(
+		                new FileInputStream(path)));
+		 List<TestPlan> testPlans=new ArrayList<TestPlan>();
+		        testPlans = (List<TestPlan>)decoder.readObject();
+		        decoder.close();
+		        return testPlans;
+		  /* TestPlan testplan;
 		   List<TestPlan> testPlans=new ArrayList<TestPlan>();
 	 
 		   try{
@@ -45,7 +67,7 @@ public class Serializer {
 		   }catch(Exception ex){
 			   ex.printStackTrace();
 			   return null;
-		   } 
+		   } */
 	   } 
 
 }

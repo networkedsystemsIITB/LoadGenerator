@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="1.8.0_45" class="java.beans.XMLDecoder">
+ <object class="java.util.ArrayList">
+  <void method="add">
+   <object class="com.webQ.model.TestPlan" id="TestPlan0">
+    <void property="duration">
+     <int>60</int>
+    </void>
+    <void property="httpreqlist">
+     <void method="add">
+      <int>0</int>
+     </void>
+     <void method="add">
+      <int>3</int>
+     </void>
+    </void>
+    <void property="reqRate">
+     <int>100</int>
+    </void>
+    <void property="testPlan">
+     <void method="add">
+      <object class="com.webQ.model.HttpRequest">
+       <void property="httpType">
+        <string>GET</string>
+       </void>
+       <void property="url">
+        <string>http://10.129.26.133:8000/proxy1?limit=100</string>
+       </void>
+      </object>
+     </void>
+     <void method="add">
+      <object class="com.webQ.model.RegexExtractor">
+       <void property="refName">
+        <string>Refresh</string>
+       </void>
+       <void property="regex">
+        <string>JMeter: (.*?); url=(.+?),</string>
+       </void>
+      </object>
+     </void>
+     <void method="add">
+      <object class="com.webQ.model.ConstantTimer">
+       <void property="time">
+        <string>$Refresh_1*1000</string>
+       </void>
+      </object>
+     </void>
+     <void method="add">
+      <object class="com.webQ.model.HttpRequest">
+       <void property="httpType">
+        <string>GET</string>
+       </void>
+       <void property="url">
+        <string>$Refresh_2</string>
+       </void>
+      </object>
+     </void>
+    </void>
+   </object>
+  </void>
+ </object>
+</java>
