@@ -18,8 +18,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.protocol.HttpContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+/*import org.apache.log4j.Logger;*/
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,15 +55,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Controller
-public class MainController implements Serializable{
+public class MainController implements Serializable {
 
 	private List<TestPlan> testPlans = new ArrayList<TestPlan>();
 	private static final HttpContext BASIC_RESPONSE_HANDLER = null;
-	private final Logger logger = LoggerFactory.getLogger(MainController.class);
-	private final HelloWorldService helloWorldService;
+	/*private final Logger logger = LoggerFactory.getLogger(MainController.class);*/
+	final static Logger logger = Logger.getLogger(MainController.class);
+
+/*	private final Logger logger = LoggerFactory.getLogger("/home/stanly/loadgen.log");
+*/	private final HelloWorldService helloWorldService;
 	private List<Object> testPlan = new ArrayList<Object>();
 	private List<Integer> httpreqlist = new ArrayList<Integer>();
-	public static Boolean test=true;
+	public static Boolean test = true;
 
 	// private int testplancount;
 	public static final CloseableHttpClient client = FiberHttpClientBuilder
@@ -117,9 +121,9 @@ public class MainController implements Serializable{
 	public @ResponseBody void home_page(
 			@ModelAttribute("SpringWeb") HttpRequest req,
 			@RequestParam("rownum") int rownum, BindingResult result) {
-		System.out.println(req.getUrl());
+		/*System.out.println(req.getUrl());
 		System.out.println(req.getHttpType());
-		System.out.println(req.getPostBody());
+		System.out.println(req.getPostBody());*/
 
 		if (rownum == testPlan.size()) {
 			testPlan.add(req);
@@ -130,21 +134,21 @@ public class MainController implements Serializable{
 		// TestPlan.displayPlan();
 
 	}
+
 	@RequestMapping(value = "/httppostreq", method = RequestMethod.POST)
 	public @ResponseBody void home_page(
-			@ModelAttribute("SpringWeb") HttpRequest req,
-			BindingResult result) {
+			@ModelAttribute("SpringWeb") HttpRequest req, BindingResult result) {
 		System.out.println("inside post");
 		System.out.println(req.getHttpType());
-		/*if (rownum == testPlan.size()) {
-			testPlan.add(req);
-			httpreqlist.add(rownum);
-		} else
-			testPlan.set(rownum, req);*/
+		/*
+		 * if (rownum == testPlan.size()) { testPlan.add(req);
+		 * httpreqlist.add(rownum); } else testPlan.set(rownum, req);
+		 */
 
 		// TestPlan.displayPlan();
 
 	}
+
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)
 	public @ResponseBody void home_page(@RequestParam("rownum") int rownum) {
 		// System.out.println(rownum);
@@ -193,7 +197,7 @@ public class MainController implements Serializable{
 	public String index(Map<String, Object> model) throws SuspendExecution,
 			InterruptedException {
 		Fiber.sleep(10);
-		logger.debug("index() is executed!");
+		/*logger.debug("index() is executed!");*/
 		model.put("title", helloWorldService.getTitle(""));
 		model.put("msg", helloWorldService.getDesc());
 		return "index";
@@ -203,8 +207,8 @@ public class MainController implements Serializable{
 	public ModelAndView hello(@PathVariable("name") String name)
 			throws SuspendExecution, InterruptedException {
 		Fiber.sleep(10);
-		logger.debug("hello() is executed - $name {}", name);
-		ModelAndView model = new ModelAndView();
+/*		logger.debug("hello() is executed - $name {}", name);
+*/		ModelAndView model = new ModelAndView();
 		model.setViewName("index");
 		model.addObject("title", helloWorldService.getTitle(name));
 		model.addObject("msg", helloWorldService.getDesc());
@@ -237,12 +241,11 @@ public class MainController implements Serializable{
 		return m;
 	}
 
-
 	@RequestMapping(value = "/loadgen", method = RequestMethod.POST)
 	public void execute(ModelMap model) throws SuspendExecution,
 			InterruptedException {
 		// PrintWriter out = response.getWriter();
-		//System.out.println("dddddd");
+		// System.out.println("dddddd");
 		/*
 		 * model.addAttribute("reqRate", load.getReqRate());
 		 * model.addAttribute("duration", load.getDuration());
@@ -253,36 +256,54 @@ public class MainController implements Serializable{
 		/*
 		 * value val = new value(); val.req=0; val.resp=0;
 		 */
+		if(logger.isInfoEnabled()){
+		    logger.info("Starting");
+		}
 		System.out.println("");
 		System.out
 				.println("<------------------------LoadGen Starting-------------------------->");
 		System.out.println("");
 		// for(int i=0;i<testPlans.size();++i){
 		int i = 1;
-		/*Serializer objwriter=new Serializer();*/
-		/*Serializer.serializeObject(testPlans,"/home/stanly/Project/LoadGenerator/src/main/webapp/resources/tmpFiles/objfile");
-		List<TestPlan> testlist = new ArrayList<TestPlan>();
-		testlist=Serializer.deserialzeAddress("/home/stanly/Project/LoadGenerator/src/main/webapp/resources/tmpFiles/objfile");*/
+		/* Serializer objwriter=new Serializer(); */
+		/*
+		 * Serializer.serializeObject(testPlans,
+		 * "/home/stanly/Project/LoadGenerator/src/main/webapp/resources/tmpFiles/objfile"
+		 * ); List<TestPlan> testlist = new ArrayList<TestPlan>();
+		 * testlist=Serializer.deserialzeAddress(
+		 * "/home/stanly/Project/LoadGenerator/src/main/webapp/resources/tmpFiles/objfile"
+		 * );
+		 */
+		Fiber<Void> testplansfiber = null;
 		for (TestPlan currtestplan : testPlans) {
-			if(test){
-			System.out.println("Testplan" + i);
-			
-			System.out.println("");
-			currtestplan.displayPlan();
-			System.out.println("");
-			currtestplan.setFilenum(i);
-			i++;
-			Fiber<Void> testplansfiber = new Fiber<Void>(() -> {
+			if (test) {
+				System.out.println("Testplan" + i);
 
-				currtestplan.execute(null);
+				System.out.println("");
+				currtestplan.displayPlan();
+				System.out.println("");
+				currtestplan.setFilenum(i);
+				i++;
+				testplansfiber = new Fiber<Void>(() -> {
+
+					currtestplan.execute(null);
 				}).start();
-			}
-			else{
-				test=true;
+			} else {
+				test = true;
 				break;
 			}
 		}
-		
+		try {
+			testplansfiber.join();
+		} catch (ExecutionException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		if(logger.isInfoEnabled()){
+		    logger.info("Test Finished");
+		}
+		System.out.println("Test Finished");
+
 		// testPlans.clear();
 		/*
 		 * executor.setTestPlan(testPlan); executor.setHttpreqlist(httpreqlist);
@@ -341,74 +362,88 @@ public class MainController implements Serializable{
 			 */
 	}
 
-    /**
-     * Upload single file using Spring Controller
-     */
-    @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-    public @ResponseBody
-    String uploadFileHandler(@RequestParam("fileName") MultipartFile file) {
+	/**
+	 * Upload single file using Spring Controller
+	 */
+	@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
+	public @ResponseBody String uploadFileHandler(
+			@RequestParam("fileName") MultipartFile file) {
+		/*System.out.println(getClass().getClassLoader().getResource("logging.properties"));
+		System.out.println(MainController.class.getClassLoader().getResource("logging.properties"));*/
+		if (!file.isEmpty()) {
+			try {
+				byte[] bytes = file.getBytes();
+				// System.out.println(file.getName());
+				// System.out.println(file.getOriginalFilename());
 
-        if (!file.isEmpty()) {
-            try {
-                byte[] bytes = file.getBytes();
-                //System.out.println(file.getName());
-               // System.out.println(file.getOriginalFilename());
- 
-                // Creating the directory to store file
-               // String rootPath = System.getProperty("/home/stanly");
-                File dir = new File("/home/stanly/Project/LoadGenerator/src/main/webapp/resources/tmpFiles");
-                //System.out.println(dir.getPath());
-                if (!dir.exists())
-                    dir.mkdirs();
- 
-                // Create the file on server
-                File serverFile = new File(dir.getAbsolutePath()
-                        + File.separator + file.getOriginalFilename());
-                BufferedOutputStream stream = new BufferedOutputStream(
-                        new FileOutputStream(serverFile));
-                stream.write(bytes);
-                stream.close();
-                testPlans.clear();
-                testPlans=Serializer.deserialzeAddress(dir.getAbsolutePath()
-                        + File.separator + file.getOriginalFilename());
-                for(int i=0;i<testPlans.size();i++){
-            		System.out.println(testPlans.get(i));
-            	}
-                logger.info("Server File Location="
-                        + serverFile.getAbsolutePath());
- 
-                return "You successfully uploaded file=" + file.getOriginalFilename();
-            } catch (Exception e) {
-                return "You failed to upload " + file.getOriginalFilename() + " => " + e.getMessage();
-            }
-        } else {
-            return "You failed to upload " + file.getOriginalFilename()
-                    + " because the file was empty.";
-        }
-    }
- 
+				// Creating the directory to store file
+				// String rootPath = System.getProperty("/home/stanly");
+				File dir = new File(
+						"/home/stanly/Project/LoadGenerator/src/main/webapp/resources/tmpFiles");
+				// System.out.println(dir.getPath());
+				if (!dir.exists())
+					dir.mkdirs();
 
+				// Create the file on server
+				File serverFile = new File(dir.getAbsolutePath()
+						+ File.separator + file.getOriginalFilename());
+				BufferedOutputStream stream = new BufferedOutputStream(
+						new FileOutputStream(serverFile));
+				stream.write(bytes);
+				stream.close();
+				testPlans.clear();
+				testPlans = Serializer.deserialzeAddress(dir.getAbsolutePath()
+						+ File.separator + file.getOriginalFilename());
+				for (int i = 0; i < testPlans.size(); i++) {
+					System.out.println(testPlans.get(i));
+				}
+				/*logger.info("Server File Location="
+						+ serverFile.getAbsolutePath());
+*/
+				return "You successfully uploaded file="
+						+ file.getOriginalFilename();
+			} catch (Exception e) {
+				return "You failed to upload " + file.getOriginalFilename()
+						+ " => " + e.getMessage();
+			}
+		} else {
+			return "You failed to upload " + file.getOriginalFilename()
+					+ " because the file was empty.";
+		}
+	}
 
-@RequestMapping(value = "/savetofile", method = RequestMethod.POST)
-public @ResponseBody
-String saveToFile() throws Exception {
-	File downloadtest=new File("/home/stanly/Project/LoadGenerator/src/main/webapp/resources/tmpFiles/test.xml");
-	//System.out.println(downloadtest.getAbsolutePath());
-	Serializer.serializeObject(testPlans, downloadtest.getAbsolutePath());
-	/*List<TestPlan> testlist = new ArrayList<TestPlan>();
-	testlist=Serializer.deserialzeAddress(downloadtest.getAbsolutePath());
-	for(int i=0;i<testlist.size();i++){
-		System.out.println(testlist.get(i));
-	}*/
-    return downloadtest.getAbsolutePath();
-    }
+	@RequestMapping(value = "/savetofile", method = RequestMethod.POST)
+	public @ResponseBody String saveToFile() throws Exception {
+		File downloadtest = new File(
+				"/home/stanly/Project/LoadGenerator/src/main/webapp/resources/tmpFiles/test.xml");
+		// System.out.println(downloadtest.getAbsolutePath());
+		Serializer.serializeObject(testPlans, downloadtest.getAbsolutePath());
+		/*
+		 * List<TestPlan> testlist = new ArrayList<TestPlan>();
+		 * testlist=Serializer
+		 * .deserialzeAddress(downloadtest.getAbsolutePath()); for(int
+		 * i=0;i<testlist.size();i++){ System.out.println(testlist.get(i)); }
+		 */
+		return downloadtest.getAbsolutePath();
+	}
 
-@RequestMapping(value = "/stop", method = RequestMethod.POST)
-public @ResponseBody void stopTest() {
+	@RequestMapping(value = "/stop", method = RequestMethod.POST)
+	public @ResponseBody void stopTest() {
 
-	test=false;
+		test = false;
 
+	}
+	public static void deleteFolder(File folder) {
+	    File[] files = folder.listFiles();
+	    if(files!=null) { //some JVMs return null for empty dirs
+	        for(File f: files) {
+	            if(f.isDirectory()) {
+	                deleteFolder(f);
+	            } else {
+	                f.delete();
+	            }
+	        }
+	    }
+	    folder.delete();
+	}
 }
-
-}
-

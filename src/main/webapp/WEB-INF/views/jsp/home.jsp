@@ -30,11 +30,12 @@
         Name: <input type="text" name="filename"><br /> <br /> 
         <input type="submit" value="Upload"> Press here to upload the file!
     </form> --%>
-	<div class="container">
+	<div id ="home" class="container">
 		<center>
 			<div class="row">
 					
-				<br> <img src="resources/images/heading.png"><br> <br>
+				<br> <!-- <img src="resources/images/heading.png" > --><input id="logo" type="image"
+					src="resources/images/heading.png" alt="Home"><br> <br>
 				<input id="crtest" type="image"
 					src="resources/images/createtest.png" alt="Create Test"> <input
 					id="opentest" type="image" src="resources/images/opentest.png"
@@ -53,13 +54,13 @@
 				<form name="uploadForm" id="uploadForm" method="POST"
 					action="javascript:;" enctype="multipart/form-data">
 					<div class="input-group">
-						<table>
+						<table cellpadding='10' cellspacing='10'>
 							<tr>
 								<td>
 									<!-- <span class="input-group-btn"> <span
 								class="btn btn-primary btn-file"> Browse&hellip; --> <input
 									type="file" name="fileName" id="fileName" form="uploadForm"
-									data-filename-placement="inside"> <!-- 	
+									data-filename-placement="inside"><!-- 	
 							</span>
 							</span>  -->
 								</td>

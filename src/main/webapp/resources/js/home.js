@@ -1,7 +1,8 @@
 $(function() {
-	
+	var homeClone = $("#home").clone();
 	var paramsClone = $("#params").clone();
 	var featuresClone = $("#features").clone();
+	
 	/*
 	 * $("#httpreq").off().on("click", AddHttpReq);
 	 * $("#consttimer").off().on("click", AddConstTimer);
@@ -41,6 +42,26 @@ $(function() {
 		$('#crtest').hide();
 		$('#opentest').hide();
 		$('#testplan').show();
+
+	});
+	$('#logo').click(function() {
+		 location.reload();
+		/*$("#home").replaceWith(homeClone.clone());
+		$.ajax({
+			url : "/LoadGen/",
+			type : "GET",
+			
+
+			success : function() {
+				
+				
+			},
+			error : function() {
+
+				
+			}
+		});*/
+
 
 	});
 	$('#savetestplan').click(function() {
@@ -101,14 +122,7 @@ $(function() {
 
 	});
 
-	/*
-	 * $('select.dropdown').change(function() { alert("jhjdkljf"); var $tr =
-	 * $(this).closest('tr'); });
-	 */
-	/*
-	 * $('#reqtype').on('change', function() { alert("hi"); alert(
-	 * $(this).val()); });
-	 */
+	
 	$('input[type=file]').bootstrapFileInput();
 	$('.file-inputs').bootstrapFileInput();
 

@@ -9,8 +9,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
+import org.apache.log4j.Logger;
 
 import co.paralleluniverse.fibers.Fiber;
 import co.paralleluniverse.fibers.SuspendExecution;
@@ -118,7 +120,7 @@ public class TestPlan implements Feature ,Serializable{
 		// TODO Auto-generated method stub
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 		FileWriter fileWriter = null;
-
+		final Logger logger = Logger.getLogger(MainController.class);
 		try {
 			// Delimiter used in CSV file
 
@@ -145,10 +147,11 @@ public class TestPlan implements Feature ,Serializable{
 		for (int i = 0; i < httpreqlist.size(); i++) {
 			totalreqs.put(httpreqlist.get(i), 0);
 		}
+		Fiber<Void> testplanfiber = null ;
 		for (int i = 0; i < duration&&MainController.test; ++i) {
 
 			for (int j = 0; j < reqRate&&MainController.test; ++j) {
-				Fiber<Void> testplanfiber = new Fiber<Void>(() -> {
+				testplanfiber = new Fiber<Void>(() -> {
 					try {
 						// displayPlan();
 						Response currresp = new Response();
@@ -176,14 +179,13 @@ public class TestPlan implements Feature ,Serializable{
 				for (Map.Entry entry : totalreqs.entrySet()) {
 					Date now = new Date();
 					String strDate = sdf.format(now);
-					fileWriter.append(strDate);
-					fileWriter.append(",");
-
-					fileWriter.append("Http Request " + l);
-					fileWriter.append(",");
-					fileWriter.append(String.valueOf(((Integer) entry
-							.getValue()) / (i + 1)));
+					String message=strDate+","+"Http Request " + l +" , "+String.valueOf(((Integer) entry
+							.getValue()) / (i + 1));
+					fileWriter.append(message);
 					fileWriter.append("\n");
+					
+					logger.info(message);
+					
 					l++;
 				}
 
@@ -205,7 +207,6 @@ public class TestPlan implements Feature ,Serializable{
 		if(!MainController.test){
 			MainController.test=true;
 		}
-
 		try {
 
 			fileWriter.flush();
@@ -219,6 +220,13 @@ public class TestPlan implements Feature ,Serializable{
 			e.printStackTrace();
 
 		}
-
+		try {
+			testplanfiber.join();
+		} catch (ExecutionException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		System.out.println("Finished");
 	}
 }
