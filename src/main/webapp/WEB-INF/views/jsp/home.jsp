@@ -19,8 +19,8 @@
 
 <script type="text/javascript"
 	src="resources/js/bootstrap.file-input.js"></script>
-	<script type="text/javascript"
-	src="resources/js/jquery.tabletojson.js"></script>
+<script type="text/javascript" src="resources/js/jquery.tabletojson.js"></script>
+<script type="text/javascript" src="resources/js/jquery.json.js"></script>
 <link rel="stylesheet" type="text/css" href="resources/css/home.css">
 
 </head>
@@ -30,64 +30,124 @@
         Name: <input type="text" name="filename"><br /> <br /> 
         <input type="submit" value="Upload"> Press here to upload the file!
     </form> --%>
-	<div id ="home" class="container">
+	<div id="home" class="container">
 		<center>
+
 			<div class="row">
-					
-				<br> <!-- <img src="resources/images/heading.png" > --><input id="logo" type="image"
-					src="resources/images/heading.png" alt="Home"><br> <br>
-				<input id="crtest" type="image"
-					src="resources/images/createtest.png" alt="Create Test"> <input
-					id="opentest" type="image" src="resources/images/opentest.png"
-					alt="Open Test">
+
+				<br>
+				<!-- <img src="resources/images/heading.png" > -->
+				<input id="logo" type="image" src="resources/images/heading.png"
+					alt="Home">
 			</div>
-			<div id="testplan" class="row" style="display: none">
+			<br><br>
+
+			<div id="testtypes" class="row">
+				<input id="normaltest" type="image"
+					src="resources/images/normal.png" alt="Normal Test"> <input
+					id="randomtest" type="image" src="resources/images/random.png"
+					alt="Random Test">
+			</div>
+			<div class="row" id="testhome">
+
+				<div id="normaltesthome" style="display: none">
+					<input id="normalcrtest" type="image"
+						src="resources/images/createtest.png" alt="Create Test"> <input
+						id="normalopentest" type="image"
+						src="resources/images/opentest.png" alt="Open Test">
+				</div>
+				<div id="randomtesthome" style="display: none">
+					<input id="randomcrtest" type="image"
+						src="resources/images/createtest.png" alt="Create Test"> <input
+						id="randomopentest" type="image"
+						src="resources/images/opentest.png" alt="Open Test">
+				</div>
+			</div>
 
 
-				<input id="addtestplan" type="image"
-					src="resources/images/addtestplan.png" alt="Add TestPlan">
+			<div class="row" id="testplanhome">
+
+
+				<div id="normaltestplan" style="display: none">
+
+
+					<input id="addnormaltestplan" type="image"
+						src="resources/images/addtestplan.png" alt="Add TestPlan">
+				</div>
+				<div id="randomtestplan" class="row" style="display: none">
+
+
+					<input id="addrandomtestplan" type="image"
+						src="resources/images/addtestplan.png" alt="Add TestPlan">
+				</div>
 			</div>
 		</center>
 		<center>
 
-			<div id="openfile" class="row" style="display: none">
-				<form name="uploadForm" id="uploadForm" method="POST"
-					action="javascript:;" enctype="multipart/form-data">
+			<div id="openfile" class="row">
+				<form name="normaluploadForm" id="normaluploadForm" method="POST"
+					action="javascript:;" enctype="multipart/form-data"
+					style="display: none">
 					<div class="input-group">
 						<table cellpadding='10' cellspacing='10'>
 							<tr>
-								<td>
-									<!-- <span class="input-group-btn"> <span
-								class="btn btn-primary btn-file"> Browse&hellip; --> <input
-									type="file" name="fileName" id="fileName" form="uploadForm"
-									data-filename-placement="inside"><!-- 	
-							</span>
-							</span>  -->
-								</td>
-								<td>
-									<!-- 		<input id='uploadbutton' type="submit" value="Upload"> -->
-									<input id="uploadbutton" type="image"
-									src="resources/images/upload.png" alt="upload">
-								</td>
+								<td><input type="file" name="fileName" id="fileName"
+									form="normaluploadForm" data-filename-placement="inside"></td>
+								<td><input id="uploadbutton" type="image"
+									src="resources/images/upload.png" alt="upload"></td>
 						</table>
 					</div>
-					<!-- File to upload: <input type="file" name="fileName" id="fileName"
-						form="uploadForm"><br /> <input id='uploadbutton'
-						type="submit" value="Upload"> -->
+
 				</form>
-				<!-- <input id="uploadForm" type="image"
-					src="resources/images/createtest.png" alt="Open File"> Press here to upload the file! -->
+
+				<form name="randomuploadForm" id="randomuploadForm" method="POST"
+					action="javascript:;" enctype="multipart/form-data"
+					style="display: none">
+					<div class="input-group">
+						<table cellpadding='10' cellspacing='10'>
+							<tr>
+								<td><input type="file" name="fileName" id="fileName"
+									form="randomuploadForm" data-filename-placement="inside"></td>
+								<td><input id="uploadbutton" type="image"
+									src="resources/images/upload.png" alt="upload"></td>
+						</table>
+					</div>
+
+				</form>
+
 			</div>
 		</center>
 		<center>
+		<br>
 			<div id="params" class="row" style="display: none">
 
-
-
-
-				<table id="paramtable"
+				<table id="normalparamtable"
 					class="table table-striped table-bordered table-condensed well"
-					style="width: 500px">
+					style="width: 500px" style="display: none">
+
+					<tr>
+						<th colspan="2" class="ui-helper-center">LoadGen Parameters</th>
+					</tr>
+					<tr>
+						<td class='ui-helper-center' style='vertical-align: middle;'><label
+							class="control-label">Request Rate(reqs/sec):</label></td>
+						<td class='ui-helper-center' style='vertical-align: middle;'><input
+							type='text' class='form-control' placeholder='Enter Request Rate' value="" /></td>
+					</tr>
+
+
+					<tr>
+						<td class='ui-helper-center' style='vertical-align: middle;'><label
+							class="control-label">Duration(secs):</label></td>
+						<td class='ui-helper-center' style='vertical-align: middle;'><input
+							type='text' class='form-control' placeholder='Enter Duration' value=""/></td>
+					</tr>
+
+				</table>
+
+				<table id="randomparamtable"
+					class="table table-striped table-bordered table-condensed well"
+					style="width: 500px" style="display: none">
 
 
 
@@ -95,17 +155,24 @@
 						<th colspan="2" class="ui-helper-center">LoadGen Parameters</th>
 					</tr>
 					<tr>
-						<td class='ui-helper-center' style='vertical-align: middle;'><label class="control-label">Request
-								Rate(reqs/sec):</label></td>
-						<td class='ui-helper-center' style='vertical-align: middle;'><input type='text' class='form-control'
-							placeholder='Enter Request Rate' /></td>
+						<td class='ui-helper-center' style='vertical-align: middle;'><label
+							class="control-label">Max Request Rate(reqs/sec):</label></td>
+						<td class='ui-helper-center' style='vertical-align: middle;'><input
+							type='text' class='form-control' placeholder='Enter Request Rate' value="" /></td>
 					</tr>
 
 
 					<tr>
-						<td class='ui-helper-center' style='vertical-align: middle;'><label class="control-label">Duration(secs):</label></td>
-						<td class='ui-helper-center' style='vertical-align: middle;'><input type='text' class='form-control'
-							placeholder='Enter Duration' /></td>
+						<td class='ui-helper-center' style='vertical-align: middle;'><label
+							class="control-label">Total Duration(secs):</label></td>
+						<td class='ui-helper-center' style='vertical-align: middle;'><input
+							type='text' class='form-control' placeholder='Enter Duration' value=""/></td>
+					</tr>
+					<tr>
+						<td class='ui-helper-center' style='vertical-align: middle;'><label
+							class="control-label">Epoch(secs):</label></td>
+						<td class='ui-helper-center' style='vertical-align: middle;'><input
+							type='text' class='form-control' placeholder='Enter Epoch' value="" /></td>
 					</tr>
 
 
@@ -157,7 +224,8 @@
 
 					<thead>
 						<tr>
-							<th class='ui-helper-center' style='vertical-align: middle;'>Test Feature</th>
+							<th class='ui-helper-center' style='vertical-align: middle;'>Test
+								Feature</th>
 							<th class='ui-helper-center' style='vertical-align: middle;'>Parameters</th>
 							<th></th>
 						</tr>
@@ -217,9 +285,15 @@
 		</div>
 -->
 		<center>
-			<div id="saveplan" class="row" style="display: none">
-				<input id="savetestplan" type="image"
+		<div class="row" id="saveplan" >
+			<div id="savenormalplan"  style="display: none">
+				<input id="savenormaltestplan" type="image"
 					src="resources/images/savetestplan.png" alt="Save TestPlan">
+			</div>
+			<div id="saverandomplan" class="row" style="display: none">
+				<input id="saverandomtestplan" type="image"
+					src="resources/images/savetestplan.png" alt="Save TestPlan">
+			</div>
 			</div>
 			<br>
 			<div id="buttons" class="row" style="display: none">
@@ -236,7 +310,7 @@
 							src="resources/images/save.png" alt="Save To File"
 							style="display: none">
 							<div id="downloadlink" style="display: none">
-							
+
 								<a href="resources/tmpFiles/test.xml" download> <img
 									src="resources/images/download.png" alt="Download">
 								</a>

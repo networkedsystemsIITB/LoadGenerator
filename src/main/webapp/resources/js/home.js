@@ -1,99 +1,161 @@
 $(function() {
+
+	/* Clones */
+	
 	var homeClone = $("#home").clone();
 	var paramsClone = $("#params").clone();
 	var featuresClone = $("#features").clone();
 	
-	/*
-	 * $("#httpreq").off().on("click", AddHttpReq);
-	 * $("#consttimer").off().on("click", AddConstTimer);
-	 * $("#regexex").off().on("click", AddRegexEx);
-	 */
-	/*
-	 * $("#start").off().on("click", Start); $("#savetofile").off().on("click",
-	 * SaveToFile); $(".btnSave").off().on("click", Save);
-	 * $(".btnDelete").off().on("click", Delete);
-	 * $(".btnEdit").off().on("click", Edit);
-	 */
+
+	/* count for id creation */
+
 	var hrefcount = 0;
-	$('#addtestplan').click(function() {
+
+	$('#logo').click(function() {
+		location.reload();
+		$("#home").replaceWith(homeClone.clone());
+		
+	});
+
+	$('#normaltest').click(function() {
+
+		$('#testtypes').hide();
+		$('#normaltesthome').show();
+
+	});
+
+	$('#randomtest').click(function() {
+
+		$('#testtypes').hide();
+		$('#randomtesthome').show();
+
+	});
+
+	$('#normalcrtest').click(function() {
+
+		$('#normaltesthome').hide();
+		$('#normaltestplan').show();
+
+	});
+
+	$('#normalopentest').click(function() {
+
+		$('#normaltesthome').hide();
+		$('#normaluploadForm').show();
+
+	});
+	$('#randomcrtest').click(function() {
+
+		$('#randomtesthome').hide();
+		$('#randomtestplan').show();
+
+	});
+
+	$('#randomopentest').click(function() {
+
+		$('#randomtesthome').hide();
+		$('#randomuploadForm').show();
+
+	});
+
+	$('#addnormaltestplan').click(function() {
 		$("#params").replaceWith(paramsClone.clone());
 		$("#features").replaceWith(featuresClone.clone());
 		$('#params').show();
+		$('#normalparamtable').show();
+		$('#randomparamtable').hide();
 		$('#features').show();
-
 		$('#saveplan').show();
+		$('#savenormalplan').show();
 		$('#buttons').hide();
 		$('#start').hide();
 		$('#stop').hide();
 
 		$('#savetofile').hide();
 		$("#downloadlink").hide();
-		$('#testplan').hide();
 
 		$("#httpreq").off().on("click", AddHttpReq);
 		$("#consttimer").off().on("click", AddConstTimer);
 		$("#regexex").off().on("click", AddRegexEx);
 
 		$("#testtable").resizable();
+		$('#normaltestplan').hide();
 
 	});
-	$('#crtest').click(function() {
+	$('#addrandomtestplan').click(function() {
 
-		$('#crtest').hide();
-		$('#opentest').hide();
-		$('#testplan').show();
+		$("#features").replaceWith(featuresClone.clone());
+		$('#params').show();
+		$('#randomparamtable').show();
+		$('#normalparamtable').hide();
+		$('#features').show();
+		$('#saveplan').show();
+		$('#saverandomplan').show();
+		$('#buttons').hide();
+		$('#start').hide();
+		$('#stop').hide();
 
-	});
-	$('#logo').click(function() {
-		 location.reload();
-		/*$("#home").replaceWith(homeClone.clone());
-		$.ajax({
-			url : "/LoadGen/",
-			type : "GET",
-			
+		$('#savetofile').hide();
+		$("#downloadlink").hide();
 
-			success : function() {
-				
-				
-			},
-			error : function() {
+		$("#httpreq").off().on("click", AddHttpReq);
+		$("#consttimer").off().on("click", AddConstTimer);
+		$("#regexex").off().on("click", AddRegexEx);
 
-				
-			}
-		});*/
-
+		$("#testtable").resizable();
+		$('#randomtestplan').hide();
 
 	});
-	$('#savetestplan').click(function() {
-	
-		$('#params').hide();
-		
+
+	$('#savenormaltestplan').click(function() {
+		$('params').hide();
+		$('#normalparamtable').hide();
+		$('#features').hide();
 		$('#saveplan').hide();
-		$('#testplan').show();
+		$('#savenormalplan').hide();
+		$('#normaltestplan').show();
 		$('#buttons').show();
 		$('#start').show();
 		$('#stop').hide();
 		$('#savetofile').show();
 		$("#downloadlink").hide();
-		$("#start").off().on("click", Start);
-		$("#savetofile").off().on("click", SaveToFile);
-		SavePlan();
+		$("#start").off().on("click", NormalStart);
+		$("#savetofile").off().on("click", NormalSaveToFile);
+		SaveNormalPlan();
 
 	});
-	$('#opentest').click(function() {
-		$('#openfile').show();
-		$('#crtest').hide();
-		$('#opentest').hide();
+	
+	$('#saverandomtestplan').click(function() {
+
+		$('#features').hide();
+		$('#saveplan').hide();
+		$('#saverandomplan').hide();
+		$('#randomtestplan').show();
+		$('#buttons').show();
+		$('#start').show();
+		$('#stop').hide();
+		$('#savetofile').show();
+		$("#downloadlink").hide();
+		$("#start").off().on("click", RandomStart);
+		$("#savetofile").off().on("click", RandomSaveToFile);
+		SaveRandomPlan();
 
 	});
 
-	$("#uploadForm").submit(function(event) {
+	$("#normaluploadForm").submit(function(event) {
 		event.preventDefault();
 
-		var fileData = new FormData($('#uploadForm')[0]);
+		var fileData = new FormData($('#normaluploadForm')[0]);
+		$('#buttons').show();
+		$('#start').show();
+		$('#stop').hide();
+		$('#savetofile').show();
+		$("#downloadlink").hide();
+		$("#start").off().on("click", NormalStart);
+		$("#savetofile").off().on("click", NormalSaveToFile);
 
 		$.ajax({
-			url : "/LoadGen/uploadFile",
+			url : "/LoadGen/normaluploadFile",
 			type : "POST",
 			data : fileData,
 			processData : false,
@@ -101,13 +163,7 @@ $(function() {
 			cache : false,
 
 			success : function() {
-				$('#buttons').show();
-				$('#start').show();
-				$('#stop').hide();
-				$('#savetofile').show();
-				$("#downloadlink").hide();
-				$("#start").off().on("click", Start);
-				$("#savetofile").off().on("click", SaveToFile);
+
 				$("#status").html('File Uploaded');
 				$("#status").show();
 				$("#status").delay(2000).fadeOut("slow");
@@ -122,46 +178,75 @@ $(function() {
 
 	});
 
-	
+	$("#randomuploadForm").submit(function(event) {
+		event.preventDefault();
+
+		var fileData = new FormData($('#randomuploadForm')[0]);
+		$('#buttons').show();
+		$('#start').show();
+		$('#stop').hide();
+		$('#savetofile').show();
+		$("#downloadlink").hide();
+		$("#start").off().on("click", RandomFileStart);
+		$("#savetofile").off().on("click", RandomSaveToFile);
+
+		$.ajax({
+			url : "/LoadGen/randomuploadFile",
+			type : "POST",
+			data : fileData,
+			processData : false,
+			contentType : false,
+			cache : false,
+
+			success : function() {
+
+				$("#status").html('File Uploaded');
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");
+			},
+			error : function() {
+
+				$("#status").html('File failed to upload');
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");
+			}
+		});
+
+	});
+
 	$('input[type=file]').bootstrapFileInput();
 	$('.file-inputs').bootstrapFileInput();
 
 	event.preventDefault();
 
-	function getval(sel) {
+	/*	function getval(sel) {
 
-		var id = sel.parents('tr:first').children("td:nth-child(2)").children(
-				"div:nth-child(2)");
-		if (this.value === "POST") {
-			id.show();
-		} else {
-			id.hide();
-		}
-	}
-	function SavePlan() {
-	
-		var tab = $("#paramtable");
+	 var id = sel.parents('tr:first').children("td:nth-child(2)").children(
+	 "div:nth-child(2)");
+	 if (this.value === "POST") {
+	 id.show();
+	 } else {
+	 id.hide();
+	 }
+	 }*/
+	function SaveNormalPlan() {
+
+		var tab = $("#normalparamtable");
 		var reqrate = tab.children().children("tr:nth-child(2)").children(
 				"td:nth-child(2)").children("input:nth-child(1)").val();
 		var duration = tab.children().children("tr:nth-child(3)").children(
 				"td:nth-child(2)").children("input:nth-child(1)").val();
-		/*
-		 * alert("da"); var table = $('#ttable').tableToJSON();
-		 * alert(JSON.stringify(table));
-		 */
-	/*
-		var tabledata = $('#ttable').tableToJSON();
-		alert(JSON.stringify(tabledata));*/
+
 		$.ajax({
 			type : "POST",
-			url : "/LoadGen/savetestplan",
+			url : "/LoadGen/savenormaltestplan",
 			data : {
 				reqRate : reqrate,
 				duration : duration
 			},
 			success : function(response) {
 				// we have the response
-				$('#features').hide();
+
 				$("#status").html("TestPlan Saved");
 				$("#status").show();
 				$("#status").delay(2000).fadeOut("slow");
@@ -174,7 +259,31 @@ $(function() {
 			}
 		});
 
-	};
+	}
+	;
+	function SaveRandomPlan() {
+
+		$.ajax({
+			type : "POST",
+			url : "/LoadGen/saverandomtestplan",
+
+			success : function(response) {
+				// we have the response
+
+				$("#status").html("TestPlan Saved");
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");
+
+			},
+			error : function(e) {
+				$("#status").html("TestPlan failed to save");
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");
+			}
+		});
+
+	}
+	;
 
 	function AddHttpReq() {
 		$('#testtable').show();
@@ -311,16 +420,16 @@ $(function() {
 		/*
 		 * > tbody:last-child'
 		 *//*
-			 * $("#ttable tbody") .append( "<tr>" + "<td><label
-			 * class='control-label'>Regex Extractor</label></td>" + "<td><div><input
-			 * type='text' class='form-control' placeholder='Enter Reference
-			 * Name'/></div><div style='display:inline;'><input type='text'
-			 * class='form-control' placeholder='Enter Regex' /></div></td>" + "<td><input
-			 * type='image' src='resources/images/save.jpeg' width=25 height=25
-			 * class='btnSave'><input type='image'
-			 * src='resources/images/delete.png' width=25 height=25
-			 * class='btnDelete'/></td>" + "</tr>");
-			 */
+		 * $("#ttable tbody") .append( "<tr>" + "<td><label
+		 * class='control-label'>Regex Extractor</label></td>" + "<td><div><input
+		 * type='text' class='form-control' placeholder='Enter Reference
+		 * Name'/></div><div style='display:inline;'><input type='text'
+		 * class='form-control' placeholder='Enter Regex' /></div></td>" + "<td><input
+		 * type='image' src='resources/images/save.jpeg' width=25 height=25
+		 * class='btnSave'><input type='image'
+		 * src='resources/images/delete.png' width=25 height=25
+		 * class='btnDelete'/></td>" + "</tr>");
+		 */
 		$(".btnSave").off().on("click", Save);
 		$(".btnDelete").off().on("click", Delete);
 
@@ -425,52 +534,66 @@ $(function() {
 					}
 				});
 			} else {
+				/*alert("inside");*/
 				var table = par.children("td:nth-child(2)").children(
 						"div:nth-child(2)").children("div:nth-child(2)")
 						.children("div:nth-child(1)").children(
 								"table:nth-child(1)");
-				/*if ((table).find("tr").not("thead tr").length == 1) {*/
-					var rawbody = par.children("td:nth-child(2)").children(
-							"div:nth-child(2)").children("div:nth-child(2)")
-							.children("div:nth-child(2)").children(
-									"textarea:nth-child(1)");
-						//alert(rawbody.val());
-						var tableparam = table.tableToJSON();
-						
-						var tabledata = { "url ":tdUrl.html(), "httpType":httpType.val(),"rownum":par.index(),"postBody":rawbody.val(),"postParams":tableparam};
-						/*alert(JSON.stringify(tabledata));*/
-						$.ajax({
-							type : "POST",
-							url : "/LoadGen/httppostreq",
-							dataType : 'json',
-						
-						      data: JSON.stringify(tabledata), 
-							
-							success : function(response) {
-								// we have the response
-								$("#status").html("Http Request Added");
-								$("#status").show();
-								$("#status").delay(2000).fadeOut("slow");
-
-							},
-							error : function(e) {
-								$("#status").html("Http Request failed to add");
-								$("#status").show();
-								$("#status").delay(2000).fadeOut("slow");
-							}
-						});
-				/*} *//*else {
-
-					var tabledata = table.tableToJSON();
-					var actualObj = JSON.parse(jsonText);
-					actualObj+={ "url ":tdUrl.html(), "httpType":httpType.val(),"rownum":par.index()};
-					tabledata.url=tdUrl.html();
-					tabledata.httpType=httpType.val();
-					tabledata.rownum=par.index();
+				/* if ((table).find("tr").not("thead tr").length == 1) { */
+				var rawbody = par.children("td:nth-child(2)").children(
+						"div:nth-child(2)").children("div:nth-child(2)")
+						.children("div:nth-child(2)").children(
+								"textarea:nth-child(1)");
+				// alert(rawbody.val());
+				var tableparam = table.tableToJSON();
+			
+				var tabledata = {
+					"url " : tdUrl.html(),
+					"httpType" : httpType.val(),
+					"rownum" : par.index(),
+					"postBody" : rawbody.val()
+				
+				};
+				
+				$.toJSON(tabledata);
+		
+					var tabledatacomb = tableparam.concat(tabledata);
 					
-					//alert(actualData);
-					alert(JSON.stringify(actualObj));
-				}*/
+				/* alert(JSON.stringify(tabledata)); */
+				$.ajax({
+					type : "POST",
+					url : "/LoadGen/httppostreq",
+					dataType : 'json',
+
+					data : JSON.stringify(tabledatacomb),
+
+					success : function(response) {
+						// we have the response
+						$("#status").html("Http Request Added");
+						$("#status").show();
+						$("#status").delay(2000).fadeOut("slow");
+
+					},
+					error : function(e) {
+						$("#status").html("Http Request failed to add");
+						$("#status").show();
+						$("#status").delay(2000).fadeOut("slow");
+					}
+				});
+				/* } *//*
+				 * else {
+				 * 
+				 * var tabledata = table.tableToJSON(); var actualObj =
+				 * JSON.parse(jsonText); actualObj+={ "url
+				 * ":tdUrl.html(),
+				 * "httpType":httpType.val(),"rownum":par.index()};
+				 * tabledata.url=tdUrl.html();
+				 * tabledata.httpType=httpType.val();
+				 * tabledata.rownum=par.index();
+				 * 
+				 * //alert(actualData);
+				 * alert(JSON.stringify(actualObj)); }
+				 */
 
 			}
 		} else if (tdName.html() === "Constant Timer") {
@@ -601,25 +724,24 @@ $(function() {
 
 	}
 	;
-	function Start() {
+	function NormalStart() {
+		$('#start').hide();
+		$('#stop').show();
 
+		$("#stop").off().on("click", NormalStop);
 		$.ajax({
 			type : "POST",
-			url : "/LoadGen/loadgen",
+			url : "/LoadGen/normalloadgen",
 
 			success : function(response) {
 				// we have the response
-				$('#start').hide();
-				$('#stop').show();
-				$("#stop").off().on("click", Stop);
+
 				$("#status").html("LoadGen Started");
 				$("#status").show();
 				$("#status").delay(2000).fadeOut("slow");
 			},
 			error : function(e) {
-				$('#stop').show();
-				$('#start').hide();
-				$("#stop").off().on("click", Stop);
+
 				$("#status").html("LoadGen failed to start");
 				$("#status").show();
 				$("#status").delay(2000).fadeOut("slow");
@@ -628,17 +750,83 @@ $(function() {
 
 	}
 	;
-	function Stop() {
+	function RandomStart() {
+		var tab = $("#randomparamtable");
+		var maxreqrate = tab.children().children("tr:nth-child(2)").children(
+				"td:nth-child(2)").children("input:nth-child(1)").val();
+		var maxduration = tab.children().children("tr:nth-child(3)").children(
+				"td:nth-child(2)").children("input:nth-child(1)").val();
+		var epoch = tab.children().children("tr:nth-child(4)").children(
+				"td:nth-child(2)").children("input:nth-child(1)").val();
 
+		$('#start').hide();
+		$('#stop').show();
+		$("#stop").off().on("click", RandomStop);
+		$.ajax({
+			type : "POST",
+			url : "/LoadGen/randomloadgen",
+			data : {
+
+				maxreqRate : maxreqrate,
+				maxduration : maxduration,
+				epoch : epoch
+			},
+
+			success : function(response) {
+				// we have the response
+
+				$("#status").html("LoadGen Started");
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");
+			},
+			error : function(e) {
+
+				$("#status").html("LoadGen failed to start");
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");
+			}
+		});
+
+	};
+	
+	function RandomFileStart() {
+		
+
+		$('#start').hide();
+		$('#stop').show();
+		$("#stop").off().on("click", RandomStop);
+		$.ajax({
+			type : "POST",
+			url : "/LoadGen/randomfileloadgen",
+		
+
+			success : function(response) {
+				// we have the response
+
+				$("#status").html("LoadGen Started");
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");
+			},
+			error : function(e) {
+
+				$("#status").html("LoadGen failed to start");
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");
+			}
+		});
+
+	}
+	;
+	function NormalStop() {
+		$('#stop').hide();
+		$('#start').show();
+		$("#start").off().on("click", NormalStart);
 		$.ajax({
 			type : "POST",
 			url : "/LoadGen/stop",
 
 			success : function(response) {
 
-				$('#stop').hide();
-				$('#start').show();
-				$("#start").off().on("click", Start);
 				$("#status").html("LoadGen Stopped");
 				$("#status").show();
 				$("#status").delay(2000).fadeOut("slow");
@@ -652,11 +840,74 @@ $(function() {
 
 	}
 	;
-	function SaveToFile() {
+	function RandomStop() {
+		$('#stop').hide();
+		$('#start').show();
+		$("#start").off().on("click", RandomStart);
+		$.ajax({
+			type : "POST",
+			url : "/LoadGen/stop",
+
+			success : function(response) {
+
+				$("#status").html("LoadGen Stopped");
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");
+			},
+			error : function(e) {
+				$("#status").html("LoadGen failed to stop");
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");
+			}
+		});
+
+	}
+	;
+
+	function NormalSaveToFile() {
 
 		$.ajax({
 			type : "POST",
-			url : "/LoadGen/savetofile",
+			url : "/LoadGen/normalsavetofile",
+
+			success : function(response) {
+				// we have the response
+				$("#buttons").show();
+				$("#start").show();
+				$("#stop").hide();
+				$("#downloadlink").show();
+				$("#savetofile").hide();
+				$("#status").html("Test Saved to file");
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");
+			},
+			error : function(e) {
+				$("#status").html("Test failed to save");
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");
+			}
+		});
+
+	}
+	;
+	function RandomSaveToFile() {
+		var tab = $("#randomparamtable");
+		var maxreqrate = tab.children().children("tr:nth-child(2)").children(
+				"td:nth-child(2)").children("input:nth-child(1)").val();
+		var maxduration = tab.children().children("tr:nth-child(3)").children(
+				"td:nth-child(2)").children("input:nth-child(1)").val();
+		var epoch = tab.children().children("tr:nth-child(4)").children(
+				"td:nth-child(2)").children("input:nth-child(1)").val();
+
+		$.ajax({
+			type : "POST",
+			url : "/LoadGen/randomsavetofile",
+			data : {
+
+				maxreqRate : maxreqrate,
+				maxduration : maxduration,
+				epoch : epoch
+			},
 
 			success : function(response) {
 				// we have the response
