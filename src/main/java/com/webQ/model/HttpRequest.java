@@ -101,6 +101,44 @@ public class HttpRequest implements Feature, Serializable {
 				}
 
 			}
+
+			HttpResponse response = null;
+
+			if (this.getHttpType() == "POST") {
+				HttpPost postrequest = new HttpPost(requrl);
+
+				if (this.getPostBody().length() == 0) {
+					List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+					for (Entry<String, String> entry : this.getPostParamList().entrySet()) {
+						
+					urlParameters.add(new
+							  BasicNameValuePair(entry.getKey(),entry.getValue()));
+					}
+					postrequest.setEntity(new UrlEncodedFormEntity(
+							urlParameters));
+					
+				} else {
+					HttpEntity entity = new ByteArrayEntity(this.getPostBody()
+							.getBytes("UTF-8"));
+					postrequest.setEntity(entity);
+					postrequest.setHeader("User-Agent", USER_AGENT);
+				}
+				System.out.println(Fiber.currentFiber().getName() + " "
+						+ requrl);
+				response = MainController.client.execute(postrequest,
+						BASIC_RESPONSE_HANDLER);
+				System.out.println("Request: " + Fiber.currentFiber().getName()
+						+ " " + response.getStatusLine());
+			} else {
+				HttpGet getrequest = new HttpGet(requrl);
+				System.out.println(Fiber.currentFiber().getName() + " "
+						+ requrl);
+				response = MainController.client.execute(getrequest,
+						BASIC_RESPONSE_HANDLER);
+				System.out.println("Request: " + Fiber.currentFiber().getName()
+						+ " " + response.getStatusLine());
+
+			}
 			/*
 			 * String xml = "<xml>xxxx</xml>"; HttpEntity entity = new
 			 * ByteArrayEntity(xml.getBytes("UTF-8"));
@@ -120,22 +158,17 @@ public class HttpRequest implements Feature, Serializable {
 			 * postrequest.setEntity(new UrlEncodedFormEntity(urlParameters));
 			 */
 
-			HttpGet getrequest = new HttpGet(requrl);
-			HttpResponse response = null;
 			/*
 			 * MainController.logger.info(Fiber.currentFiber().getName()+" "+requrl
 			 * );
 			 */
-			System.out.println(Fiber.currentFiber().getName() + " " + requrl);
-			response = MainController.client.execute(getrequest,
-					BASIC_RESPONSE_HANDLER);
+
 			/*
 			 * MainController.logger.info("Request: " +
 			 * Fiber.currentFiber().getName() + " " + response
 			 * .getStatusLine());
 			 */
-			System.out.println("Request: " + Fiber.currentFiber().getName()
-					+ " " + response.getStatusLine());
+
 			/*
 			 * System.out.println("Request: " + Fiber.currentFiber().getName() +
 			 * " " +response.getFirstHeader("Jmeter"));

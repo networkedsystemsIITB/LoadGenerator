@@ -40,7 +40,8 @@
 				<input id="logo" type="image" src="resources/images/heading.png"
 					alt="Home">
 			</div>
-			<br><br>
+			<br>
+			<br>
 
 			<div id="testtypes" class="row">
 				<input id="normaltest" type="image"
@@ -118,7 +119,7 @@
 			</div>
 		</center>
 		<center>
-		<br>
+			<br>
 			<div id="params" class="row" style="display: none">
 
 				<table id="normalparamtable"
@@ -132,7 +133,8 @@
 						<td class='ui-helper-center' style='vertical-align: middle;'><label
 							class="control-label">Request Rate(reqs/sec):</label></td>
 						<td class='ui-helper-center' style='vertical-align: middle;'><input
-							type='text' class='form-control' placeholder='Enter Request Rate' value="" /></td>
+							type='text' class='form-control' placeholder='Enter Request Rate'
+							value="" /></td>
 					</tr>
 
 
@@ -140,7 +142,22 @@
 						<td class='ui-helper-center' style='vertical-align: middle;'><label
 							class="control-label">Duration(secs):</label></td>
 						<td class='ui-helper-center' style='vertical-align: middle;'><input
-							type='text' class='form-control' placeholder='Enter Duration' value=""/></td>
+							type='text' class='form-control' placeholder='Enter Duration'
+							value="" /></td>
+					</tr>
+					<tr>
+						<td class='ui-helper-center' style='vertical-align: middle;'>
+							<div>
+								<input type="checkbox" name="delay" id="delay" onchange="checkChange();"
+									/>
+							</div>
+							<div style='display: inline;'>
+								<label class="control-label"> Delay TestPlan Start</label>
+							</div>
+						</td>
+						<td class='ui-helper-center' style='vertical-align: middle;'><input
+							type='text' id="delaybox" class='form-control'
+							placeholder='Enter Delay' value="" style="display: none" /></td>
 					</tr>
 
 				</table>
@@ -158,7 +175,8 @@
 						<td class='ui-helper-center' style='vertical-align: middle;'><label
 							class="control-label">Max Request Rate(reqs/sec):</label></td>
 						<td class='ui-helper-center' style='vertical-align: middle;'><input
-							type='text' class='form-control' placeholder='Enter Request Rate' value="" /></td>
+							type='text' class='form-control' placeholder='Enter Request Rate'
+							value="" /></td>
 					</tr>
 
 
@@ -166,18 +184,20 @@
 						<td class='ui-helper-center' style='vertical-align: middle;'><label
 							class="control-label">Total Duration(secs):</label></td>
 						<td class='ui-helper-center' style='vertical-align: middle;'><input
-							type='text' class='form-control' placeholder='Enter Duration' value=""/></td>
+							type='text' class='form-control' placeholder='Enter Duration'
+							value="" /></td>
 					</tr>
 					<tr>
 						<td class='ui-helper-center' style='vertical-align: middle;'><label
 							class="control-label">Epoch(secs):</label></td>
 						<td class='ui-helper-center' style='vertical-align: middle;'><input
-							type='text' class='form-control' placeholder='Enter Epoch' value="" /></td>
+							type='text' class='form-control' placeholder='Enter Epoch'
+							value="" /></td>
 					</tr>
 
 
 
-
+                   
 				</table>
 
 
@@ -285,15 +305,15 @@
 		</div>
 -->
 		<center>
-		<div class="row" id="saveplan" >
-			<div id="savenormalplan"  style="display: none">
-				<input id="savenormaltestplan" type="image"
-					src="resources/images/savetestplan.png" alt="Save TestPlan">
-			</div>
-			<div id="saverandomplan" class="row" style="display: none">
-				<input id="saverandomtestplan" type="image"
-					src="resources/images/savetestplan.png" alt="Save TestPlan">
-			</div>
+			<div class="row" id="saveplan">
+				<div id="savenormalplan" style="display: none">
+					<input id="savenormaltestplan" type="image"
+						src="resources/images/savetestplan.png" alt="Save TestPlan">
+				</div>
+				<div id="saverandomplan" class="row" style="display: none">
+					<input id="saverandomtestplan" type="image"
+						src="resources/images/savetestplan.png" alt="Save TestPlan">
+				</div>
 			</div>
 			<br>
 			<div id="buttons" class="row" style="display: none">

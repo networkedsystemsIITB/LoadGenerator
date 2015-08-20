@@ -47,6 +47,12 @@
 			<version>${comsat.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20141113</version>
+		</dependency>
+
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>${servlet.version}</version>
@@ -71,7 +77,7 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.4</version>
 		</dependency>
-		
+
 
 		<dependency>
 			<groupId>co.paralleluniverse</groupId>
@@ -129,27 +135,22 @@
 				<plugin>
 					<artifactId>maven-dependency-plugin</artifactId>
 					<version>2.10</version>
-					
+
 					<executions>
-						<!-- <execution>
-							<id>getClasspathFilenames</id>
-							<phase>initialize</phase>
-							<goals>
-								<goal>properties</goal>
-							</goals>
-						</execution> -->
+						<!-- <execution> <id>getClasspathFilenames</id> <phase>initialize</phase> 
+							<goals> <goal>properties</goal> </goals> </execution> -->
 						<execution>
-			<id>copy-dependencies</id>
-			<phase>process-resources</phase>
-			<goals>
-				<goal>copy-dependencies</goal>
-			</goals>
-			<configuration>
-				<outputDirectory>${basedir}/src/main/webapp/WEB-INF/lib</outputDirectory>
-				<includeScope>compile</includeScope>
-				<excludeScope>test</excludeScope>
-			</configuration>
-		</execution>
+							<id>copy-dependencies</id>
+							<phase>process-resources</phase>
+							<goals>
+								<goal>copy-dependencies</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>${basedir}/src/main/webapp/WEB-INF/lib</outputDirectory>
+								<includeScope>compile</includeScope>
+								<excludeScope>test</excludeScope>
+							</configuration>
+						</execution>
 					</executions>
 				</plugin>
 
@@ -239,45 +240,24 @@
 							<cargo.servlet.port>${servlet.port}</cargo.servlet.port>
 						</properties>
 					</configuration>
-					
-					
-					
-					
-<!-- 				Hot Deploy	
- -->					<!-- <configuration> -->
 
-						<!-- Container configuration -->
-						<!-- <container>
-							<containerId>resin4x</containerId>
-							<home>c:/apps/resin-3.0.9</home>
-							or
-							<zipUrlInstaller>
-								<url>http://www.caucho.com/download/resin-4.0.44.zip</url>
-								<downloadDir>${project.build.directory}/downloads</downloadDir>
-								<extractDir>${project.build.directory}/extracts</extractDir>
-							</zipUrlInstaller>
-						</container> -->
 
-						<!-- Configuration to use with the container (which will also configure 
-							the deployer) -->
-				<!-- 		<configuration>
-							<type>existing</type>
-							<properties>
-								
-							</properties>
-						</configuration>
 
-						Deployables configuration
-						<deployables>
-							<deployable>
-								<groupId>webQ.LoadGen</groupId>
-								<artifactId>LoadGen</artifactId>
-								<type>war</type>
-								
-							</deployable>
-							
-						</deployables> -->
-					</configuration>
+
+					<!-- Hot Deploy -->					<!-- <configuration> -->
+
+					<!-- Container configuration -->
+					<!-- <container> <containerId>resin4x</containerId> <home>c:/apps/resin-3.0.9</home> 
+						or <zipUrlInstaller> <url>http://www.caucho.com/download/resin-4.0.44.zip</url> 
+						<downloadDir>${project.build.directory}/downloads</downloadDir> <extractDir>${project.build.directory}/extracts</extractDir> 
+						</zipUrlInstaller> </container> -->
+
+					<!-- Configuration to use with the container (which will also configure 
+						the deployer) -->
+					<!-- <configuration> <type>existing</type> <properties> </properties> 
+						</configuration> Deployables configuration <deployables> <deployable> <groupId>webQ.LoadGen</groupId> 
+						<artifactId>LoadGen</artifactId> <type>war</type> </deployable> </deployables> -->
+				</configuration>
 
 				<!-- </configuration> -->
 				<executions>
@@ -335,24 +315,17 @@
 								</container>
 								<contextReloadable>true</contextReloadable>
 								<configuration>
-							<type>existing</type>
-							                
-							
-							<properties>
-								
-							</properties>
-						</configuration>
+									<type>existing</type>
 
-						<!-- Deployables configuration -->
-						<!-- <deployables>
-							<deployable>
-								<groupId>webQ.LoadGen</groupId>
-								<artifactId>LoadGen</artifactId>
-								<type>war</type>
-								
-							</deployable>
-							
-						</deployables> -->
+
+									<properties>
+
+									</properties>
+								</configuration>
+
+								<!-- Deployables configuration -->
+								<!-- <deployables> <deployable> <groupId>webQ.LoadGen</groupId> <artifactId>LoadGen</artifactId> 
+									<type>war</type> </deployable> </deployables> -->
 							</configuration>
 						</plugin>
 					</plugins>

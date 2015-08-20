@@ -20,6 +20,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.protocol.HttpContext;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +31,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -45,6 +48,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +57,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.crypto.spec.PSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -144,11 +149,6 @@ public class MainController implements Serializable {
 	public @ResponseBody void home_page(
 			@ModelAttribute("SpringWeb") HttpRequest req,
 			@RequestParam("rownum") int rownum, BindingResult result) {
-		/*
-		 * System.out.println(req.getUrl());
-		 * System.out.println(req.getHttpType());
-		 * System.out.println(req.getPostBody());
-		 */
 
 		if (rownum == testPlan.size()) {
 			testPlan.add(req);
@@ -161,14 +161,32 @@ public class MainController implements Serializable {
 	}
 
 	@RequestMapping(value = "/httppostreq", method = RequestMethod.POST)
-	public @ResponseBody void home_page(
-			@ModelAttribute("SpringWeb") HttpRequest req, BindingResult result) {
-		System.out.println("inside post");
-		System.out.println(req.getHttpType());
+	public @ResponseBody void home_page(@RequestBody String tabdata,
+			BindingResult result) {
+		HttpRequest req = new HttpRequest();
+		JSONObject obj = new JSONObject(tabdata);
+		Integer rownum = obj.getInt("rownum");
+		req.setUrl(obj.getString("url"));
+		req.setHttpType(obj.getString("httpType"));
+		req.setPostBody(obj.getString("postBody"));
+		Map<String, String> postParamList = new HashMap<String, String>();
+
+		JSONArray paramtable = obj.getJSONArray("postParams");
+		for (int i = 0; i < paramtable.length(); ++i) {
+			JSONObject params = paramtable.getJSONObject(i);
+			postParamList.put(params.get("Param Name").toString(),
+					params.get("Param Value").toString());
+
+		}
+		req.setPostParamList(postParamList);
 		/*
-		 * if (rownum == testPlan.size()) { testPlan.add(req);
-		 * httpreqlist.add(rownum); } else testPlan.set(rownum, req);
+		 * System.out.println(req.getHttpType());
 		 */
+		if (rownum == testPlan.size()) {
+			testPlan.add(req);
+			httpreqlist.add(rownum);
+		} else
+			testPlan.set(rownum, req);
 
 		// TestPlan.displayPlan();
 
@@ -206,7 +224,7 @@ public class MainController implements Serializable {
 			@ModelAttribute("SpringWeb") TestPlan newTestPlan) {
 		newTestPlan.setTestPlan(testPlan);
 		newTestPlan.setHttpreqlist(httpreqlist);
-
+		System.out.println("Delay : "+newTestPlan.getStartDelay());
 		newTestPlan.displayPlan();
 		/*
 		 * for(int i=0;i<httpreqlist.size();i++)
@@ -452,9 +470,9 @@ public class MainController implements Serializable {
 			logger.info("Current Total Request Rate : " + currMaxReqRate);
 			currrateindex = 0;
 			List<TestPlan> newtestPlans = new ArrayList<TestPlan>();
-			for (int i=0;i<testPlans.size();i++){
-				TestPlan copycurtest=copyTestPlan(testPlans.get(i));
-				
+			for (int i = 0; i < testPlans.size(); i++) {
+				TestPlan copycurtest = copyTestPlan(testPlans.get(i));
+
 				newtestPlans.add(copycurtest);
 			}
 			// newtestPlans=testPlans;
@@ -468,18 +486,19 @@ public class MainController implements Serializable {
 			testPlanslist.add(newtestPlans);
 
 		}
-		int num=1;
+		int num = 1;
 		/* Fiber<Void> testplansfiber = new Fiber<Void>(() -> { */
 		for (List<TestPlan> currtestPlans : testPlanslist) {
-			System.out.println("Epoch Number : "+ num);
-			logger.info("Epoch Number : "+ num);
+			System.out.println("Epoch Number : " + num);
+			logger.info("Epoch Number : " + num);
 
 			num++;
 			for (TestPlan currtestplan : currtestPlans) {
 				if (test) {
-				/*	System.out.println("outside testplan");
-					currtestplan.displayPlan();
-					System.out.println("");*/
+					/*
+					 * System.out.println("outside testplan");
+					 * currtestplan.displayPlan(); System.out.println("");
+					 */
 					/*
 					 * System.out.println("Testplan" + filecount);
 					 * 
@@ -496,19 +515,20 @@ public class MainController implements Serializable {
 					 * currtestplan.setDuration(randomtest.getEpoch());
 					 */
 					Fiber<Void> testplansfiber = new Fiber<Void>(() -> {
-						/*System.out.println("outside testplan");
-						currtestplan.displayPlan();
-						System.out.println("");*/
-						 //currrateindex++; 
+						/*
+						 * System.out.println("outside testplan");
+						 * currtestplan.displayPlan(); System.out.println("");
+						 */
+						// currrateindex++;
 
-						currtestplan.execute(null);
-					}).start();
+							currtestplan.execute(null);
+						}).start();
 				} else {
 					test = true;
 					break;
 				}
 			}
-			Fiber.sleep(randomtest.getEpoch()*1000);
+			Fiber.sleep(randomtest.getEpoch() * 1000);
 			logger.info("");
 		}
 		/* } ).start(); */
@@ -522,9 +542,10 @@ public class MainController implements Serializable {
 		}
 		System.out.println("Test Finished");
 	}
-	public TestPlan copyTestPlan(TestPlan orig){
-		TestPlan copy=new TestPlan();
-		copy.setDelay(orig.getDelay());
+
+	public TestPlan copyTestPlan(TestPlan orig) {
+		TestPlan copy = new TestPlan();
+		
 		copy.setDuration(orig.getDuration());
 		copy.setFilenum(orig.getFilenum());
 		copy.setHttpreqlist(orig.getHttpreqlist());
@@ -532,13 +553,14 @@ public class MainController implements Serializable {
 		copy.setStartDelay(orig.getStartDelay());
 		copy.setTestPlan(orig.getTestPlan());
 		return copy;
-		
+
 	}
-	/*public static List<TestPlan> cloneList(List<TestPlan> list) {
-	    List<TestPlan> clone = new ArrayList<TestPlan>(list.size());
-	    for(TestPlan item: list) clone.add((TestPlan) item.clone());
-	    return clone;
-	}*/
+
+	/*
+	 * public static List<TestPlan> cloneList(List<TestPlan> list) {
+	 * List<TestPlan> clone = new ArrayList<TestPlan>(list.size()); for(TestPlan
+	 * item: list) clone.add((TestPlan) item.clone()); return clone; }
+	 */
 	@RequestMapping(value = "/randomfileloadgen", method = RequestMethod.POST)
 	public void execute() throws SuspendExecution, InterruptedException {
 
@@ -580,9 +602,9 @@ public class MainController implements Serializable {
 			logger.info("Current Total Request Rate : " + currMaxReqRate);
 			currrateindex = 0;
 			List<TestPlan> newtestPlans = new ArrayList<TestPlan>();
-			for (int i=0;i<testPlans.size();i++){
-				TestPlan copycurtest=copyTestPlan(testPlans.get(i));
-				
+			for (int i = 0; i < testPlans.size(); i++) {
+				TestPlan copycurtest = copyTestPlan(testPlans.get(i));
+
 				newtestPlans.add(copycurtest);
 			}
 			// newtestPlans=testPlans;
@@ -596,18 +618,19 @@ public class MainController implements Serializable {
 			testPlanslist.add(newtestPlans);
 
 		}
-		int num=1;
+		int num = 1;
 		/* Fiber<Void> testplansfiber = new Fiber<Void>(() -> { */
 		for (List<TestPlan> currtestPlans : testPlanslist) {
-			System.out.println("Epoch Number : "+ num);
-			logger.info("Epoch Number : "+ num);
+			System.out.println("Epoch Number : " + num);
+			logger.info("Epoch Number : " + num);
 
 			num++;
 			for (TestPlan currtestplan : currtestPlans) {
 				if (test) {
-				/*	System.out.println("outside testplan");
-					currtestplan.displayPlan();
-					System.out.println("");*/
+					/*
+					 * System.out.println("outside testplan");
+					 * currtestplan.displayPlan(); System.out.println("");
+					 */
 					/*
 					 * System.out.println("Testplan" + filecount);
 					 * 
@@ -624,19 +647,20 @@ public class MainController implements Serializable {
 					 * currtestplan.setDuration(randomtest.getEpoch());
 					 */
 					Fiber<Void> testplansfiber = new Fiber<Void>(() -> {
-						/*System.out.println("outside testplan");
-						currtestplan.displayPlan();
-						System.out.println("");*/
-						 //currrateindex++; 
+						/*
+						 * System.out.println("outside testplan");
+						 * currtestplan.displayPlan(); System.out.println("");
+						 */
+						// currrateindex++;
 
-						currtestplan.execute(null);
-					}).start();
+							currtestplan.execute(null);
+						}).start();
 				} else {
 					test = true;
 					break;
 				}
 			}
-			Fiber.sleep(randomtest.getEpoch()*1000);
+			Fiber.sleep(randomtest.getEpoch() * 1000);
 			logger.info("");
 		}
 		/* } ).start(); */

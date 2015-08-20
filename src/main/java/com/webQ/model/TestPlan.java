@@ -27,7 +27,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 
 	private Integer filenum;
 
-	private Integer delay = 0;
+	
 	private Integer startDelay = 0;
 	/*
 	 * public HttpResponse response; public Map<String, List<String>> regexmap =
@@ -99,14 +99,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 		this.startDelay = startDelay;
 	}
 
-	public Integer getDelay() {
-		return delay;
-	}
-
-	public void setDelay(Integer delay) {
-		this.delay = delay;
-	}
-
+	
 	public void displayPlan() {
 		int type;
 		System.out.println("TestPlan Details");

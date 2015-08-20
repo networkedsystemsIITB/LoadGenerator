@@ -1,11 +1,10 @@
 $(function() {
 
 	/* Clones */
-	
+
 	var homeClone = $("#home").clone();
 	var paramsClone = $("#params").clone();
 	var featuresClone = $("#features").clone();
-	
 
 	/* count for id creation */
 
@@ -14,7 +13,7 @@ $(function() {
 	$('#logo').click(function() {
 		location.reload();
 		$("#home").replaceWith(homeClone.clone());
-		
+
 	});
 
 	$('#normaltest').click(function() {
@@ -124,7 +123,7 @@ $(function() {
 		SaveNormalPlan();
 
 	});
-	
+
 	$('#saverandomtestplan').click(function() {
 
 		$('#features').hide();
@@ -141,7 +140,19 @@ $(function() {
 		SaveRandomPlan();
 
 	});
+	
+	/*$(':checkbox').change(function() {
 
+		// do stuff here. It will fire on any checkbox change
+
+		alert("hi");
+		if ($("#delay").prop('checked') == true) {
+			$('#delaybox').show();
+		} else {
+			$('#delaybox').hide();
+		}
+	});
+*/
 	$("#normaluploadForm").submit(function(event) {
 		event.preventDefault();
 
@@ -229,6 +240,12 @@ $(function() {
 	 id.hide();
 	 }
 	 }*/
+	/*function delaySelect(){*/
+	/*$('#delay').change(function () {*/
+
+	function checkChange(){
+		alert("diiii");
+	}
 	function SaveNormalPlan() {
 
 		var tab = $("#normalparamtable");
@@ -236,13 +253,22 @@ $(function() {
 				"td:nth-child(2)").children("input:nth-child(1)").val();
 		var duration = tab.children().children("tr:nth-child(3)").children(
 				"td:nth-child(2)").children("input:nth-child(1)").val();
+		if ($("#delay").prop('checked') == true) {
+			var startDelay = tab.children().children("tr:nth-child(3)")
+					.children("td:nth-child(2)").children("input:nth-child(1)")
+					.val();
+		} else {
+			var startDelay = 0;
 
+		}
 		$.ajax({
 			type : "POST",
 			url : "/LoadGen/savenormaltestplan",
 			data : {
 				reqRate : reqrate,
-				duration : duration
+				duration : duration,
+				startDelay : startDelay
+
 			},
 			success : function(response) {
 				// we have the response
@@ -546,26 +572,29 @@ $(function() {
 								"textarea:nth-child(1)");
 				// alert(rawbody.val());
 				var tableparam = table.tableToJSON();
-			
+
 				var tabledata = {
-					"url " : tdUrl.html(),
+					"url" : tdUrl.html(),
 					"httpType" : httpType.val(),
 					"rownum" : par.index(),
-					"postBody" : rawbody.val()
-				
+					"postBody" : rawbody.val(),
+					"postParams" : tableparam
+
 				};
-				
+
 				$.toJSON(tabledata);
-		
-					var tabledatacomb = tableparam.concat(tabledata);
-					
+				alert(JSON.stringify(tabledata));
+				/*var tabledatacomb = tableparam.concat(tabledata);
+				alert(JSON.stringify(tabledatacomb));
+				var tabdata = JSON.stringify(tabledatacomb);*/
 				/* alert(JSON.stringify(tabledata)); */
 				$.ajax({
 					type : "POST",
 					url : "/LoadGen/httppostreq",
+					contentType : 'application/json; charset=utf-8',
 					dataType : 'json',
 
-					data : JSON.stringify(tabledatacomb),
+					data : JSON.stringify(tabledata),
 
 					success : function(response) {
 						// we have the response
@@ -787,10 +816,10 @@ $(function() {
 			}
 		});
 
-	};
-	
+	}
+	;
+
 	function RandomFileStart() {
-		
 
 		$('#start').hide();
 		$('#stop').show();
@@ -798,7 +827,6 @@ $(function() {
 		$.ajax({
 			type : "POST",
 			url : "/LoadGen/randomfileloadgen",
-		
 
 			success : function(response) {
 				// we have the response
