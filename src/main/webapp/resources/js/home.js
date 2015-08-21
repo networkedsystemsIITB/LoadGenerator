@@ -228,7 +228,6 @@ $(function() {
 	$('input[type=file]').bootstrapFileInput();
 	$('.file-inputs').bootstrapFileInput();
 
-	event.preventDefault();
 
 	/*	function getval(sel) {
 
@@ -243,20 +242,19 @@ $(function() {
 	/*function delaySelect(){*/
 	/*$('#delay').change(function () {*/
 
-	function checkChange(){
-		alert("diiii");
-	}
-	function SaveNormalPlan() {
 
+	function SaveNormalPlan() {
+		alert("hai");
 		var tab = $("#normalparamtable");
 		var reqrate = tab.children().children("tr:nth-child(2)").children(
 				"td:nth-child(2)").children("input:nth-child(1)").val();
 		var duration = tab.children().children("tr:nth-child(3)").children(
 				"td:nth-child(2)").children("input:nth-child(1)").val();
 		if ($("#delay").prop('checked') == true) {
-			var startDelay = tab.children().children("tr:nth-child(3)")
+			var startDelay = tab.children().children("tr:nth-child(4)")
 					.children("td:nth-child(2)").children("input:nth-child(1)")
 					.val();
+			/*#normalparamtable > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)*/
 		} else {
 			var startDelay = 0;
 
@@ -285,8 +283,7 @@ $(function() {
 			}
 		});
 
-	}
-	;
+	};
 	function SaveRandomPlan() {
 
 		$.ajax({
@@ -958,3 +955,10 @@ $(function() {
 	}
 	;
 });
+function checkChange() {
+	if ($("#delay").prop('checked') == true) {
+		$('#delaybox').show();
+	} else {
+		$('#delaybox').hide();
+	}
+};

@@ -224,6 +224,7 @@ public class MainController implements Serializable {
 			@ModelAttribute("SpringWeb") TestPlan newTestPlan) {
 		newTestPlan.setTestPlan(testPlan);
 		newTestPlan.setHttpreqlist(httpreqlist);
+		System.out.println("Duration : "+newTestPlan.getDuration());
 		System.out.println("Delay : "+newTestPlan.getStartDelay());
 		newTestPlan.displayPlan();
 		/*
