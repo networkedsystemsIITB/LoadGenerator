@@ -244,7 +244,7 @@ $(function() {
 
 
 	function SaveNormalPlan() {
-		alert("hai");
+	
 		var tab = $("#normalparamtable");
 		var reqrate = tab.children().children("tr:nth-child(2)").children(
 				"td:nth-child(2)").children("input:nth-child(1)").val();

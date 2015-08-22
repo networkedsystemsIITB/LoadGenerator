@@ -45,35 +45,35 @@ public class HttpRequest implements Feature, Serializable {
 	private String httpType;
 	private String postBody;
 
-	public String getUrl() {
+	public String getUrl() throws SuspendExecution{
 		return url;
 	}
 
-	public void setUrl(String url) {
+	public void setUrl(String url)throws SuspendExecution {
 		this.url = url;
 	}
 
-	public Map<String, String> getPostParamList() {
+	public Map<String, String> getPostParamList()throws SuspendExecution {
 		return postParamList;
 	}
 
-	public void setPostParamList(Map<String, String> postParamList) {
+	public void setPostParamList(Map<String, String> postParamList) throws SuspendExecution{
 		this.postParamList = postParamList;
 	}
 
-	public String getHttpType() {
+	public String getHttpType()throws SuspendExecution {
 		return httpType;
 	}
 
-	public void setHttpType(String httpType) {
+	public void setHttpType(String httpType) throws SuspendExecution{
 		this.httpType = httpType;
 	}
 
-	public String getPostBody() {
+	public String getPostBody()throws SuspendExecution {
 		return postBody;
 	}
 
-	public void setPostBody(String postBody) {
+	public void setPostBody(String postBody)throws SuspendExecution {
 		this.postBody = postBody;
 	}
 

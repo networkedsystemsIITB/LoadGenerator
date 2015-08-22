@@ -23,11 +23,11 @@ public class ConstantTimer implements Feature,Serializable {
 
 	private String time;
 
-	public String getTime() {
+	public String getTime() throws SuspendExecution{
 		return time;
 	}
 
-	public void setTime(String time) {
+	public void setTime(String time) throws SuspendExecution {
 		this.time = time;
 	}
 

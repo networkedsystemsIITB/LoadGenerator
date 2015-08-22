@@ -3,6 +3,8 @@ package com.webQ.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.paralleluniverse.fibers.SuspendExecution;
+
 public class Test {
 
 
@@ -13,37 +15,37 @@ public class Test {
 
 
 	private List<TestPlan> testPlans = new ArrayList<TestPlan>();
-	public Integer getMaxreqRate() {
+	public Integer getMaxreqRate() throws SuspendExecution{
 		return maxreqRate;
 	}
 
-	public void setMaxreqRate(Integer maxreqRate) {
+	public void setMaxreqRate(Integer maxreqRate)throws SuspendExecution {
 		this.maxreqRate = maxreqRate;
 	}
 
-	public Integer getMaxduration() {
+	public Integer getMaxduration() throws SuspendExecution{
 		return maxduration;
 	}
 
-	public void setMaxduration(Integer maxduration) {
+	public void setMaxduration(Integer maxduration) throws SuspendExecution{
 		this.maxduration = maxduration;
 	}
 
-	public Integer getEpoch() {
+	public Integer getEpoch()throws SuspendExecution {
 		return epoch;
 	}
 
-	public void setEpoch(Integer epoch) {
+	public void setEpoch(Integer epoch) throws SuspendExecution{
 		this.epoch = epoch;
 	}
 
 
 	
-	public List<TestPlan> getTestPlans() {
+	public List<TestPlan> getTestPlans() throws SuspendExecution {
 		return testPlans;
 	}
 
-	public void setTestPlans(List<TestPlan> testPlans) {
+	public void setTestPlans(List<TestPlan> testPlans) throws SuspendExecution {
 		this.testPlans = testPlans;
 	}
 

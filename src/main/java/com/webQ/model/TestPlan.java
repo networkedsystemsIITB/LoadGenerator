@@ -51,56 +51,56 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 	public TestPlan() {
 		// TODO Auto-generated constructor stub
 	}*/
-	public Integer getFilenum() {
+	public Integer getFilenum()throws SuspendExecution {
 		return filenum;
 	}
 
-	public void setFilenum(Integer filenum) {
+	public void setFilenum(Integer filenum)throws SuspendExecution {
 		this.filenum = filenum;
 	}
 
-	public List<Object> getTestPlan() {
+	public List<Object> getTestPlan()throws SuspendExecution {
 		return testPlan;
 	}
 
-	public void setTestPlan(List<Object> testPlan) {
+	public void setTestPlan(List<Object> testPlan) throws SuspendExecution{
 		this.testPlan = testPlan;
 	}
 
-	public List<Integer> getHttpreqlist() {
+	public List<Integer> getHttpreqlist()throws SuspendExecution {
 		return httpreqlist;
 	}
 
-	public void setHttpreqlist(List<Integer> httpreqlist) {
+	public void setHttpreqlist(List<Integer> httpreqlist) throws SuspendExecution{
 		this.httpreqlist = httpreqlist;
 	}
 
-	public Integer getReqRate() {
+	public Integer getReqRate() throws SuspendExecution{
 		return reqRate;
 	}
 
-	public void setReqRate(Integer reqRate) {
+	public void setReqRate(Integer reqRate)throws SuspendExecution {
 		this.reqRate = reqRate;
 	}
 
-	public Integer getDuration() {
+	public Integer getDuration()throws SuspendExecution {
 		return duration;
 	}
 
-	public void setDuration(Integer duration) {
+	public void setDuration(Integer duration) throws SuspendExecution {
 		this.duration = duration;
 	}
 
-	public Integer getStartDelay() {
+	public Integer getStartDelay() throws SuspendExecution{
 		return startDelay;
 	}
 
-	public void setStartDelay(Integer startDelay) {
+	public void setStartDelay(Integer startDelay) throws SuspendExecution{
 		this.startDelay = startDelay;
 	}
 
 	
-	public void displayPlan() {
+	public void displayPlan() throws SuspendExecution{
 		int type;
 		System.out.println("TestPlan Details");
 		System.out.println("");
@@ -187,6 +187,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 		 * System.out.println("Duration : "+ duration);
 		 * System.out.println("Reqrate : "+ reqRate);
 		 */
+		Fiber.sleep(this.getStartDelay()*1000);
 		for (int i = 0; i < this.duration && MainController.test; ++i) {
 
 			for (int j = 0; j < this.reqRate && MainController.test; ++j) {

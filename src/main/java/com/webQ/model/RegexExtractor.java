@@ -16,19 +16,19 @@ public class RegexExtractor implements Feature,Serializable {
 	private String regex;
 	private String refName;
 
-	public String getRefName() {
+	public String getRefName()throws SuspendExecution {
 		return refName;
 	}
 
-	public void setRefName(String refName) {
+	public void setRefName(String refName) throws SuspendExecution{
 		this.refName = refName;
 	}
 
-	public String getRegex() {
+	public String getRegex() throws SuspendExecution{
 		return regex;
 	}
 
-	public void setRegex(String regex) {
+	public void setRegex(String regex) throws SuspendExecution {
 		this.regex = regex;
 	}
 

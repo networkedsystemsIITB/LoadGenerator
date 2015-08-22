@@ -145,19 +145,19 @@
 							type='text' class='form-control' placeholder='Enter Duration'
 							value="" /></td>
 					</tr>
-					<tr>
+					<tr style="height:50px;">
 						<td class='ui-helper-center' style='vertical-align: middle;'>
-							<div>
+							<nobr><div style='display: inline;'>
 								<input type="checkbox" name="delay" id="delay" onchange="checkChange();"
 									/>
-							</div>
-							<div style='display: inline;'>
+							
+							
 								<label class="control-label"> Delay TestPlan Start</label>
 							</div>
 						</td>
 						<td class='ui-helper-center' style='vertical-align: middle;'><input
 							type='text' id="delaybox" class='form-control'
-							placeholder='Enter Delay' value="" style="display: none" /></td>
+							placeholder='Enter Delay(secs)' value="" style="display: none" /></td>
 					</tr>
 
 				</table>

@@ -5,9 +5,9 @@ import co.paralleluniverse.fibers.SuspendExecution;
 import co.paralleluniverse.fibers.httpclient.FiberHttpClientBuilder;
 
 import com.webQ.Serializers.Serializer;
-import com.webQ.Validator.FileUploadValidator;
+
 import com.webQ.model.ConstantTimer;
-import com.webQ.model.FileUpload;
+
 import com.webQ.model.HttpRequest;
 import com.webQ.model.RegexExtractor;
 import com.webQ.model.Test;
@@ -85,16 +85,14 @@ public class MainController implements Serializable {
 	public static final CloseableHttpClient client = FiberHttpClientBuilder
 			.create(2).setMaxConnPerRoute(100).setMaxConnTotal(10).build();
 
-	FileUpload ufile;
-
 	@Autowired
-	public MainController(HelloWorldService helloWorldService) {
+	public MainController(HelloWorldService helloWorldService) throws SuspendExecution{
 		this.helloWorldService = helloWorldService;
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public ModelAndView home() {
-		ufile = new FileUpload();
+	public ModelAndView home() throws SuspendExecution {
+		
 		testPlans.clear();
 		testPlan.clear();
 		httpreqlist.clear();
@@ -120,9 +118,9 @@ public class MainController implements Serializable {
 	}
 
 	@RequestMapping(value = "/consttimer", method = RequestMethod.POST)
-	public @ResponseBody void home_page(
+	public @ResponseBody void home_page (
 			@ModelAttribute("SpringWeb") ConstantTimer timer,
-			@RequestParam("rownum") int rownum, BindingResult result) {
+			@RequestParam("rownum") int rownum, BindingResult result) throws SuspendExecution{
 		// System.out.println(rownum);
 		if (rownum == testPlan.size())
 			testPlan.add(timer);
@@ -135,7 +133,7 @@ public class MainController implements Serializable {
 	@RequestMapping(value = "/regexextractor", method = RequestMethod.POST)
 	public @ResponseBody void home_page(
 			@ModelAttribute("SpringWeb") RegexExtractor regexex,
-			@RequestParam("rownum") int rownum, BindingResult result) {
+			@RequestParam("rownum") int rownum, BindingResult result) throws SuspendExecution {
 		// System.out.println(rownum);
 		if (rownum == testPlan.size())
 			testPlan.add(regexex);
@@ -148,7 +146,7 @@ public class MainController implements Serializable {
 	@RequestMapping(value = "/httpgetreq", method = RequestMethod.POST)
 	public @ResponseBody void home_page(
 			@ModelAttribute("SpringWeb") HttpRequest req,
-			@RequestParam("rownum") int rownum, BindingResult result) {
+			@RequestParam("rownum") int rownum, BindingResult result) throws SuspendExecution{
 
 		if (rownum == testPlan.size()) {
 			testPlan.add(req);
@@ -162,7 +160,7 @@ public class MainController implements Serializable {
 
 	@RequestMapping(value = "/httppostreq", method = RequestMethod.POST)
 	public @ResponseBody void home_page(@RequestBody String tabdata,
-			BindingResult result) {
+			BindingResult result) throws SuspendExecution{
 		HttpRequest req = new HttpRequest();
 		JSONObject obj = new JSONObject(tabdata);
 		Integer rownum = obj.getInt("rownum");
@@ -193,7 +191,7 @@ public class MainController implements Serializable {
 	}
 
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)
-	public @ResponseBody void home_page(@RequestParam("rownum") int rownum) {
+	public @ResponseBody void home_page(@RequestParam("rownum") int rownum) throws SuspendExecution {
 		// System.out.println(rownum);
 		int flag = 0;
 		if (rownum < testPlan.size()) {
@@ -221,7 +219,7 @@ public class MainController implements Serializable {
 
 	@RequestMapping(value = "/savenormaltestplan", method = RequestMethod.POST)
 	public @ResponseBody void home_page(
-			@ModelAttribute("SpringWeb") TestPlan newTestPlan) {
+			@ModelAttribute("SpringWeb") TestPlan newTestPlan) throws SuspendExecution{
 		newTestPlan.setTestPlan(testPlan);
 		newTestPlan.setHttpreqlist(httpreqlist);
 		System.out.println("Duration : "+newTestPlan.getDuration());
@@ -241,7 +239,7 @@ public class MainController implements Serializable {
 
 	@RequestMapping(value = "/saverandomtestplan", method = RequestMethod.POST)
 	public @ResponseBody void home_page_random(
-			@ModelAttribute("SpringWeb") TestPlan newTestPlan) {
+			@ModelAttribute("SpringWeb") TestPlan newTestPlan) throws SuspendExecution{
 
 		newTestPlan.setTestPlan(testPlan);
 		newTestPlan.setHttpreqlist(httpreqlist);
@@ -544,7 +542,7 @@ public class MainController implements Serializable {
 		System.out.println("Test Finished");
 	}
 
-	public TestPlan copyTestPlan(TestPlan orig) {
+	public TestPlan copyTestPlan(TestPlan orig) throws SuspendExecution{
 		TestPlan copy = new TestPlan();
 		
 		copy.setDuration(orig.getDuration());
@@ -681,7 +679,7 @@ public class MainController implements Serializable {
 	 */
 	@RequestMapping(value = "/normaluploadFile", method = RequestMethod.POST)
 	public @ResponseBody String normaluploadFile(
-			@RequestParam("fileName") MultipartFile file) {
+			@RequestParam("fileName") MultipartFile file) throws SuspendExecution{
 
 		if (!file.isEmpty()) {
 			try {
@@ -726,7 +724,7 @@ public class MainController implements Serializable {
 
 	@RequestMapping(value = "/randomuploadFile", method = RequestMethod.POST)
 	public @ResponseBody String randomuploadFile(
-			@RequestParam("fileName") MultipartFile file) {
+			@RequestParam("fileName") MultipartFile file) throws SuspendExecution {
 		/*
 		 * System.out.println(getClass().getClassLoader().getResource(
 		 * "logging.properties"));
@@ -771,7 +769,7 @@ public class MainController implements Serializable {
 	}
 
 	@RequestMapping(value = "/normalsavetofile", method = RequestMethod.POST)
-	public @ResponseBody String normalsaveToFile() throws Exception {
+	public @ResponseBody String normalsaveToFile() throws Exception, SuspendExecution {
 		File downloadtest = new File(
 				"../../../LoadGen/resources/tmpFiles/test.xml");
 
@@ -788,7 +786,7 @@ public class MainController implements Serializable {
 
 	@RequestMapping(value = "/randomsavetofile", method = RequestMethod.POST)
 	public @ResponseBody String randomsaveToFile(
-			@ModelAttribute("SpringWeb") Test newTest) throws Exception {
+			@ModelAttribute("SpringWeb") Test newTest) throws Exception, SuspendExecution {
 		File downloadtest = new File(
 				"../../../LoadGen/resources/tmpFiles/test.xml");
 
@@ -804,13 +802,13 @@ public class MainController implements Serializable {
 	}
 
 	@RequestMapping(value = "/stop", method = RequestMethod.POST)
-	public @ResponseBody void stopTest() {
+	public @ResponseBody void stopTest() throws SuspendExecution{
 
 		test = false;
 
 	}
 
-	public static void deleteFolder(File folder) {
+	public static void deleteFolder(File folder) throws SuspendExecution{
 		File[] files = folder.listFiles();
 		if (files != null) { // some JVMs return null for empty dirs
 			for (File f : files) {
@@ -824,7 +822,7 @@ public class MainController implements Serializable {
 		folder.delete();
 	}
 
-	public static int randInt(int min, int max) {
+	public static int randInt(int min, int max)throws SuspendExecution {
 
 		// NOTE: Usually this should be a field rather than a method
 		// variable so that it is not re-seeded every call.
