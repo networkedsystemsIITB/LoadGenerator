@@ -549,6 +549,7 @@ public class MainController implements Serializable {
 	@RequestMapping(value = "/randomfileloadgen", method = RequestMethod.POST)
 	public void execute() throws SuspendExecution, InterruptedException {
 		test=true;
+		testPlans=randomtest.getTestPlans();
 		int rowstart=0;
 		
 		if (logger.isInfoEnabled()) {
@@ -726,6 +727,7 @@ public class MainController implements Serializable {
 		 * System.out.println(MainController.class.getClassLoader
 		 * ().getResource("logging.properties"));
 		 */
+		System.out.println("file upload");
 		if (!file.isEmpty()) {
 			try {
 				byte[] bytes = file.getBytes();
@@ -750,7 +752,7 @@ public class MainController implements Serializable {
 						.getAbsolutePath()
 						+ File.separator
 						+ file.getOriginalFilename());
-
+				System.out.println(randomtest.getTestPlans().size());
 				return "You successfully uploaded file="
 						+ file.getOriginalFilename();
 			} catch (Exception e) {
