@@ -10,21 +10,24 @@ import java.util.regex.Pattern;
 
 import co.paralleluniverse.fibers.SuspendExecution;
 
+import com.webQ.controller.MainController;
 import com.webQ.interfaces.Feature;
 
-public class RegexExtractor implements Feature,Serializable {
+public class RegexExtractor implements Feature, Serializable {
+
 	private String regex;
 	private String refName;
+	private Integer global;
 
-	public String getRefName()throws SuspendExecution {
+	public String getRefName() throws SuspendExecution {
 		return refName;
 	}
 
-	public void setRefName(String refName) throws SuspendExecution{
+	public void setRefName(String refName) throws SuspendExecution {
 		this.refName = refName;
 	}
 
-	public String getRegex() throws SuspendExecution{
+	public String getRegex() throws SuspendExecution {
 		return regex;
 	}
 
@@ -32,16 +35,22 @@ public class RegexExtractor implements Feature,Serializable {
 		this.regex = regex;
 	}
 
+	public Integer getGlobal() {
+		return global;
+	}
+
+	public void setGlobal(Integer global) {
+		this.global = global;
+	}
+
 	@Override
-	public void execute(Response resp) throws InterruptedException, SuspendExecution{
+	public void execute(Response resp) throws InterruptedException,
+			SuspendExecution {
 		// TODO Auto-generated method stub
 		Pattern p = Pattern.compile(this.regex);
 		Matcher m = p.matcher(resp.getResponse().toString());
-		Map<String, List<String>> regexmap=resp.getRegexmap();
-		
-		
-	
-		
+		Map<String, List<String>> regexmap = resp.getRegexmap();
+
 		List<String> allMatches = new ArrayList<String>();
 		if (m.find()) {
 
@@ -52,8 +61,14 @@ public class RegexExtractor implements Feature,Serializable {
 			}
 
 		}
-		/*System.out.println("List value "+allMatches);*/
-		regexmap.put(this.refName, allMatches);
+		System.out.println("regex list"+allMatches);
+		if (this.getGlobal() == 1) {
+			System.out.println("Inside global");
+			MainController.globalregexmap.put(this.refName, allMatches);
+		} else {
+			System.out.println("Inside local");
+			regexmap.put(this.refName, allMatches);
+		}
 
 		resp.setRegexmap(regexmap);
 	}

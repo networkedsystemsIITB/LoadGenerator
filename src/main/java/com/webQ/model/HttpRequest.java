@@ -18,6 +18,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
@@ -36,44 +37,45 @@ public class HttpRequest implements Feature, Serializable {
 
 	private String url;
 	private static final HttpContext BASIC_RESPONSE_HANDLER = null;
-	/*
-	 * final CloseableHttpClient client = FiberHttpClientBuilder.create(2)
-	 * .setMaxConnPerRoute(100).setMaxConnTotal(10).build();
-	 */
+	
+	 /* final CloseableHttpClient client = FiberHttpClientBuilder.create(2)
+	  .setMaxConnPerRoute(100).setMaxConnTotal(10).build();*/
+	 
 	private static final String USER_AGENT = null;
 	private Map<String, String> postParamList = new HashMap<String, String>();
 	private String httpType;
 	private String postBody;
 
-	public String getUrl() throws SuspendExecution{
+	public String getUrl() throws SuspendExecution {
 		return url;
 	}
 
-	public void setUrl(String url)throws SuspendExecution {
+	public void setUrl(String url) throws SuspendExecution {
 		this.url = url;
 	}
 
-	public Map<String, String> getPostParamList()throws SuspendExecution {
+	public Map<String, String> getPostParamList() throws SuspendExecution {
 		return postParamList;
 	}
 
-	public void setPostParamList(Map<String, String> postParamList) throws SuspendExecution{
+	public void setPostParamList(Map<String, String> postParamList)
+			throws SuspendExecution {
 		this.postParamList = postParamList;
 	}
 
-	public String getHttpType()throws SuspendExecution {
+	public String getHttpType() throws SuspendExecution {
 		return httpType;
 	}
 
-	public void setHttpType(String httpType) throws SuspendExecution{
+	public void setHttpType(String httpType) throws SuspendExecution {
 		this.httpType = httpType;
 	}
 
-	public String getPostBody()throws SuspendExecution {
+	public String getPostBody() throws SuspendExecution {
 		return postBody;
 	}
 
-	public void setPostBody(String postBody)throws SuspendExecution {
+	public void setPostBody(String postBody) throws SuspendExecution {
 		this.postBody = postBody;
 	}
 
@@ -82,18 +84,37 @@ public class HttpRequest implements Feature, Serializable {
 			SuspendExecution {
 		try {
 			String requrl = this.getUrl();
-			String regex = "\\$([A-Za-z]+)_([0-9]+)";
-			Pattern p = Pattern.compile(regex);
+			String localregex = "\\$([A-Za-z0-9]+)_([0-9]+)";
+			Pattern p = Pattern.compile(localregex);
 			Matcher m = p.matcher(requrl.toString());
+			String globalregex = "\\#([A-Za-z0-9]+)_([0-9]+)";
+			Pattern q = Pattern.compile(globalregex);
+			Matcher n = q.matcher(requrl.toString());
 			Map<String, List<String>> regexmap = resp.getRegexmap();
 
 			if (m.find()) {
+				System.out.println("inside http m");
 				String refname = m.group(1);
 				int index = Integer.parseInt(m.group(2));
 				for (Entry<String, List<String>> entry : regexmap.entrySet()) {
 					if (entry.getKey().equals(refname)) {
 
-						requrl = this.getUrl().replaceFirst(regex,
+						requrl = this.getUrl().replaceFirst(localregex,
+								entry.getValue().get(index - 1));
+
+						break;
+					}
+				}
+
+			} else if (n.find()) {
+				System.out.println("inside http n");
+				String refname = n.group(1);
+				int index = Integer.parseInt(n.group(2));
+				for (Entry<String, List<String>> entry : MainController.globalregexmap
+						.entrySet()) {
+					if (entry.getKey().equals(refname)) {
+
+						requrl = this.getUrl().replaceFirst(globalregex,
 								entry.getValue().get(index - 1));
 
 						break;
@@ -101,22 +122,23 @@ public class HttpRequest implements Feature, Serializable {
 				}
 
 			}
-
-			HttpResponse response = null;
+			//System.out.println("request " + requrl);
+		/*	CloseableHttpResponse response = null;*/
 
 			if (this.getHttpType() == "POST") {
 				HttpPost postrequest = new HttpPost(requrl);
 
 				if (this.getPostBody().length() == 0) {
 					List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-					for (Entry<String, String> entry : this.getPostParamList().entrySet()) {
-						
-					urlParameters.add(new
-							  BasicNameValuePair(entry.getKey(),entry.getValue()));
+					for (Entry<String, String> entry : this.getPostParamList()
+							.entrySet()) {
+
+						urlParameters.add(new BasicNameValuePair(
+								entry.getKey(), entry.getValue()));
 					}
 					postrequest.setEntity(new UrlEncodedFormEntity(
 							urlParameters));
-					
+
 				} else {
 					HttpEntity entity = new ByteArrayEntity(this.getPostBody()
 							.getBytes("UTF-8"));
@@ -125,19 +147,42 @@ public class HttpRequest implements Feature, Serializable {
 				}
 				System.out.println(Fiber.currentFiber().getName() + " "
 						+ requrl);
-				response = MainController.client.execute(postrequest,
+				CloseableHttpResponse response=null;
+				try  {
+					response= MainController.client.execute(postrequest);
+					System.out.println("Request: " + Fiber.currentFiber().getName()
+							+ " " + response.getStatusLine());
+					resp.setResponse(response);
+					} catch (final Throwable t) {
+						System.out.println("Exception in httppost");
+						resp.setResponse(response);
+					}
+				/*response = MainController.client.execute(postrequest,
 						BASIC_RESPONSE_HANDLER);
 				System.out.println("Request: " + Fiber.currentFiber().getName()
-						+ " " + response.getStatusLine());
+						+ " " + response.getStatusLine());*/
 			} else {
 				HttpGet getrequest = new HttpGet(requrl);
 				System.out.println(Fiber.currentFiber().getName() + " "
 						+ requrl);
-				response = MainController.client.execute(getrequest,
-						BASIC_RESPONSE_HANDLER);
-				System.out.println("Request: " + Fiber.currentFiber().getName()
+				CloseableHttpResponse response=null;
+				try {
+					response= MainController.client.execute(getrequest);
+					System.out.println("Request: " + Fiber.currentFiber().getName()
+							+ " " + response.getStatusLine());
+					resp.setResponse(response);
+					} catch (final Throwable t) {
+						System.out.println("Exception in httpget");
+						resp.setResponse(response);
+					}
+				/*MainController.client.wait();*/
+/*				 response = MainController.client.execute(getrequest);
+*/				
+				/*response = MainController.client.execute(getrequest,
+						BASIC_RESPONSE_HANDLER);*/
+				/*System.out.println("Request: " + Fiber.currentFiber().getName()
 						+ " " + response.getStatusLine());
-
+*/
 			}
 			/*
 			 * String xml = "<xml>xxxx</xml>"; HttpEntity entity = new
@@ -173,7 +218,7 @@ public class HttpRequest implements Feature, Serializable {
 			 * System.out.println("Request: " + Fiber.currentFiber().getName() +
 			 * " " +response.getFirstHeader("Jmeter"));
 			 */
-			resp.setResponse(response);
+			
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -6,8 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"
 	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- <script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
+	<script src="resources/js/jquery-1.11.3.min.js"></script>
 <script
 	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <link rel="stylesheet"
@@ -40,8 +41,7 @@
 				<input id="logo" type="image" src="resources/images/heading.png"
 					alt="Home">
 			</div>
-			<br>
-			<br>
+			<br> <br>
 
 			<div id="testtypes" class="row">
 				<input id="normaltest" type="image"
@@ -145,14 +145,12 @@
 							type='text' class='form-control' placeholder='Enter Duration'
 							value="" /></td>
 					</tr>
-					<tr style="height:50px;">
+					<tr style="height: 50px;">
 						<td class='ui-helper-center' style='vertical-align: middle;'>
-							<nobr><div style='display: inline;'>
-								<input type="checkbox" name="delay" id="delay" onchange="checkChange();"
-									/>
-							
-							
-								<label class="control-label"> Delay TestPlan Start</label>
+							<div style='display: inline;'>
+								<input type="checkbox" name="delay" id="delay"
+									onchange="checkChange();" /> <label
+									class="control-label"> Delay TestPlan Start</label>
 							</div>
 						</td>
 						<td class='ui-helper-center' style='vertical-align: middle;'><input
@@ -197,7 +195,7 @@
 
 
 
-                   
+
 				</table>
 
 
@@ -340,13 +338,23 @@
 			</div>
 
 
+
+			<div class="row">
+				<div id="output" class="col-lg-13 well" style="display: none">
+					<%-- <table>
+  <c:forEach items="${output}" var="product">
+    <tr>
+      <td><c:out value="${output.request}" /></td>
+      <td><c:out value="${output.inputload}" /></td>
+    </tr>
+  </c:forEach>
+</table> --%>
+				</div>
+			</div>
 			<div class="row">
 				<div class="col-lg-4">
 					<div id="status" class="well" style="display: none"></div>
 				</div>
-			</div>
-			<div class="row">
-				<div id="output" class="col-lg-11 well" style="display: none"></div>
 			</div>
 
 		</center>

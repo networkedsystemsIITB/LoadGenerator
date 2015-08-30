@@ -431,28 +431,20 @@ $(function() {
 	;
 	function AddRegexEx() {
 		$('#testtable').show();
-		var addRow = "<tr><td style='vertical-align: middle;'><label class='control-label'>Regex Extractor</label></td>"
+		var addRow = "<tr><td style='vertical-align: middle;'><label class='control-label'>Regex Extractor</label><div >"+
+								"<input type='checkbox' name='globalregex' id='globalregex'/>"+
+
+								"<label class='control-label'> Global Regex</label>"+
+							"</div></td>"
 				+ "<td><table id='regextable' cellpadding='10' cellspacing='10' width='100%'>"
 				+ "<tr><td class='ui-helper-center'><b>Reference Name</b>"
 				+ "</td><td class='ui-helper-center'><b>Regex</b></td></tr>"
 				+ "<tr><td class='ui-helper-center'><input type='text' class='form-control' placeholder='Enter Reference Name'/>"
 				+ "</td><td class='ui-helper-center'><input type='text' class='form-control' placeholder='Enter Regex'/></td></tr></table></td>"
 				+ "<td style='vertical-align: middle;'><input type='image' src='resources/images/save.jpeg' width=25 height=25 class='btnSave'><input type='image' src='resources/images/delete.png' width=25 height=25 class='btnDelete'/></td></tr>";
-		/* $('#ttable tr:last').after(addRow); */
+		
 		$('#ttable > tbody:last-child').append(addRow);
-		/*
-		 * > tbody:last-child'
-		 *//*
-		 * $("#ttable tbody") .append( "<tr>" + "<td><label
-		 * class='control-label'>Regex Extractor</label></td>" + "<td><div><input
-		 * type='text' class='form-control' placeholder='Enter Reference
-		 * Name'/></div><div style='display:inline;'><input type='text'
-		 * class='form-control' placeholder='Enter Regex' /></div></td>" + "<td><input
-		 * type='image' src='resources/images/save.jpeg' width=25 height=25
-		 * class='btnSave'><input type='image'
-		 * src='resources/images/delete.png' width=25 height=25
-		 * class='btnDelete'/></td>" + "</tr>");
-		 */
+		
 		$(".btnSave").off().on("click", Save);
 		$(".btnDelete").off().on("click", Delete);
 
@@ -654,7 +646,14 @@ $(function() {
 			var tdRegex = par.children("td:nth-child(2)").children().children(
 					"tbody:nth-child(1)").children("tr:nth-child(2)").children(
 					"td:nth-child(2)");
-
+			
+			var global=par.children("td:nth-child(1)").children("div:nth-child(2)").children("input:nth-child(1)");
+			var globalvalue;
+			if (global.prop('checked') == true) {
+				globalvalue=1;
+			} else {
+				globalvalue=0;
+			}
 			tdRegexName.html(tdRegexName.children("input[type=text]").val());
 			tdRegex.html(tdRegex.children("input[type=text]").val());
 
@@ -664,6 +663,7 @@ $(function() {
 				data : {
 					refName : tdRegexName.html(),
 					regex : tdRegex.html(),
+					global : globalvalue,
 					rownum : par.index()
 				},
 				success : function(response) {
@@ -753,8 +753,11 @@ $(function() {
 	function NormalStart() {
 		$('#start').hide();
 		$('#stop').show();
+		$('#addnormaltestplan').hide();
 
 		$("#stop").off().on("click", NormalStop);
+		$('#output').show();
+		output();
 		$.ajax({
 			type : "POST",
 			url : "/LoadGen/normalloadgen",
@@ -788,6 +791,9 @@ $(function() {
 		$('#start').hide();
 		$('#stop').show();
 		$("#stop").off().on("click", RandomStop);
+		$('#output').show();
+		$('#addrandomtestplan').hide();
+		output();
 		$.ajax({
 			type : "POST",
 			url : "/LoadGen/randomloadgen",
@@ -821,6 +827,9 @@ $(function() {
 		$('#start').hide();
 		$('#stop').show();
 		$("#stop").off().on("click", RandomStop);
+		$('#addrandomtestplan').hide();
+		$('#output').show();
+		output();
 		$.ajax({
 			type : "POST",
 			url : "/LoadGen/randomfileloadgen",
@@ -962,3 +971,19 @@ function checkChange() {
 		$('#delaybox').hide();
 	}
 };
+function output() {
+	
+	  $.ajax({
+		type : "POST",
+	    url: '/LoadGen/output', 
+	    dataType: "HTML",
+	    success: function(data) {
+	    	
+	      $('#output').html(data);
+	    },
+	    complete: function() {
+	      // Schedule the next request when the current one's complete
+	      setTimeout(output, 1000);
+	    }
+	  });
+	};
