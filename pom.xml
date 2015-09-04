@@ -276,7 +276,7 @@
                 -Xmixed
                 -XX:+TieredCompilation
                 -XX:+AggressiveOpts
-                -Xmx10G
+                -Xmx30G
 
                 -Dwar.location="${project.build.directory}/comsat-testprj-1.0-SNAPSHOT.war"
 

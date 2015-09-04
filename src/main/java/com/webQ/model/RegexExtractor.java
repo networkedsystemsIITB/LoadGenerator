@@ -61,12 +61,12 @@ public class RegexExtractor implements Feature, Serializable {
 			}
 
 		}
-		System.out.println("regex list"+allMatches);
+		//System.out.println("regex list"+allMatches);
 		if (this.getGlobal() == 1) {
-			System.out.println("Inside global");
+			//System.out.println("Inside global");
 			MainController.globalregexmap.put(this.refName, allMatches);
 		} else {
-			System.out.println("Inside local");
+			//System.out.println("Inside local");
 			regexmap.put(this.refName, allMatches);
 		}
 

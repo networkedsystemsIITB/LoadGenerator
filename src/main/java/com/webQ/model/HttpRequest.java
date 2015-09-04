@@ -93,7 +93,7 @@ public class HttpRequest implements Feature, Serializable {
 			Map<String, List<String>> regexmap = resp.getRegexmap();
 
 			if (m.find()) {
-				System.out.println("inside http m");
+				//System.out.println("inside http m");
 				String refname = m.group(1);
 				int index = Integer.parseInt(m.group(2));
 				for (Entry<String, List<String>> entry : regexmap.entrySet()) {
@@ -107,7 +107,7 @@ public class HttpRequest implements Feature, Serializable {
 				}
 
 			} else if (n.find()) {
-				System.out.println("inside http n");
+				//System.out.println("inside http n");
 				String refname = n.group(1);
 				int index = Integer.parseInt(n.group(2));
 				for (Entry<String, List<String>> entry : MainController.globalregexmap
@@ -145,13 +145,13 @@ public class HttpRequest implements Feature, Serializable {
 					postrequest.setEntity(entity);
 					postrequest.setHeader("User-Agent", USER_AGENT);
 				}
-				System.out.println(Fiber.currentFiber().getName() + " "
-						+ requrl);
+				/*System.out.println(Fiber.currentFiber().getName() + " "
+						+ requrl);*/
 				CloseableHttpResponse response=null;
 				try  {
 					response= MainController.client.execute(postrequest);
-					System.out.println("Request: " + Fiber.currentFiber().getName()
-							+ " " + response.getStatusLine());
+					/*System.out.println("Request: " + Fiber.currentFiber().getName()
+							+ " " + response.getStatusLine());*/
 					resp.setResponse(response);
 					} catch (final Throwable t) {
 						System.out.println("Exception in httppost");

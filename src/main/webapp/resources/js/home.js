@@ -9,6 +9,7 @@ $(function() {
 	/* count for id creation */
 
 	var hrefcount = 0;
+	var saved = true;
 
 	$('#logo').click(function() {
 		location.reload();
@@ -140,19 +141,14 @@ $(function() {
 		SaveRandomPlan();
 
 	});
-	
-	/*$(':checkbox').change(function() {
 
-		// do stuff here. It will fire on any checkbox change
-
-		alert("hi");
-		if ($("#delay").prop('checked') == true) {
-			$('#delaybox').show();
-		} else {
-			$('#delaybox').hide();
-		}
-	});
-*/
+	/*
+	 * $(':checkbox').change(function() {
+	 *  // do stuff here. It will fire on any checkbox change
+	 * 
+	 * alert("hi"); if ($("#delay").prop('checked') == true) {
+	 * $('#delaybox').show(); } else { $('#delaybox').hide(); } });
+	 */
 	$("#normaluploadForm").submit(function(event) {
 		event.preventDefault();
 
@@ -228,23 +224,18 @@ $(function() {
 	$('input[type=file]').bootstrapFileInput();
 	$('.file-inputs').bootstrapFileInput();
 
-
-	/*	function getval(sel) {
-
-	 var id = sel.parents('tr:first').children("td:nth-child(2)").children(
-	 "div:nth-child(2)");
-	 if (this.value === "POST") {
-	 id.show();
-	 } else {
-	 id.hide();
-	 }
-	 }*/
-	/*function delaySelect(){*/
-	/*$('#delay').change(function () {*/
-
+	/*
+	 * function getval(sel) {
+	 * 
+	 * var id = sel.parents('tr:first').children("td:nth-child(2)").children(
+	 * "div:nth-child(2)"); if (this.value === "POST") { id.show(); } else {
+	 * id.hide(); } }
+	 */
+	/* function delaySelect(){ */
+	/* $('#delay').change(function () { */
 
 	function SaveNormalPlan() {
-	
+
 		var tab = $("#normalparamtable");
 		var reqrate = tab.children().children("tr:nth-child(2)").children(
 				"td:nth-child(2)").children("input:nth-child(1)").val();
@@ -254,7 +245,10 @@ $(function() {
 			var startDelay = tab.children().children("tr:nth-child(4)")
 					.children("td:nth-child(2)").children("input:nth-child(1)")
 					.val();
-			/*#normalparamtable > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)*/
+			/*
+			 * #normalparamtable > tbody:nth-child(1) > tr:nth-child(4) >
+			 * td:nth-child(2) > input:nth-child(1)
+			 */
 		} else {
 			var startDelay = 0;
 
@@ -283,7 +277,8 @@ $(function() {
 			}
 		});
 
-	};
+	}
+	;
 	function SaveRandomPlan() {
 
 		$.ajax({
@@ -309,144 +304,169 @@ $(function() {
 	;
 
 	function AddHttpReq() {
-		$('#testtable').show();
-		/* onchange='getval(this);' */
-		var uniq1 = hrefcount++;
+		if (saved === true) {
+			$('#testtable').show();
+			/* onchange='getval(this);' */
+			var uniq1 = hrefcount++;
 
-		var uniq2 = hrefcount++;
-		var uniq3 = hrefcount++;
+			var uniq2 = hrefcount++;
+			var uniq3 = hrefcount++;
 
-		var uniq4 = hrefcount++;
-		var addRow = "<tr><td style='vertical-align: middle;'><label class='control-label'>Http Request</label>&nbsp;&nbsp;<select id='reqtype' class='form-control' "
-				+ "style='max-width:40%; display:inline;'><option value='GET' selected>GET</option><option value='POST'>POST</option></select></td>"
-				+ "<td><div id='urlbox' class='ui-helper-center'><input type='text' class='form-control' placeholder='Enter URL'/></div>"
-				+ "<div id='postparams' style='display: none'>"
-				+
+			var uniq4 = hrefcount++;
+			var addRow = "<tr><td style='vertical-align: middle;'><label class='control-label'>Http Request</label>&nbsp;&nbsp;<select id='reqtype' class='form-control' "
+					+ "style='max-width:40%; display:inline;'><option value='GET' selected>GET</option><option value='POST'>POST</option></select></td>"
+					+ "<td><div id='urlbox' class='ui-helper-center'><input type='text' class='form-control' placeholder='Enter URL'/></div>"
+					+ "<div id='postparams' style='display: none'>"
+					+
 
-				"<ul class='nav nav-tabs'>"
-				+ "<li class='active'><a id ='a1' data-toggle='tab' href=''>POST Params</a></li>"
-				+ "<li><a id='a2' data-toggle='tab' href='' >POST Body</a></li>"
-				+ "</ul>"
-				+
+					"<ul class='nav nav-tabs'>"
+					+ "<li class='active'><a id ='a1' data-toggle='tab' href=''>POST Params</a></li>"
+					+ "<li><a id='a2' data-toggle='tab' href='' >POST Body</a></li>"
+					+ "</ul>"
+					+
 
-				"<div class='tab-content'>"
-				+ "<div id='div1' class='tab-pane fade in active'>"
-				+ "<table cellpadding='10' cellspacing='10' width='100%' >"
-				+ "<tr><td class='ui-helper-center'><b>Param Name</b>"
-				+ "</td><td class='ui-helper-center'><b>Param Value</b></td></tr>"
-				+ "</table>"
-				+ "<input type='image' class='parAdd' src='resources/images/plus.png' width=25 height=25>"
-				+ "</div>"
-				+ "<div id='div2' class='tab-pane fade'>"
-				+ "<textarea width='100%' cols='42' rows='5' name='postdata'>"
-				+ "</textarea>"
-				+ "</div>"
-				+
+					"<div class='tab-content'>"
+					+ "<div id='div1' class='tab-pane fade in active'>"
+					+ "<table cellpadding='10' cellspacing='10' width='100%' >"
+					+ "<tr><td class='ui-helper-center'><b>Param Name</b>"
+					+ "</td><td class='ui-helper-center'><b>Param Value</b></td></tr>"
+					+ "</table>"
+					+ "<input type='image' class='parAdd' src='resources/images/plus.png' width=25 height=25>"
+					+ "</div>"
+					+ "<div id='div2' class='tab-pane fade'>"
+					+ "<textarea width='100%' cols='42' rows='5' name='postdata'>"
+					+ "</textarea>"
+					+ "</div>"
+					+
 
-				"</div>"
-				+ "</div>"
-				+
+					"</div>"
+					+ "</div>"
+					+
 
-				"</td><td style='vertical-align: middle;'><input type='image' src='resources/images/save.jpeg' width=25 height=25 class='btnSave'>"
-				+ "<input type='image' src='resources/images/delete.png' width=25 height=25 class='btnDelete'/></td></tr>";
-		/* $('#ttable tr:last').after(addRow); */
+					"</td><td style='vertical-align: middle;'><input type='image' src='resources/images/save.jpeg' width=25 height=25 class='btnSave'>"
+					+ "<input type='image' src='resources/images/delete.png' width=25 height=25 class='btnDelete'/></td></tr>";
+			/* $('#ttable tr:last').after(addRow); */
 
-		$('#ttable > tbody:last-child').append(addRow);
-		$(".parAdd").off().on("click", AddParam);
-		$(".parDelete").off().on("click", DeleteParam);
-		/* $(".parEdit").off().on("click", EditParam); */
-		$(".parSave").off().on("click", SaveParam);
+			$('#ttable > tbody:last-child').append(addRow);
+			$(".parAdd").off().on("click", AddParam);
+			$(".parDelete").off().on("click", DeleteParam);
+			/* $(".parEdit").off().on("click", EditParam); */
+			$(".parSave").off().on("click", SaveParam);
 
-		$('#div1').attr("id", uniq1);
-		$('#div2').attr("id", uniq2);
-		$('#a1').attr("id", uniq3);
-		$('#a2').attr("id", uniq4);
-		var url1 = '#' + uniq1;
-		var url2 = '#' + uniq2;
-		$('#' + uniq3).attr("href", url1);
-		$('#' + uniq4).attr("href", url2);
-		/*
-		 * #tbody > tr:nth-child(1) > td:nth-child(2) > div:nth-child(2) >
-		 * div:nth-child(2)
-		 */
-		$('select').on(
-				'change',
-				function() {
-					var id = $(this).parents('tr:first').children(
-							"td:nth-child(2)").children("div:nth-child(2)");
-					if (this.value === "POST") {
-						id.show();
-					} else {
-						id.hide();
-					}
-				});
-		/*
-		 * $("#ttable
-		 * tr:last").children("td:nth-child(1)").children("select:nth-child(2)").change(function () {
-		 * var id =
-		 * $(this).parents('tr:first').children("td:nth-child(2)").children("div:nth-child(2)");
-		 * if(this.value==="POST"){ id.show(); } else{ id.hide(); } //alert(id);
-		 * });
-		 */
-		/*
-		 * $("#ttable tbody")
-		 * 
-		 * .append( "<tr>" + "<td><label class='control-label'>HTTP Request
-		 * </label>&nbsp;&nbsp;<select id='reqtype' class='form-control'
-		 * onchange='getval(this);' style='max-width:40%; display:inline;'><option
-		 * value='GET' selected>GET</option><option value='POST'>POST</option></select></td>" + "<td><input
-		 * type='text' class='form-control' placeholder='Enter URL'/>" + "<input
-		 * type='text' id='postparams' class='form-control' placeholder='Enter
-		 * params'/></td>" + "<td><input type='image'
-		 * src='resources/images/save.jpeg' width=25 height=25 class='btnSave'><input
-		 * type='image' src='resources/images/delete.png' width=25 height=25
-		 * class='btnDelete'/></td>" + "</tr>");
-		 */
-		$(".btnSave").off().on("click", Save);
-		$(".btnDelete").off().on("click", Delete);
-		/* $('#postparams').hide(); */
-
+			$('#div1').attr("id", uniq1);
+			$('#div2').attr("id", uniq2);
+			$('#a1').attr("id", uniq3);
+			$('#a2').attr("id", uniq4);
+			var url1 = '#' + uniq1;
+			var url2 = '#' + uniq2;
+			$('#' + uniq3).attr("href", url1);
+			$('#' + uniq4).attr("href", url2);
+			/*
+			 * #tbody > tr:nth-child(1) > td:nth-child(2) > div:nth-child(2) >
+			 * div:nth-child(2)
+			 */
+			$('select')
+					.on(
+							'change',
+							function() {
+								var id = $(this).parents('tr:first').children(
+										"td:nth-child(2)").children(
+										"div:nth-child(2)");
+								if (this.value === "POST") {
+									id.show();
+								} else {
+									id.hide();
+								}
+							});
+			/*
+			 * $("#ttable
+			 * tr:last").children("td:nth-child(1)").children("select:nth-child(2)").change(function () {
+			 * var id =
+			 * $(this).parents('tr:first').children("td:nth-child(2)").children("div:nth-child(2)");
+			 * if(this.value==="POST"){ id.show(); } else{ id.hide(); }
+			 * //alert(id); });
+			 */
+			/*
+			 * $("#ttable tbody")
+			 * 
+			 * .append( "<tr>" + "<td><label class='control-label'>HTTP
+			 * Request </label>&nbsp;&nbsp;<select id='reqtype'
+			 * class='form-control' onchange='getval(this);'
+			 * style='max-width:40%; display:inline;'><option value='GET'
+			 * selected>GET</option><option value='POST'>POST</option></select></td>" + "<td><input
+			 * type='text' class='form-control' placeholder='Enter URL'/>" + "<input
+			 * type='text' id='postparams' class='form-control'
+			 * placeholder='Enter params'/></td>" + "<td><input type='image'
+			 * src='resources/images/save.jpeg' width=25 height=25
+			 * class='btnSave'><input type='image'
+			 * src='resources/images/delete.png' width=25 height=25
+			 * class='btnDelete'/></td>" + "</tr>");
+			 */
+			$(".btnSave").off().on("click", Save);
+			$(".btnDelete").off().on("click", Delete);
+			/* $('#postparams').hide(); */
+			saved = false;
+		} else {
+			$("#status").html("Save Feature before adding");
+			$("#status").show();
+			$("#status").delay(2000).fadeOut("slow");
+		}
 	}
 	;
 	function AddConstTimer() {
-		$('#testtable').show();
-		var addRow = "<tr><td style='vertical-align: middle;'><label class='control-label'>Constant Timer</label></td> "
-				+ "<td class='ui-helper-center'><input type='text' class='form-control' placeholder='Enter Time(millisecs)'/></td> "
-				+ "<td style='vertical-align: middle;'><input type='image' src='resources/images/save.jpeg' width=25 height=25 class='btnSave'><input type='image' src='resources/images/delete.png' width=25 height=25 class='btnDelete'/></td></tr>";
-		/* $('#ttable tr:last').after(addRow); */
-		$('#ttable > tbody:last-child').append(addRow);
-		/*
-		 * $("#ttable tbody") .append( "<tr>" + "<td><label
-		 * class='control-label'>Constant Timer</label></td>" + "<td><input
-		 * type='text' class='form-control' placeholder='Enter
-		 * Time(millisecs)'/></td>" + "<td><input type='image'
-		 * src='resources/images/save.jpeg' width=25 height=25 class='btnSave'><input
-		 * type='image' src='resources/images/delete.png' width=25 height=25
-		 * class='btnDelete'/></td>" + "</tr>");
-		 */
-		$(".btnSave").off().on("click", Save);
-		$(".btnDelete").off().on("click", Delete);
-
+		if (saved === true) {
+			$('#testtable').show();
+			var addRow = "<tr><td style='vertical-align: middle;'><label class='control-label'>Constant Timer</label></td> "
+					+ "<td class='ui-helper-center'><input type='text' class='form-control' placeholder='Enter Time(millisecs)'/></td> "
+					+ "<td style='vertical-align: middle;'><input type='image' src='resources/images/save.jpeg' width=25 height=25 class='btnSave'><input type='image' src='resources/images/delete.png' width=25 height=25 class='btnDelete'/></td></tr>";
+			/* $('#ttable tr:last').after(addRow); */
+			$('#ttable > tbody:last-child').append(addRow);
+			/*
+			 * $("#ttable tbody") .append( "<tr>" + "<td><label
+			 * class='control-label'>Constant Timer</label></td>" + "<td><input
+			 * type='text' class='form-control' placeholder='Enter
+			 * Time(millisecs)'/></td>" + "<td><input type='image'
+			 * src='resources/images/save.jpeg' width=25 height=25
+			 * class='btnSave'><input type='image'
+			 * src='resources/images/delete.png' width=25 height=25
+			 * class='btnDelete'/></td>" + "</tr>");
+			 */
+			$(".btnSave").off().on("click", Save);
+			$(".btnDelete").off().on("click", Delete);
+			saved = false;
+		} else {
+			$("#status").html("Save Feature before adding");
+			$("#status").show();
+			$("#status").delay(2000).fadeOut("slow");
+		}
 	}
 	;
 	function AddRegexEx() {
-		$('#testtable').show();
-		var addRow = "<tr><td style='vertical-align: middle;'><label class='control-label'>Regex Extractor</label><div >"+
-								"<input type='checkbox' name='globalregex' id='globalregex'/>"+
+		if (saved === true) {
+			$('#testtable').show();
+			var addRow = "<tr><td style='vertical-align: middle;'><label class='control-label'>Regex Extractor</label><div >"
+					+ "<input type='checkbox' name='globalregex' id='globalregex'/>"
+					+
 
-								"<label class='control-label'> Global Regex</label>"+
-							"</div></td>"
-				+ "<td><table id='regextable' cellpadding='10' cellspacing='10' width='100%'>"
-				+ "<tr><td class='ui-helper-center'><b>Reference Name</b>"
-				+ "</td><td class='ui-helper-center'><b>Regex</b></td></tr>"
-				+ "<tr><td class='ui-helper-center'><input type='text' class='form-control' placeholder='Enter Reference Name'/>"
-				+ "</td><td class='ui-helper-center'><input type='text' class='form-control' placeholder='Enter Regex'/></td></tr></table></td>"
-				+ "<td style='vertical-align: middle;'><input type='image' src='resources/images/save.jpeg' width=25 height=25 class='btnSave'><input type='image' src='resources/images/delete.png' width=25 height=25 class='btnDelete'/></td></tr>";
-		
-		$('#ttable > tbody:last-child').append(addRow);
-		
-		$(".btnSave").off().on("click", Save);
-		$(".btnDelete").off().on("click", Delete);
+					"<label class='control-label'> Global Regex</label>"
+					+ "</div></td>"
+					+ "<td><table id='regextable' cellpadding='10' cellspacing='10' width='100%'>"
+					+ "<tr><td class='ui-helper-center'><b>Reference Name</b>"
+					+ "</td><td class='ui-helper-center'><b>Regex</b></td></tr>"
+					+ "<tr><td class='ui-helper-center'><input type='text' class='form-control' placeholder='Enter Reference Name'/>"
+					+ "</td><td class='ui-helper-center'><input type='text' class='form-control' placeholder='Enter Regex'/></td></tr></table></td>"
+					+ "<td style='vertical-align: middle;'><input type='image' src='resources/images/save.jpeg' width=25 height=25 class='btnSave'><input type='image' src='resources/images/delete.png' width=25 height=25 class='btnDelete'/></td></tr>";
+
+			$('#ttable > tbody:last-child').append(addRow);
+
+			$(".btnSave").off().on("click", Save);
+			$(".btnDelete").off().on("click", Delete);
+			saved = false;
+		} else {
+			$("#status").html("Save Feature before adding");
+			$("#status").show();
+			$("#status").delay(2000).fadeOut("slow");
+		}
 
 	}
 	;
@@ -463,7 +483,7 @@ $(function() {
 		$(".parDelete").off().on("click", DeleteParam);
 		/* $(".parEdit").off().on("click", EditParam); */
 		$(".parSave").off().on("click", SaveParam);
-	}
+	};
 	function EditParam() {
 		var tab = $(this).parent().parent();
 		var tdName = tab.children("td:nth-child(1)");
@@ -478,7 +498,7 @@ $(function() {
 		tdButtons
 				.html("<input type='image' src='resources/images/save.jpeg' width=25 height=25 class='parSave'/>");
 		$(".parSave").off().on("click", SaveParam);
-	}
+	};
 	function SaveParam() {
 		var tab = $(this).parent().parent();
 		var tdName = tab.children("td:nth-child(1)");
@@ -493,15 +513,15 @@ $(function() {
 		$(".parDelete").off().on("click", DeleteParam);
 		$(".parEdit").off().on("click", EditParam);
 
-	}
+	};
 	function DeleteParam() {
 
 		var tab = $(this).parent().parent();
-
+		
 		tab.remove();
-	}
+	};
 	function Save() {
-
+		saved = true;
 		var par = $(this).parent().parent();
 		var tdName = par.children("td:nth-child(1)").children(
 				"label:nth-child(1)");
@@ -549,11 +569,12 @@ $(function() {
 					}
 				});
 			} else {
-				/*alert("inside");*/
+				/* alert("inside"); */
 				var table = par.children("td:nth-child(2)").children(
 						"div:nth-child(2)").children("div:nth-child(2)")
 						.children("div:nth-child(1)").children(
 								"table:nth-child(1)");
+				/*table.children("td")*/
 				/* if ((table).find("tr").not("thead tr").length == 1) { */
 				var rawbody = par.children("td:nth-child(2)").children(
 						"div:nth-child(2)").children("div:nth-child(2)")
@@ -573,9 +594,11 @@ $(function() {
 
 				$.toJSON(tabledata);
 				alert(JSON.stringify(tabledata));
-				/*var tabledatacomb = tableparam.concat(tabledata);
-				alert(JSON.stringify(tabledatacomb));
-				var tabdata = JSON.stringify(tabledatacomb);*/
+				/*
+				 * var tabledatacomb = tableparam.concat(tabledata);
+				 * alert(JSON.stringify(tabledatacomb)); var tabdata =
+				 * JSON.stringify(tabledatacomb);
+				 */
 				/* alert(JSON.stringify(tabledata)); */
 				$.ajax({
 					type : "POST",
@@ -599,19 +622,19 @@ $(function() {
 					}
 				});
 				/* } *//*
-				 * else {
-				 * 
-				 * var tabledata = table.tableToJSON(); var actualObj =
-				 * JSON.parse(jsonText); actualObj+={ "url
-				 * ":tdUrl.html(),
-				 * "httpType":httpType.val(),"rownum":par.index()};
-				 * tabledata.url=tdUrl.html();
-				 * tabledata.httpType=httpType.val();
-				 * tabledata.rownum=par.index();
-				 * 
-				 * //alert(actualData);
-				 * alert(JSON.stringify(actualObj)); }
-				 */
+						 * else {
+						 * 
+						 * var tabledata = table.tableToJSON(); var actualObj =
+						 * JSON.parse(jsonText); actualObj+={ "url
+						 * ":tdUrl.html(),
+						 * "httpType":httpType.val(),"rownum":par.index()};
+						 * tabledata.url=tdUrl.html();
+						 * tabledata.httpType=httpType.val();
+						 * tabledata.rownum=par.index();
+						 * 
+						 * //alert(actualData);
+						 * alert(JSON.stringify(actualObj)); }
+						 */
 
 			}
 		} else if (tdName.html() === "Constant Timer") {
@@ -646,13 +669,14 @@ $(function() {
 			var tdRegex = par.children("td:nth-child(2)").children().children(
 					"tbody:nth-child(1)").children("tr:nth-child(2)").children(
 					"td:nth-child(2)");
-			
-			var global=par.children("td:nth-child(1)").children("div:nth-child(2)").children("input:nth-child(1)");
+
+			var global = par.children("td:nth-child(1)").children(
+					"div:nth-child(2)").children("input:nth-child(1)");
 			var globalvalue;
 			if (global.prop('checked') == true) {
-				globalvalue=1;
+				globalvalue = 1;
 			} else {
-				globalvalue=0;
+				globalvalue = 0;
 			}
 			tdRegexName.html(tdRegexName.children("input[type=text]").val());
 			tdRegex.html(tdRegex.children("input[type=text]").val());
@@ -684,14 +708,17 @@ $(function() {
 	;
 	function Edit() {
 		var par = $(this).parent().parent();
-		var tdName = par.children("td:nth-child(1)");
+
+		var tdName = par.children("td:nth-child(1)").children(
+				"label:nth-child(1)");
 
 		var tdButtons = par.children("td:nth-child(3)");
 		var num = par.index();
 		// alert(num);
 		if (tdName.html() === "Http Request") {
+			var tdUrl = par.children("td:nth-child(2)").children(
+					"div:nth-child(1)");
 
-			var tdUrl = par.children("td:nth-child(2)");
 			tdUrl
 					.html("<input type='text' class='form-control' placeholder='Enter URL' id='txtParam' value='"
 							+ tdUrl.html() + "'/>");
@@ -702,10 +729,12 @@ $(function() {
 							+ tdTime.html() + "'/>");
 
 		} else if (tdName.html() === "Regex Extractor") {
-			var tdRegexName = par.children("td:nth-child(2)").children(
-					"div:nth-child(1)");
-			var tdRegex = par.children("td:nth-child(2)").children(
-					"div:nth-child(2)");
+			var tdRegexName = par.children("td:nth-child(2)").children()
+					.children("tbody:nth-child(1)").children("tr:nth-child(2)")
+					.children("td:nth-child(1)");
+			var tdRegex = par.children("td:nth-child(2)").children().children(
+					"tbody:nth-child(1)").children("tr:nth-child(2)").children(
+					"td:nth-child(2)");
 			tdRegexName
 					.html("<input type='text' class='form-control' placeholder='Enter Reference Name' id='txtParam' value='"
 							+ tdRegexName.html() + "'/>");
@@ -724,7 +753,8 @@ $(function() {
 	function Delete() {
 		var par = $(this).parent().parent();
 		var num = par.index();
-
+		if ($('#tbody').children('tr').length == num+1)
+		saved=true;
 		par.remove();
 		if ($('#tbody').children('tr').length == 0)
 			$('#testtable').hide();
@@ -960,9 +990,7 @@ $(function() {
 				$("#status").delay(2000).fadeOut("slow");
 			}
 		});
-
-	}
-	;
+	};
 });
 function checkChange() {
 	if ($("#delay").prop('checked') == true) {
@@ -972,18 +1000,18 @@ function checkChange() {
 	}
 };
 function output() {
-	
-	  $.ajax({
+
+	$.ajax({
 		type : "POST",
-	    url: '/LoadGen/output', 
-	    dataType: "HTML",
-	    success: function(data) {
-	    	
-	      $('#output').html(data);
-	    },
-	    complete: function() {
-	      // Schedule the next request when the current one's complete
-	      setTimeout(output, 1000);
-	    }
-	  });
-	};
+		url : '/LoadGen/output',
+		dataType : "HTML",
+		success : function(data) {
+
+			$('#output').html(data);
+		},
+		complete : function() {
+			// Schedule the next request when the current one's complete
+			setTimeout(output, 1000);
+		}
+	});
+};

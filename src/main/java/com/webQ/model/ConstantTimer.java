@@ -47,7 +47,7 @@ public class ConstantTimer implements Feature,Serializable {
 			Map<String, List<String>> regexmap = response.getRegexmap();
 			
 			if(m.find()){
-				System.out.println("inside timer m");
+				//System.out.println("inside timer m");
 				String refname=m.group(1);
 				int index=Integer.parseInt(m.group(2));
 				
@@ -68,10 +68,10 @@ public class ConstantTimer implements Feature,Serializable {
 				
 			}
 			else if(n.find()){
-				System.out.println("inside timer n");
+				//System.out.println("inside timer n");
 				String refname=n.group(1);
 				int index=Integer.parseInt(n.group(2));
-				System.out.println(MainController.globalregexmap);
+			//	System.out.println(MainController.globalregexmap);
 				for (Entry<String, List<String>> entry : MainController.globalregexmap.entrySet()) {
 					
 					if(entry.getKey().equals(refname)){
@@ -89,7 +89,7 @@ public class ConstantTimer implements Feature,Serializable {
 				
 			}
 			
-			System.out.println("Time: "+curtime);
+			//System.out.println("Time: "+curtime);
 			Fiber.sleep((long) (Float.parseFloat(curtime)));
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block

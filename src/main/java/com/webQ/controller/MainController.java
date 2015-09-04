@@ -39,9 +39,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
-
-
-
 /*import org.apache.log4j.Logger;*/
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -68,36 +65,37 @@ public class MainController implements Serializable {
 
 	public final static Logger logger = Logger.getLogger(MainController.class);
 	public static Boolean test = true;
-	
+
 	private List<TestPlan> testPlans = new ArrayList<TestPlan>();
 	private static final HttpContext BASIC_RESPONSE_HANDLER = null;
 	private final HelloWorldService helloWorldService;
 	private List<Object> testPlan = new ArrayList<Object>();
 	private List<Integer> httpreqlist = new ArrayList<Integer>();
-	public static Map<String, List<String>> globalregexmap=new HashMap<String, List<String>>();
+	public static Map<String, List<String>> globalregexmap = new HashMap<String, List<String>>();
 	private Test randomtest = new Test();
 	private Test normaltest = new Test();
-	public static List<Output> outputlist=new ArrayList<Output>();
-	
+	public static List<Output> outputlist = new ArrayList<Output>();
+
 	public static final CloseableHttpClient client = FiberHttpClientBuilder
-			.create(2).setMaxConnPerRoute(100).setMaxConnTotal(10).build();
+			.create(4).setMaxConnPerRoute(1000).setMaxConnTotal(30).build();
 
 	@Autowired
-	public MainController(HelloWorldService helloWorldService) throws SuspendExecution{
+	public MainController(HelloWorldService helloWorldService)
+			throws SuspendExecution {
 		this.helloWorldService = helloWorldService;
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView home() throws SuspendExecution {
-		
+
 		testPlans.clear();
 		testPlan.clear();
 		httpreqlist.clear();
-		randomtest=new Test();
-		normaltest=new Test();
+		randomtest = new Test();
+		normaltest = new Test();
 		globalregexmap.clear();
 		outputlist.clear();
-		test=true;
+		test = true;
 		File folder = new File("webapps/LoadGen/resources/tmpFiles");
 		if (folder.exists()) {
 			logger.info(folder.getAbsolutePath());
@@ -114,39 +112,42 @@ public class MainController implements Serializable {
 				logger.info("Failed to create directory!");
 			}
 		}
-		
+
 		return new ModelAndView("home", "command", new TestPlan());
 	}
 
 	@RequestMapping(value = "/consttimer", method = RequestMethod.POST)
-	public @ResponseBody void home_page (
+	public @ResponseBody void home_page(
 			@ModelAttribute("SpringWeb") ConstantTimer timer,
-			@RequestParam("rownum") int rownum, BindingResult result) throws SuspendExecution{
-		
+			@RequestParam("rownum") int rownum, BindingResult result)
+			throws SuspendExecution {
+
 		if (rownum == testPlan.size())
 			testPlan.add(timer);
 		else
 			testPlan.set(rownum, timer);
-		
+
 	}
 
 	@RequestMapping(value = "/regexextractor", method = RequestMethod.POST)
 	public @ResponseBody void home_page(
 			@ModelAttribute("SpringWeb") RegexExtractor regexex,
-			@RequestParam("rownum") int rownum, BindingResult result) throws SuspendExecution {
+			@RequestParam("rownum") int rownum, BindingResult result)
+			throws SuspendExecution {
 		System.out.println(regexex.getRefName());
 		System.out.println(regexex.getGlobal());
 		if (rownum == testPlan.size())
 			testPlan.add(regexex);
 		else
 			testPlan.set(rownum, regexex);
-		
+
 	}
 
 	@RequestMapping(value = "/httpgetreq", method = RequestMethod.POST)
 	public @ResponseBody void home_page(
 			@ModelAttribute("SpringWeb") HttpRequest req,
-			@RequestParam("rownum") int rownum, BindingResult result) throws SuspendExecution{
+			@RequestParam("rownum") int rownum, BindingResult result)
+			throws SuspendExecution {
 
 		if (rownum == testPlan.size()) {
 			testPlan.add(req);
@@ -160,7 +161,7 @@ public class MainController implements Serializable {
 
 	@RequestMapping(value = "/httppostreq", method = RequestMethod.POST)
 	public @ResponseBody void home_page(@RequestBody String tabdata,
-			BindingResult result) throws SuspendExecution{
+			BindingResult result) throws SuspendExecution {
 		HttpRequest req = new HttpRequest();
 		JSONObject obj = new JSONObject(tabdata);
 		Integer rownum = obj.getInt("rownum");
@@ -191,7 +192,8 @@ public class MainController implements Serializable {
 	}
 
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)
-	public @ResponseBody void home_page(@RequestParam("rownum") int rownum) throws SuspendExecution {
+	public @ResponseBody void home_page(@RequestParam("rownum") int rownum)
+			throws SuspendExecution {
 		// System.out.println(rownum);
 		int flag = 0;
 		if (rownum < testPlan.size()) {
@@ -219,11 +221,12 @@ public class MainController implements Serializable {
 
 	@RequestMapping(value = "/savenormaltestplan", method = RequestMethod.POST)
 	public @ResponseBody void home_page(
-			@ModelAttribute("SpringWeb") TestPlan newTestPlan) throws SuspendExecution{
+			@ModelAttribute("SpringWeb") TestPlan newTestPlan)
+			throws SuspendExecution {
 		newTestPlan.setTestPlan(testPlan);
 		newTestPlan.setHttpreqlist(httpreqlist);
-		System.out.println("Duration : "+newTestPlan.getDuration());
-		System.out.println("Delay : "+newTestPlan.getStartDelay());
+		System.out.println("Duration : " + newTestPlan.getDuration());
+		System.out.println("Delay : " + newTestPlan.getStartDelay());
 		newTestPlan.displayPlan();
 		/*
 		 * for(int i=0;i<httpreqlist.size();i++)
@@ -239,7 +242,8 @@ public class MainController implements Serializable {
 
 	@RequestMapping(value = "/saverandomtestplan", method = RequestMethod.POST)
 	public @ResponseBody void home_page_random(
-			@ModelAttribute("SpringWeb") TestPlan newTestPlan) throws SuspendExecution{
+			@ModelAttribute("SpringWeb") TestPlan newTestPlan)
+			throws SuspendExecution {
 
 		newTestPlan.setTestPlan(testPlan);
 		newTestPlan.setHttpreqlist(httpreqlist);
@@ -278,12 +282,11 @@ public class MainController implements Serializable {
 		return model;
 	}
 
-
 	@RequestMapping(value = "/normalloadgen", method = RequestMethod.POST)
 	public void execute(ModelMap model) throws SuspendExecution,
 			InterruptedException {
-		test=true;
-		int rowstart=0;
+		test = true;
+		int rowstart = 0;
 		// PrintWriter out = response.getWriter();
 		// System.out.println("dddddd");
 		/*
@@ -306,13 +309,15 @@ public class MainController implements Serializable {
 		if (logger.isInfoEnabled()) {
 			logger.info("Starting");
 		}
+		int ArraySize=testPlans.size();
+		Fiber[] fibers = new Fiber[ArraySize];
 		System.out.println("");
 		System.out
 				.println("<------------------------LoadGen Starting-------------------------->");
 		System.out.println("");
 
 		int i = 1;
-		
+
 		for (TestPlan currtestplan : testPlans) {
 			if (test) {
 				System.out.println("Testplan" + i);
@@ -320,22 +325,33 @@ public class MainController implements Serializable {
 				currtestplan.setId(i);
 				currtestplan.setRandom(0);
 				currtestplan.setOutputrowstart(rowstart);
-				rowstart+=currtestplan.getHttpreqlist().size();
+				rowstart += currtestplan.getHttpreqlist().size();
 				i++;
-				for(int j=0;j<currtestplan.getHttpreqlist().size();j++)
-				outputlist.add(new Output());
+				for (int j = 0; j < currtestplan.getHttpreqlist().size(); j++)
+					outputlist.add(new Output());
 				Fiber<Void> testplansfiber = new Fiber<Void>(() -> {
 					System.out.println("");
 					currtestplan.displayPlan();
 					System.out.println("");
 					currtestplan.execute(null);
 				}).start();
+				int index=i-2;
+				fibers[index] = testplansfiber;
 			} else {
 				test = true;
 				break;
 			}
 		}
-
+		for (Fiber fiber : fibers) {
+			try {
+				if (!test)
+					break;
+				fiber.join();
+			} catch (ExecutionException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 		/*
 		 * try { testplansfiber.join(); } catch (ExecutionException e1) { //
 		 * TODO Auto-generated catch block e1.printStackTrace(); }
@@ -406,8 +422,8 @@ public class MainController implements Serializable {
 	@RequestMapping(value = "/randomloadgen", method = RequestMethod.POST)
 	public void execute(@ModelAttribute("SpringWeb") Test newTest,
 			ModelMap model) throws SuspendExecution, InterruptedException {
-		test=true;
-		int rowstart=0;
+		test = true;
+		int rowstart = 0;
 		newTest.setTestPlans(testPlans);
 
 		randomtest = newTest;
@@ -466,13 +482,13 @@ public class MainController implements Serializable {
 			testPlanslist.add(newtestPlans);
 
 		}
-		
+		int ArraySize=testPlanslist.size()*testPlan.size();
+		Fiber[] fibers = new Fiber[ArraySize];
 		/* Fiber<Void> testplansfiber = new Fiber<Void>(() -> { */
+		int k=0;
 		for (List<TestPlan> currtestPlans : testPlanslist) {
 			
-
-			
-			int i=1;
+			int i = 1;
 			for (TestPlan currtestplan : currtestPlans) {
 				if (test) {
 					/*
@@ -496,14 +512,14 @@ public class MainController implements Serializable {
 					 */
 					currtestplan.setRandom(1);
 					currtestplan.setId(i);
-					
+
 					currtestplan.setOutputrowstart(rowstart);
-					rowstart+=currtestplan.getHttpreqlist().size();
+					rowstart += currtestplan.getHttpreqlist().size();
 					i++;
-					for(int j=0;j<currtestplan.getHttpreqlist().size();j++)
-					outputlist.add(new Output());
+					for (int j = 0; j < currtestplan.getHttpreqlist().size(); j++)
+						outputlist.add(new Output());
 					Fiber<Void> testplansfiber = new Fiber<Void>(() -> {
-						
+
 						/*
 						 * System.out.println("outside testplan");
 						 * currtestplan.displayPlan(); System.out.println("");
@@ -512,25 +528,36 @@ public class MainController implements Serializable {
 
 							currtestplan.execute(null);
 						}).start();
+					int index=(k*currtestPlans.size())+(i-2);
+					fibers[index]=testplansfiber;
 				} else {
 					test = true;
 					break;
 				}
 			}
-			
+			k++;
 			Fiber.sleep(randomtest.getEpoch() * 1000);
 			logger.info("");
 		}
-		
+		for (Fiber fiber : fibers) {
+			try {
+				if (!test)
+					break;
+				fiber.join();
+			} catch (ExecutionException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 		if (logger.isInfoEnabled()) {
 			logger.info("Test Finished");
 		}
 		System.out.println("Test Finished");
 	}
 
-	public TestPlan copyTestPlan(TestPlan orig) throws SuspendExecution{
+	public TestPlan copyTestPlan(TestPlan orig) throws SuspendExecution {
 		TestPlan copy = new TestPlan();
-		
+
 		copy.setDuration(orig.getDuration());
 		copy.setId(orig.getId());
 		copy.setHttpreqlist(orig.getHttpreqlist());
@@ -548,10 +575,10 @@ public class MainController implements Serializable {
 	 */
 	@RequestMapping(value = "/randomfileloadgen", method = RequestMethod.POST)
 	public void execute() throws SuspendExecution, InterruptedException {
-		test=true;
-		testPlans=randomtest.getTestPlans();
-		int rowstart=0;
-		
+		test = true;
+		testPlans = randomtest.getTestPlans();
+		int rowstart = 0;
+
 		if (logger.isInfoEnabled()) {
 			logger.info("Starting");
 		}
@@ -569,6 +596,7 @@ public class MainController implements Serializable {
 		int currMaxReqRate, remainingMix, newMix, currrateindex = 0;
 		List<Integer> requestMix = new ArrayList<Integer>();
 		List<List<TestPlan>> testPlanslist = new ArrayList<List<TestPlan>>();
+		
 		for (int currepoch = 0; currepoch < totalepochs; currepoch++) {
 			if (randomtest.getMaxreqRate() != 0)
 				currMaxReqRate = randInt(1, randomtest.getMaxreqRate());
@@ -606,13 +634,13 @@ public class MainController implements Serializable {
 			testPlanslist.add(newtestPlans);
 
 		}
-		
+		int ArraySize=testPlanslist.size()*testPlan.size();
+		Fiber[] fibers = new Fiber[ArraySize];
+		int k=0;
 		/* Fiber<Void> testplansfiber = new Fiber<Void>(() -> { */
 		for (List<TestPlan> currtestPlans : testPlanslist) {
-			
 
-			
-			int i=1;
+			int i = 1;
 			for (TestPlan currtestplan : currtestPlans) {
 				if (test) {
 					/*
@@ -636,14 +664,14 @@ public class MainController implements Serializable {
 					 */
 					currtestplan.setRandom(1);
 					currtestplan.setId(i);
-					
+
 					currtestplan.setOutputrowstart(rowstart);
-					rowstart+=currtestplan.getHttpreqlist().size();
+					rowstart += currtestplan.getHttpreqlist().size();
 					i++;
-					for(int j=0;j<currtestplan.getHttpreqlist().size();j++)
-					outputlist.add(new Output());
+					for (int j = 0; j < currtestplan.getHttpreqlist().size(); j++)
+						outputlist.add(new Output());
 					Fiber<Void> testplansfiber = new Fiber<Void>(() -> {
-						
+
 						/*
 						 * System.out.println("outside testplan");
 						 * currtestplan.displayPlan(); System.out.println("");
@@ -652,16 +680,28 @@ public class MainController implements Serializable {
 
 							currtestplan.execute(null);
 						}).start();
+					int index=(k*currtestPlans.size())+(i-2);
+					fibers[index]=testplansfiber;
+					
 				} else {
 					test = true;
 					break;
 				}
 			}
-			
+			k++;
 			Fiber.sleep(randomtest.getEpoch() * 1000);
 			logger.info("");
 		}
-		
+		for (Fiber fiber : fibers) {
+			try {
+				if (!test)
+					break;
+				fiber.join();
+			} catch (ExecutionException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 		if (logger.isInfoEnabled()) {
 			logger.info("Test Finished");
 		}
@@ -673,7 +713,8 @@ public class MainController implements Serializable {
 	 */
 	@RequestMapping(value = "/normaluploadFile", method = RequestMethod.POST)
 	public @ResponseBody String normaluploadFile(
-			@RequestParam("fileName") MultipartFile file) throws SuspendExecution{
+			@RequestParam("fileName") MultipartFile file)
+			throws SuspendExecution {
 
 		if (!file.isEmpty()) {
 			try {
@@ -698,7 +739,7 @@ public class MainController implements Serializable {
 						.getAbsolutePath()
 						+ File.separator
 						+ file.getOriginalFilename());
-	
+
 				for (int i = 0; i < testPlans.size(); i++) {
 					System.out.println(testPlans.get(i));
 				}
@@ -720,7 +761,8 @@ public class MainController implements Serializable {
 
 	@RequestMapping(value = "/randomuploadFile", method = RequestMethod.POST)
 	public @ResponseBody String randomuploadFile(
-			@RequestParam("fileName") MultipartFile file) throws SuspendExecution {
+			@RequestParam("fileName") MultipartFile file)
+			throws SuspendExecution {
 		/*
 		 * System.out.println(getClass().getClassLoader().getResource(
 		 * "logging.properties"));
@@ -766,7 +808,8 @@ public class MainController implements Serializable {
 	}
 
 	@RequestMapping(value = "/normalsavetofile", method = RequestMethod.POST)
-	public @ResponseBody String normalsaveToFile() throws Exception, SuspendExecution {
+	public @ResponseBody String normalsaveToFile() throws Exception,
+			SuspendExecution {
 		File downloadtest = new File(
 				"webapps/LoadGen/resources/tmpFiles/test.xml");
 
@@ -783,7 +826,8 @@ public class MainController implements Serializable {
 
 	@RequestMapping(value = "/randomsavetofile", method = RequestMethod.POST)
 	public @ResponseBody String randomsaveToFile(
-			@ModelAttribute("SpringWeb") Test newTest) throws Exception, SuspendExecution {
+			@ModelAttribute("SpringWeb") Test newTest) throws Exception,
+			SuspendExecution {
 		File downloadtest = new File(
 				"webapps/LoadGen/resources/tmpFiles/test.xml");
 
@@ -799,42 +843,43 @@ public class MainController implements Serializable {
 	}
 
 	@RequestMapping(value = "/stop", method = RequestMethod.POST)
-	public @ResponseBody void stopTest() throws SuspendExecution{
+	public @ResponseBody void stopTest() throws SuspendExecution {
 		outputlist.clear();
 		test = false;
 
 	}
+
 	@RequestMapping(value = "/output", method = RequestMethod.POST)
-	public @ResponseBody String home_page() throws SuspendExecution{
-		String tabledata="<table class='table table-striped table-bordered table-condensed well'>";
-		String firstrow="<tr>";
-		firstrow+="<td>Time</td>";
-		firstrow+="<td>Request</td>";
-		firstrow+="<td>Input Load</td>";
-		firstrow+="<td>Avg Throughput</td>";
-		firstrow+="<td>Cur Throughput</td>";
-		firstrow+="<td>Response Time</td>";
-		firstrow+="<td>Error Rate</td>";
-		firstrow+="</tr>";
-		tabledata+=firstrow;
-		for(int i=0;i<outputlist.size();i++){
-			String newrow="<tr>";
-			newrow+="<td>"+outputlist.get(i).getTime()+"</td>";
-			newrow+="<td>"+outputlist.get(i).getRequest()+"</td>";
-			newrow+="<td>"+outputlist.get(i).getInputload()+"</td>";
-			newrow+="<td>"+outputlist.get(i).getAvgThroughput()+"</td>";
-			newrow+="<td>"+outputlist.get(i).getCurThroughput()+"</td>";
-			newrow+="<td>"+outputlist.get(i).getResponsetime()+"</td>";
-			newrow+="<td>"+outputlist.get(i).getErrorrate()+"</td>";
-			newrow+="</tr>";
-			tabledata+=newrow;
+	public @ResponseBody String home_page() throws SuspendExecution {
+		String tabledata = "<table class='table table-striped table-bordered table-condensed well'>";
+		String firstrow = "<tr>";
+		firstrow += "<td>Time</td>";
+		firstrow += "<td>Request</td>";
+		firstrow += "<td>Input Load</td>";
+		firstrow += "<td>Avg Throughput</td>";
+		firstrow += "<td>Cur Throughput</td>";
+		firstrow += "<td>Response Time</td>";
+		firstrow += "<td>Error Rate</td>";
+		firstrow += "</tr>";
+		tabledata += firstrow;
+		for (int i = 0; i < outputlist.size(); i++) {
+			String newrow = "<tr>";
+			newrow += "<td>" + outputlist.get(i).getTime() + "</td>";
+			newrow += "<td>" + outputlist.get(i).getRequest() + "</td>";
+			newrow += "<td>" + outputlist.get(i).getInputload() + "</td>";
+			newrow += "<td>" + outputlist.get(i).getAvgThroughput() + "</td>";
+			newrow += "<td>" + outputlist.get(i).getCurThroughput() + "</td>";
+			newrow += "<td>" + outputlist.get(i).getResponsetime() + "</td>";
+			newrow += "<td>" + outputlist.get(i).getErrorrate() + "</td>";
+			newrow += "</tr>";
+			tabledata += newrow;
 		}
-		tabledata+="</table>";
-		//System.out.println(tabledata);
+		tabledata += "</table>";
+		// System.out.println(tabledata);
 		return tabledata;
 	}
 
-	public static void deleteFolder(File folder) throws SuspendExecution{
+	public static void deleteFolder(File folder) throws SuspendExecution {
 		File[] files = folder.listFiles();
 		if (files != null) { // some JVMs return null for empty dirs
 			for (File f : files) {
@@ -848,7 +893,7 @@ public class MainController implements Serializable {
 		folder.delete();
 	}
 
-	public static int randInt(int min, int max)throws SuspendExecution {
+	public static int randInt(int min, int max) throws SuspendExecution {
 
 		// NOTE: Usually this should be a field rather than a method
 		// variable so that it is not re-seeded every call.
@@ -860,5 +905,5 @@ public class MainController implements Serializable {
 
 		return randomNum;
 	}
-	
+
 }
