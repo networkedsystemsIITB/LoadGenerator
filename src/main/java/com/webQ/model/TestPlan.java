@@ -11,11 +11,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Semaphore;
 
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
+import org.apache.http.impl.nio.conn.PoolingNHttpClientConnectionManager;
+import org.apache.http.impl.nio.reactor.DefaultConnectingIOReactor;
+import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.apache.log4j.Logger;
 
 import co.paralleluniverse.fibers.Fiber;
+import co.paralleluniverse.fibers.FiberScheduler;
 import co.paralleluniverse.fibers.SuspendExecution;
+import co.paralleluniverse.fibers.httpclient.FiberHttpClient;
+import co.paralleluniverse.strands.Strand;
 
 import com.google.common.util.concurrent.RateLimiter;
 import com.webQ.controller.MainController;
@@ -53,7 +66,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 	 * Auto-generated constructor stub }
 	 */
 
-	public Integer getRandom() throws SuspendExecution{
+	public Integer getRandom() throws SuspendExecution {
 		return random;
 	}
 
@@ -106,18 +119,19 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 		return id;
 	}
 
-	public void setId(Integer id) throws SuspendExecution{
+	public void setId(Integer id) throws SuspendExecution {
 		this.id = id;
 	}
 
-	public Integer getOutputrowstart() throws SuspendExecution{
+	public Integer getOutputrowstart() throws SuspendExecution {
 		return outputrowstart;
 	}
 
-	public void setOutputrowstart(Integer outputrowstart) throws SuspendExecution{
+	public void setOutputrowstart(Integer outputrowstart)
+			throws SuspendExecution {
 		this.outputrowstart = outputrowstart;
 	}
-	
+
 	public void displayPlan() throws SuspendExecution {
 		int type;
 		System.out.println("TestPlan Details");
@@ -170,43 +184,11 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 	public void execute(Response resp) throws InterruptedException,
 			SuspendExecution {
 		// TODO Auto-generated method stub
-
-		try {
-			// Delimiter used in CSV file
-
-			// CSV file header
-
-			final String FILE_HEADER = String.format(
-					"%-30s%-25s%-18s%-18s%-18s%-15s%-10s", "Time", "Request",
-					"Input Load", "Avg Througput", "Cur Througput",
-					"Response Time", "Error Rate");
-			/*
-			 * final String FILE_HEADER =
-			 * "Time\tRequest\tInput Load\tAvg Througput\tCur Througput\tResponse Time\tError Rate"
-			 * ;
-			 */fileWriter = new FileWriter("/home/stanly/output" + this.getId()
-					+ ".csv");
-
-			fileWriter.append(FILE_HEADER.toString());
-			logger.info(FILE_HEADER);
-			// Add a new line separator after the header
-
-			fileWriter.append("\n");
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Failed to create file");
-			e.printStackTrace();
-		}
-
-		System.out.println("");
-		this.displayPlan();
-		System.out.println("");
+		/*
+		 * System.out.println(""); this.displayPlan(); System.out.println("");
+		 */
 		if (this.reqRate != 0) {
-			int run_wait = 1000000000 / this.reqRate;
-			// Map<Integer, List<Long>> reqsDetails = new HashMap<Integer,
-			// List<Long>>();
-			// Map<Integer, Long> totalresptimes = new HashMap<Integer, Long>();
+
 			this.reqsDetails.clear();
 			for (int i = 0; i < httpreqlist.size(); i++) {
 				Output outputrow = new Output();
@@ -215,8 +197,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 				outputrow.setRequest("TestPlan-" + this.getId() + "-Request-"
 						+ (i + 1));
 				outputrow.setTime(strDate);
-				outputrow.setInputload(this.getReqRate().toString()
-						+ " reqs/sec");
+				outputrow.setInputload("0 reqs/sec");
 				outputrow.setErrorrate("0.00%");
 				outputrow.setAvgThroughput("0 reqs/sec");
 				outputrow.setCurThroughput("0 reqs/sec");
@@ -224,7 +205,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 				MainController.outputlist.set(this.getOutputrowstart() + i,
 						outputrow);
 				List<Long> temp = new ArrayList<Long>();
-				
+
 				// Send Request Rate
 				temp.add((long) 0);
 				// Success Request count
@@ -256,161 +237,102 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 			final RateLimiter rl = RateLimiter.create(this.reqRate);
 			Date now1 = new Date();
 			logger.info("starttime " + sdf.format(now1));
-			outputFiber();
-			  for (int i = 0; i < this.duration && MainController.test; ++i) {
-			  for (int j = 0; j < this.reqRate && MainController.test; ++j) {
-			 
 
-			/*outputFiber();
+			outputFiber();
+			final Semaphore sem = new Semaphore(150000);
 			for (int i = 0; i < num && MainController.test; i++) {
-				rl.acquire();*/
-				Fiber<Void> testplanfiber = new Fiber<Void>(
+				rl.acquire();
+				if (sem.availablePermits() == 0)
+					logger.info("Maximum connections count reached, waiting...");
+				sem.acquireUninterruptibly();
+
+				new Fiber<Void>(
 						() -> {
-							int k = 0;
+
 							try {
-								
+								int k = 0;
 								Response currresp = new Response();
 								for (k = 0; k < this.testPlan.size(); k++) {
-									/*List<Long> temp = new ArrayList<Long>();*/
-									long startTime = System.currentTimeMillis();
-									//long currate = this.reqsDetails.get(k).get(0);
-								if (this.reqsDetails.get(k) != null) {
-									
-										this.reqsDetails.get(k).set(0,(this.reqsDetails.get(k).get(0))+1);
-										//temp.add(this.reqsDetails.get(k).get(0)+1);
-									}
-									((Feature) this.testPlan.get(k))
-											.execute(currresp);
 
 									if (this.reqsDetails.get(k) != null) {
+
+										this.reqsDetails
+												.get(k)
+												.set(0,
+														(this.reqsDetails
+																.get(k).get(0)) + 1);
+
+										long startTime = System
+												.currentTimeMillis();
+
+										((Feature) this.testPlan.get(k))
+												.execute(currresp);
 										if (currresp.getResponse()
 												.getStatusLine().toString()
 												.contains("OK")) {
-											List<Long> temp = new ArrayList<Long>();
-											temp.add(this.reqsDetails.get(k)
-													.get(0));
-											temp.add(this.reqsDetails.get(k)
-													.get(1) + 1);
 
+											this.reqsDetails.get(k).set(
+													1,
+													this.reqsDetails.get(k)
+															.get(1) + 1);
 											long elapsedTime = System
 													.currentTimeMillis()
 													- startTime;
-											temp.add(this.reqsDetails.get(k)
-													.get(2));
-											temp.add(this.reqsDetails.get(k)
-													.get(3) + 1);
-											temp.add(this.reqsDetails.get(k)
-													.get(4) + elapsedTime);
-											
-											
-											this.reqsDetails.put(k, temp);
+											this.reqsDetails.get(k).set(
+													2,
+													this.reqsDetails.get(k)
+															.get(2));
+											this.reqsDetails.get(k).set(
+													3,
+													this.reqsDetails.get(k)
+															.get(3) + 1);
+											this.reqsDetails.get(k).set(
+													4,
+													this.reqsDetails.get(k)
+															.get(4)
+															+ elapsedTime);
 
 										} else {
-											List<Long> temp = new ArrayList<Long>();
-											temp.add(this.reqsDetails.get(k)
-													.get(0));
-											temp.add(this.reqsDetails.get(k)
-													.get(1));
-											temp.add(this.reqsDetails.get(k)
-													.get(2) + 1);
-											temp.add(this.reqsDetails.get(k)
-													.get(3));
-											temp.add(this.reqsDetails.get(k)
-													.get(4));
-											this.reqsDetails.put(k, temp);
+											this.reqsDetails.get(k).set(
+													1,
+													this.reqsDetails.get(k)
+															.get(1));
+
+											this.reqsDetails.get(k).set(
+													2,
+													this.reqsDetails.get(k)
+															.get(2));
+											this.reqsDetails.get(k).set(
+													3,
+													this.reqsDetails.get(k)
+															.get(3));
+											this.reqsDetails.get(k).set(
+													4,
+													this.reqsDetails.get(k)
+															.get(4));
+
 										}
+									} else {
+										((Feature) this.testPlan.get(k))
+												.execute(currresp);
 									}
 
 								}
-							} catch (Exception ex) {
-								System.out.println(ex.getLocalizedMessage());
-								List<Long> temp = new ArrayList<Long>();
-								temp.add(this.reqsDetails.get(k).get(0));
-								temp.add(this.reqsDetails.get(k).get(1));
-								temp.add(this.reqsDetails.get(k).get(2) + 1);
-								temp.add(this.reqsDetails.get(k).get(3));
-								temp.add(this.reqsDetails.get(k).get(4));
-								this.reqsDetails.put(k, temp);
+							} catch (final Throwable t) {
+
+							} finally {
+
+								sem.release();
+
 							}
 
 						}).start();
 
-				
-				//fibers[i] = testplanfiber;
-				
-				Fiber.sleep(0,run_wait);
 			}
-			  
-			  
-			  }
+
 			Date now2 = new Date();
 			logger.info("endtime " + sdf.format(now2));
-			/*
-			 * for (int i = this.duration; (i < this.duration + 50) &&
-			 * MainController.test; i++) { Fiber.sleep(1000); int l = 1; try {
-			 * for (Map.Entry<Integer, List<Long>> entry : reqsDetails
-			 * .entrySet()) { DecimalFormat df = new DecimalFormat();
-			 * df.setMaximumFractionDigits(2); Output outputrow = new Output();
-			 * Date now = new Date(); String strDate = sdf.format(now); Long
-			 * currThroughput; outputrow.setRequest("TestPlan-" + this.getId() +
-			 * "-Request-" + (l)); outputrow.setTime(strDate);
-			 * outputrow.setInputload(this.getReqRate().toString() +
-			 * " reqs/sec"); // System.out.println(entry.getValue().get(0)+ //
-			 * "    "+entry.getValue().get(2)); if ((entry.getValue().get(0) +
-			 * entry.getValue().get(2)) != 0) { double errorrate = ((1.00 *
-			 * (entry.getValue() .get(2))) / (entry.getValue().get(0) + entry
-			 * .getValue().get(2))) * 100;
-			 * outputrow.setErrorrate(df.format(errorrate) + "%"); }
-			 * 
-			 * currThroughput = (entry.getValue().get(0)) / (i + 1); outputrow
-			 * .setAvgThroughput(currThroughput + " reqs/sec");
-			 * outputrow.setCurThroughput(entry.getValue().get(3) .toString() +
-			 * " reqs/sec"); entry.getValue().set(3, (long) 0); if
-			 * (currThroughput != 0)
-			 * outputrow.setResponsetime(entry.getValue().get(1) /
-			 * (currThroughput * (i + 1)) + " msec"); else
-			 * outputrow.setResponsetime("0 msec");
-			 * MainController.outputlist.set(this.getOutputrowstart() + l - 1,
-			 * outputrow);
-			 * 
-			 * String message = String.format(
-			 * "%-30s%-25s%-18s%-18s%-18s%-15s%-10s", outputrow.getTime(),
-			 * outputrow.getRequest(), outputrow.getInputload(),
-			 * outputrow.getAvgThroughput(), outputrow.getCurThroughput(),
-			 * outputrow.getResponsetime(), outputrow.getErrorrate());
-			 * 
-			 * fileWriter.append(message); fileWriter.append("\n");
-			 * 
-			 * logger.info(message);
-			 * 
-			 * l++; }
-			 * 
-			 * } catch (IOException e) { // TODO Auto-generated catch block
-			 * System.out.println("Error in CsvFileWriter !!!");
-			 * 
-			 * e.printStackTrace(); }
-			 * 
-			 * }
-			 */
 
-		/*	for (Fiber fiber : fibers) {
-				try {
-					if (!MainController.test)
-						break;
-					System.out.println(fiber.currentFiber().getName()
-							+ " Waiting");
-					fiber.join();
-				} catch (ExecutionException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}*/
-			/*
-			 * int p=0; for (Fiber fiber : fibers){
-			 * 
-			 * System.out.println("Fiber Name "+fiber.currentFiber().getName()+
-			 * " index= "+p); p++; }
-			 */
 			if (!MainController.test) {
 				MainController.test = true;
 			}
@@ -422,21 +344,15 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 
 			} catch (IOException e) {
 
-				System.out
-						.println("Error while flushing/closing fileWriter !!!");
+				logger.info("Error while flushing/closing fileWriter !!!");
 
 				e.printStackTrace();
 
 			}
 
-			/*
-			 * try { testplanfiber.join(); } catch (ExecutionException e1) {
-			 * e1.printStackTrace(); }
-			 */
-
 		}
 
-		System.out.println("Finished");
+		logger.info("TestPlan Finished");
 	}
 
 	private void outputFiber() throws InterruptedException, SuspendExecution {
@@ -496,10 +412,12 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 				outputrow.setRequest("TestPlan-" + this.getId() + "-Request-"
 						+ (l));
 				outputrow.setTime(strDate);
-				/*outputrow.setInputload(this.getReqRate().toString()
-						+ " reqs/sec");*/
-				outputrow.setInputload(entry.getValue().get(0)
-						+ " reqs/sec");
+				/*
+				 * outputrow.setInputload(this.getReqRate().toString() +
+				 * " reqs/sec");
+				 */
+				outputrow.setInputload(entry.getValue().get(0) + " reqs/sec");
+				entry.getValue().set(0, (long) 0);
 				// System.out.println(entry.getValue().get(0)+
 				// "    "+entry.getValue().get(2));
 				if ((entry.getValue().get(1) + entry.getValue().get(2)) != 0) {
@@ -509,9 +427,9 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 				}
 				avgThroughput = (entry.getValue().get(1)) / (timesec);
 				outputrow.setAvgThroughput(avgThroughput + " reqs/sec");
-				outputrow.setCurThroughput(entry.getValue().get(3).toString()
+				outputrow.setCurThroughput(entry.getValue().get(3)
 						+ " reqs/sec");
-				entry.getValue().set(0, (long) 0);
+
 				entry.getValue().set(3, (long) 0);
 				if (avgThroughput != 0)
 					outputrow.setResponsetime(entry.getValue().get(4)
@@ -544,5 +462,4 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 		}
 	}
 
-	
 }

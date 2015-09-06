@@ -31,6 +31,7 @@ import com.webQ.interfaces.Feature;
 
 import co.paralleluniverse.fibers.Fiber;
 import co.paralleluniverse.fibers.SuspendExecution;
+import co.paralleluniverse.fibers.httpclient.FiberHttpClient;
 import co.paralleluniverse.fibers.httpclient.FiberHttpClientBuilder;
 
 public class HttpRequest implements Feature, Serializable {
@@ -83,6 +84,8 @@ public class HttpRequest implements Feature, Serializable {
 	public void execute(Response resp) throws InterruptedException,
 			SuspendExecution {
 		try {
+			
+			
 			String requrl = this.getUrl();
 			String localregex = "\\$([A-Za-z0-9]+)_([0-9]+)";
 			Pattern p = Pattern.compile(localregex);
@@ -122,8 +125,7 @@ public class HttpRequest implements Feature, Serializable {
 				}
 
 			}
-			//System.out.println("request " + requrl);
-		/*	CloseableHttpResponse response = null;*/
+			
 
 			if (this.getHttpType() == "POST") {
 				HttpPost postrequest = new HttpPost(requrl);
@@ -149,75 +151,33 @@ public class HttpRequest implements Feature, Serializable {
 						+ requrl);*/
 				CloseableHttpResponse response=null;
 				try  {
-					response= MainController.client.execute(postrequest);
+					response=MainController.client.execute(postrequest);
 					/*System.out.println("Request: " + Fiber.currentFiber().getName()
 							+ " " + response.getStatusLine());*/
 					resp.setResponse(response);
 					} catch (final Throwable t) {
-						System.out.println("Exception in httppost");
+						/*System.out.println("Exception in httppost");*/
 						resp.setResponse(response);
 					}
-				/*response = MainController.client.execute(postrequest,
-						BASIC_RESPONSE_HANDLER);
-				System.out.println("Request: " + Fiber.currentFiber().getName()
-						+ " " + response.getStatusLine());*/
+				
 			} else {
 				HttpGet getrequest = new HttpGet(requrl);
-				System.out.println(Fiber.currentFiber().getName() + " "
-						+ requrl);
+			/*	System.out.println(Fiber.currentFiber().getName() + " "
+						+ requrl);*/
 				CloseableHttpResponse response=null;
 				try {
-					response= MainController.client.execute(getrequest);
-					System.out.println("Request: " + Fiber.currentFiber().getName()
-							+ " " + response.getStatusLine());
+					response=MainController.client.execute(getrequest);
+					/*System.out.println("Request: " + Fiber.currentFiber().getName()
+							+ " " + response.getStatusLine());*/
 					resp.setResponse(response);
 					} catch (final Throwable t) {
-						System.out.println("Exception in httpget");
+						/*System.out.println(t);
+						System.out.println("Exception in httpget");*/
 						resp.setResponse(response);
 					}
-				/*MainController.client.wait();*/
-/*				 response = MainController.client.execute(getrequest);
-*/				
-				/*response = MainController.client.execute(getrequest,
-						BASIC_RESPONSE_HANDLER);*/
-				/*System.out.println("Request: " + Fiber.currentFiber().getName()
-						+ " " + response.getStatusLine());
-*/
+
 			}
-			/*
-			 * String xml = "<xml>xxxx</xml>"; HttpEntity entity = new
-			 * ByteArrayEntity(xml.getBytes("UTF-8"));
-			 * 
-			 * HttpPost postrequest = new HttpPost(requrl);
-			 * postrequest.setEntity(entity);
-			 * postrequest.setHeader("User-Agent", USER_AGENT);
-			 * 
-			 * List<NameValuePair> urlParameters = new
-			 * ArrayList<NameValuePair>(); urlParameters.add(new
-			 * BasicNameValuePair("sn", "C02G8416DRJM")); urlParameters.add(new
-			 * BasicNameValuePair("cn", "")); urlParameters.add(new
-			 * BasicNameValuePair("locale", "")); urlParameters.add(new
-			 * BasicNameValuePair("caller", "")); urlParameters.add(new
-			 * BasicNameValuePair("num", "12345"));
-			 * 
-			 * postrequest.setEntity(new UrlEncodedFormEntity(urlParameters));
-			 */
-
-			/*
-			 * MainController.logger.info(Fiber.currentFiber().getName()+" "+requrl
-			 * );
-			 */
-
-			/*
-			 * MainController.logger.info("Request: " +
-			 * Fiber.currentFiber().getName() + " " + response
-			 * .getStatusLine());
-			 */
-
-			/*
-			 * System.out.println("Request: " + Fiber.currentFiber().getName() +
-			 * " " +response.getFirstHeader("Jmeter"));
-			 */
+		
 			
 
 		} catch (IOException e) {
@@ -225,5 +185,7 @@ public class HttpRequest implements Feature, Serializable {
 			e.printStackTrace();
 		}
 	}
+	
+
 
 }

@@ -275,9 +275,16 @@
                 -server
                 -Xmixed
                 -XX:+TieredCompilation
-                -XX:+AggressiveOpts
-                -Xmx30G
-
+                -XX:+AggressiveOpts 
+                -Xms20G 
+                -Xmx30G 
+                -XX:MaxNewSize=4G 
+                -XX:NewSize=4G 
+                -XX:PermSize=5G 
+                -XX:MaxPermSize=5G
+                
+                <!-- -Xms5G -Xmx10G -XX:MaxNewSize=4G -XX:NewSize=4G -XX:PermSize=5G -XX:MaxPermSize=5G
+ -->
                 -Dwar.location="${project.build.directory}/comsat-testprj-1.0-SNAPSHOT.war"
 
                 <!-- Debug --> <!-- -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005 -->

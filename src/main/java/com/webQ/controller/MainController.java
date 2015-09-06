@@ -2,6 +2,8 @@ package com.webQ.controller;
 
 import co.paralleluniverse.fibers.Fiber;
 import co.paralleluniverse.fibers.SuspendExecution;
+import co.paralleluniverse.fibers.httpasyncclient.FiberCloseableHttpAsyncClient;
+import co.paralleluniverse.fibers.httpclient.FiberHttpClient;
 import co.paralleluniverse.fibers.httpclient.FiberHttpClientBuilder;
 
 import com.webQ.Serializers.Serializer;
@@ -17,6 +19,13 @@ import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
+import org.apache.http.impl.nio.client.HttpAsyncClients;
+import org.apache.http.impl.nio.conn.PoolingNHttpClientConnectionManager;
+import org.apache.http.impl.nio.reactor.DefaultConnectingIOReactor;
+import org.apache.http.nio.reactor.ConnectingIOReactor;
+import org.apache.http.nio.reactor.IOReactor;
+import org.apache.http.nio.reactor.IOReactorException;
 import org.apache.http.protocol.HttpContext;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -38,6 +47,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
+import org.apache.http.impl.nio.reactor.IOReactorConfig;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
+
+
+
+
+
+
 
 /*import org.apache.log4j.Logger;*/
 import java.io.BufferedOutputStream;
@@ -77,8 +95,29 @@ public class MainController implements Serializable {
 	public static List<Output> outputlist = new ArrayList<Output>();
 
 	public static final CloseableHttpClient client = FiberHttpClientBuilder
-			.create(4).setMaxConnPerRoute(1000).setMaxConnTotal(30).build();
-
+			.create(5).setMaxConnPerRoute(10000).setMaxConnTotal(30).build();
+/*IOReactorConfig config = IOReactorConfig.DEFAULT;
+	public static CloseableHttpAsyncClient client;*/
+	
+/*	public static CloseableHttpClient client;
+*/	 /*final DefaultConnectingIOReactor ioreactor = new DefaultConnectingIOReactor(config.
+             setConnectTimeout(10000).
+             setIoThreadCount(10).
+             setSoTimeout(10000).
+             build());*/
+/*	 final PoolingNHttpClientConnectionManager mngr = new PoolingNHttpClientConnectionManager(ioreactor);
+*/    // mngr. 
+	 //mngr.setDefaultMaxPerRoute(10000);
+   //  mngr.setMaxTotal(30);
+     /*final CloseableHttpAsyncClient ahc = HttpAsyncClientBuilder.create().
+             setConnectionManager(mngr).
+             setDefaultRequestConfig(RequestConfig.custom().setLocalAddress(null).build()).build();*/
+/*	public static final CloseableHttpAsyncClient client = FiberCloseableHttpAsyncClient.wrap(HttpAsyncClients.
+	        custom().
+	        setMaxConnPerRoute(10000).
+	        setMaxConnTotal(30).
+	        build());*/
+	
 	@Autowired
 	public MainController(HelloWorldService helloWorldService)
 			throws SuspendExecution {
@@ -86,8 +125,21 @@ public class MainController implements Serializable {
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public ModelAndView home() throws SuspendExecution {
-
+	public ModelAndView home() throws SuspendExecution, IOReactorException {
+		//ConnectingIOReactor ioreactor = new DefaultConnectingIOReactor(config);
+		 /*final DefaultConnectingIOReactor ioreactor = new DefaultConnectingIOReactor(IOReactorConfig.custom().
+                 setConnectTimeout(10000).
+                 setIoThreadCount(10).
+                 setSoTimeout(10000).
+                 build());
+		final PoolingNHttpClientConnectionManager mngr = new PoolingNHttpClientConnectionManager(ioreactor);
+		mngr.setDefaultMaxPerRoute(10000);
+	    mngr.setMaxTotal(30);
+	    final CloseableHttpAsyncClient ahc = HttpAsyncClientBuilder.create().
+	             setConnectionManager(mngr).
+	             setDefaultRequestConfig(RequestConfig.custom().setLocalAddress(null).build()).build();
+	    //client = new FiberHttpClient(ahc);
+	    client= FiberCloseableHttpAsyncClient.wrap(ahc);*/
 		testPlans.clear();
 		testPlan.clear();
 		httpreqlist.clear();
