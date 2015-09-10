@@ -546,6 +546,7 @@ $(function() {
 					"select:nth-child(2)");
 
 			tdUrl.html(tdUrl.children("input[type=text]").val());
+			$("#reqtype").prop("disabled", true);
 			if (httpType.val() === "GET") {
 				$.ajax({
 					type : "POST",
@@ -680,7 +681,7 @@ $(function() {
 			}
 			tdRegexName.html(tdRegexName.children("input[type=text]").val());
 			tdRegex.html(tdRegex.children("input[type=text]").val());
-
+			$("#globalregex").prop("disabled", true);
 			$.ajax({
 				type : "POST",
 				url : "/LoadGen/regexextractor",
@@ -722,6 +723,7 @@ $(function() {
 			tdUrl
 					.html("<input type='text' class='form-control' placeholder='Enter URL' id='txtParam' value='"
 							+ tdUrl.html() + "'/>");
+			$("#reqtype").prop("disabled", false);
 		} else if (tdName.html() === "Constant Timer") {
 			var tdTime = par.children("td:nth-child(2)");
 			tdTime
@@ -741,6 +743,7 @@ $(function() {
 			tdRegex
 					.html("<input type='text' class='form-control' placeholder='Enter Regex' id='txtParam' value='"
 							+ tdRegex.html() + "'/>");
+			$("#globalregex").prop("disabled", false);
 		}
 		tdButtons
 				.html("<input type='image' src='resources/images/save.jpeg' width=25 height=25 class='btnSave'/>");

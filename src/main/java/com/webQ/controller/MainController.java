@@ -57,9 +57,11 @@ import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 
 
 
+
 /*import org.apache.log4j.Logger;*/
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -164,6 +166,20 @@ public class MainController implements Serializable {
 				logger.info("Failed to create directory!");
 			}
 		}
+		File f = new File(
+				"/home/stanly/Project/LoadGenerator/loadgen.log");
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(f);
+			writer.print("");
+			writer.close();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+
+		
 
 		return new ModelAndView("home", "command", new TestPlan());
 	}
@@ -363,10 +379,9 @@ public class MainController implements Serializable {
 		}
 		int ArraySize=testPlans.size();
 		Fiber[] fibers = new Fiber[ArraySize];
-		System.out.println("");
-		System.out
-				.println("<------------------------LoadGen Starting-------------------------->");
-		System.out.println("");
+		//System.out.println("");
+		logger.info("<------------------------LoadGen Starting-------------------------->");
+		//System.out.println("");
 
 		int i = 1;
 
@@ -770,12 +785,48 @@ public class MainController implements Serializable {
 
 		if (!file.isEmpty()) {
 			try {
+				testPlans.clear();
+				testPlan.clear();
+				httpreqlist.clear();
+				randomtest = new Test();
+				normaltest = new Test();
+				globalregexmap.clear();
+				outputlist.clear();
+				test = true;
+				File folder = new File("webapps/LoadGen/resources/tmpFiles");
+				if (folder.exists()) {
+					logger.info(folder.getAbsolutePath());
+					deleteFolder(folder);
+				} else {
+					logger.info(folder.getAbsolutePath());
+					logger.info("relative resolution failed");
+				}
+				File dir = new File("webapps/LoadGen/resources/tmpFiles");
+				if (!dir.exists()) {
+					if (dir.mkdir()) {
+						logger.info("Directory is created!");
+					} else {
+						logger.info("Failed to create directory!");
+					}
+				}
+				
+				File f = new File(
+						"/home/stanly/Project/LoadGenerator/loadgen.log");
+				PrintWriter writer;
+				try {
+					writer = new PrintWriter(f);
+					writer.print("");
+					writer.close();
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				byte[] bytes = file.getBytes();
 
-				File dir = new File("webapps/LoadGen/resources/tmpFiles");
+			/*	File dir = new File("webapps/LoadGen/resources/tmpFiles");
 				// System.out.println(dir.getPath());
 				if (!dir.exists())
-					dir.mkdirs();
+					dir.mkdirs();*/
 
 				// Create the file on server
 				File serverFile = new File(dir.getAbsolutePath()
@@ -784,9 +835,9 @@ public class MainController implements Serializable {
 						new FileOutputStream(serverFile));
 				stream.write(bytes);
 				stream.close();
-
+/*
 				testPlans.clear();
-				globalregexmap.clear();
+				globalregexmap.clear();*/
 				testPlans = Serializer.deserialzeTestPlanObject(dir
 						.getAbsolutePath()
 						+ File.separator
@@ -824,16 +875,52 @@ public class MainController implements Serializable {
 		System.out.println("file upload");
 		if (!file.isEmpty()) {
 			try {
+				testPlans.clear();
+				testPlan.clear();
+				httpreqlist.clear();
+				randomtest = new Test();
+				normaltest = new Test();
+				globalregexmap.clear();
+				outputlist.clear();
+				test = true;
+				File folder = new File("webapps/LoadGen/resources/tmpFiles");
+				if (folder.exists()) {
+					logger.info(folder.getAbsolutePath());
+					deleteFolder(folder);
+				} else {
+					logger.info(folder.getAbsolutePath());
+					logger.info("relative resolution failed");
+				}
+				File dir = new File("webapps/LoadGen/resources/tmpFiles");
+				if (!dir.exists()) {
+					if (dir.mkdir()) {
+						logger.info("Directory is created!");
+					} else {
+						logger.info("Failed to create directory!");
+					}
+				}
+				//Log File Creation
+				File f = new File(
+						"/home/stanly/Project/LoadGenerator/loadgen.log");
+				PrintWriter writer;
+				try {
+					writer = new PrintWriter(f);
+					writer.print("");
+					writer.close();
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				byte[] bytes = file.getBytes();
 				// System.out.println(file.getName());
 				// System.out.println(file.getOriginalFilename());
 
 				// Creating the directory to store file
 				// String rootPath = System.getProperty("/home/stanly");
-				File dir = new File("webapps/LoadGen/resources/tmpFiles");
+				/*File dir = new File("webapps/LoadGen/resources/tmpFiles");
 				// System.out.println(dir.getPath());
 				if (!dir.exists())
-					dir.mkdirs();
+					dir.mkdirs();*/
 
 				// Create the file on server
 				File serverFile = new File(dir.getAbsolutePath()
@@ -905,24 +992,24 @@ public class MainController implements Serializable {
 	public @ResponseBody String home_page() throws SuspendExecution {
 		String tabledata = "<table class='table table-striped table-bordered table-condensed well'>";
 		String firstrow = "<tr>";
-		firstrow += "<td>Time</td>";
-		firstrow += "<td>Request</td>";
-		firstrow += "<td>Input Load</td>";
-		firstrow += "<td>Avg Throughput</td>";
-		firstrow += "<td>Cur Throughput</td>";
-		firstrow += "<td>Response Time</td>";
-		firstrow += "<td>Error Rate</td>";
+		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Time</td>";
+		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Request</td>";
+		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Input Load</td>";
+		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Avg Throughput</td>";
+		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Cur Throughput</td>";
+		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Response Time</td>";
+		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Error Rate</td>";
 		firstrow += "</tr>";
 		tabledata += firstrow;
 		for (int i = 0; i < outputlist.size(); i++) {
 			String newrow = "<tr>";
-			newrow += "<td>" + outputlist.get(i).getTime() + "</td>";
-			newrow += "<td>" + outputlist.get(i).getRequest() + "</td>";
-			newrow += "<td>" + outputlist.get(i).getInputload() + "</td>";
-			newrow += "<td>" + outputlist.get(i).getAvgThroughput() + "</td>";
-			newrow += "<td>" + outputlist.get(i).getCurThroughput() + "</td>";
-			newrow += "<td>" + outputlist.get(i).getResponsetime() + "</td>";
-			newrow += "<td>" + outputlist.get(i).getErrorrate() + "</td>";
+			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>" + outputlist.get(i).getTime() + "</td>";
+			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>" + outputlist.get(i).getRequest() + "</td>";
+			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>" + outputlist.get(i).getInputload() + "</td>";
+			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>" + outputlist.get(i).getAvgThroughput() + "</td>";
+			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>" + outputlist.get(i).getCurThroughput() + "</td>";
+			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>" + outputlist.get(i).getResponsetime() + "</td>";
+			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>" + outputlist.get(i).getErrorrate() + "</td>";
 			newrow += "</tr>";
 			tabledata += newrow;
 		}

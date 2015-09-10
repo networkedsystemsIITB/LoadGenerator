@@ -38,10 +38,12 @@ public class HttpRequest implements Feature, Serializable {
 
 	private String url;
 	private static final HttpContext BASIC_RESPONSE_HANDLER = null;
-	
-	 /* final CloseableHttpClient client = FiberHttpClientBuilder.create(2)
-	  .setMaxConnPerRoute(100).setMaxConnTotal(10).build();*/
-	 
+
+	/*
+	 * final CloseableHttpClient client = FiberHttpClientBuilder.create(2)
+	 * .setMaxConnPerRoute(100).setMaxConnTotal(10).build();
+	 */
+
 	private static final String USER_AGENT = null;
 	private Map<String, String> postParamList = new HashMap<String, String>();
 	private String httpType;
@@ -84,8 +86,7 @@ public class HttpRequest implements Feature, Serializable {
 	public void execute(Response resp) throws InterruptedException,
 			SuspendExecution {
 		try {
-			
-			
+
 			String requrl = this.getUrl();
 			String localregex = "\\$([A-Za-z0-9]+)_([0-9]+)";
 			Pattern p = Pattern.compile(localregex);
@@ -96,7 +97,7 @@ public class HttpRequest implements Feature, Serializable {
 			Map<String, List<String>> regexmap = resp.getRegexmap();
 
 			if (m.find()) {
-				//System.out.println("inside http m");
+				// System.out.println("inside http m");
 				String refname = m.group(1);
 				int index = Integer.parseInt(m.group(2));
 				for (Entry<String, List<String>> entry : regexmap.entrySet()) {
@@ -110,7 +111,7 @@ public class HttpRequest implements Feature, Serializable {
 				}
 
 			} else if (n.find()) {
-				//System.out.println("inside http n");
+				// System.out.println("inside http n");
 				String refname = n.group(1);
 				int index = Integer.parseInt(n.group(2));
 				for (Entry<String, List<String>> entry : MainController.globalregexmap
@@ -125,7 +126,6 @@ public class HttpRequest implements Feature, Serializable {
 				}
 
 			}
-			
 
 			if (this.getHttpType() == "POST") {
 				HttpPost postrequest = new HttpPost(requrl);
@@ -147,45 +147,53 @@ public class HttpRequest implements Feature, Serializable {
 					postrequest.setEntity(entity);
 					postrequest.setHeader("User-Agent", USER_AGENT);
 				}
-				/*System.out.println(Fiber.currentFiber().getName() + " "
-						+ requrl);*/
-				CloseableHttpResponse response=null;
-				try  {
-					response=MainController.client.execute(postrequest);
-					/*System.out.println("Request: " + Fiber.currentFiber().getName()
-							+ " " + response.getStatusLine());*/
+				/*
+				 * System.out.println(Fiber.currentFiber().getName() + " " +
+				 * requrl);
+				 */
+				CloseableHttpResponse response = null;
+				try {
+					response = MainController.client.execute(postrequest);
+					/*
+					 * System.out.println("Request: " +
+					 * Fiber.currentFiber().getName() + " " +
+					 * response.getStatusLine());
+					 */
 					resp.setResponse(response);
-					} catch (final Throwable t) {
-						/*System.out.println("Exception in httppost");*/
-						resp.setResponse(response);
-					}
-				
+				} catch (final Throwable t) {
+					/* System.out.println("Exception in httppost"); */
+					resp.setResponse(response);
+				}
+
 			} else {
 				HttpGet getrequest = new HttpGet(requrl);
-			/*	System.out.println(Fiber.currentFiber().getName() + " "
-						+ requrl);*/
-				CloseableHttpResponse response=null;
+				/*
+				 * System.out.println(Fiber.currentFiber().getName() + " " +
+				 * requrl);
+				 */
+				CloseableHttpResponse response = null;
 				try {
-					response=MainController.client.execute(getrequest);
-					/*System.out.println("Request: " + Fiber.currentFiber().getName()
-							+ " " + response.getStatusLine());*/
+					response = MainController.client.execute(getrequest);
+					/*
+					 * System.out.println("Request: " +
+					 * Fiber.currentFiber().getName() + " " +
+					 * response.getStatusLine());
+					 */
 					resp.setResponse(response);
-					} catch (final Throwable t) {
-						/*System.out.println(t);
-						System.out.println("Exception in httpget");*/
-						resp.setResponse(response);
-					}
+				} catch (final Throwable t) {
+					/*
+					 * System.out.println(t);
+					 * System.out.println("Exception in httpget");
+					 */
+					resp.setResponse(response);
+				}
 
 			}
-		
-			
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
-
 
 }

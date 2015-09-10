@@ -44,24 +44,30 @@
 			<br> <br>
 
 			<div id="testtypes" class="row">
-				<input id="normaltest" type="image"
-					src="resources/images/normal.png" alt="Normal Test"> <input
+			<input type="button" id="normaltest" class="btn btn-default" value="Normal Test">
+			<input type="button" id="randomtest" class="btn btn-default" value="Random Test">
+				<!-- <input id="normaltest" type="image"
+					src="resources/images/normal.png" alt="Normal Test"> --> <!-- <input
 					id="randomtest" type="image" src="resources/images/random.png"
-					alt="Random Test">
+					alt="Random Test"> -->
 			</div>
 			<div class="row" id="testhome">
 
 				<div id="normaltesthome" style="display: none">
-					<input id="normalcrtest" type="image"
+				<input type="button" id="normalcrtest" class="btn btn-primary" value="Create Test">
+				<input type="button" id="normalopentest" class="btn btn-primary" value="Open Test">
+					<!-- <input id="normalcrtest" type="image"
 						src="resources/images/createtest.png" alt="Create Test"> <input
 						id="normalopentest" type="image"
-						src="resources/images/opentest.png" alt="Open Test">
+						src="resources/images/opentest.png" alt="Open Test"> -->
 				</div>
 				<div id="randomtesthome" style="display: none">
-					<input id="randomcrtest" type="image"
+				<input type="button" id="randomcrtest" class="btn btn-primary" value="Create Test">
+				<input type="button" id="randomopentest" class="btn btn-primary" value="Open Test">
+					<!-- <input id="randomcrtest" type="image"
 						src="resources/images/createtest.png" alt="Create Test"> <input
 						id="randomopentest" type="image"
-						src="resources/images/opentest.png" alt="Open Test">
+						src="resources/images/opentest.png" alt="Open Test"> -->
 				</div>
 			</div>
 
@@ -70,16 +76,16 @@
 
 
 				<div id="normaltestplan" style="display: none">
+	<input type="button" id="addnormaltestplan" class="btn btn-primary" value="Add TestPlan">
 
-
-					<input id="addnormaltestplan" type="image"
-						src="resources/images/addtestplan.png" alt="Add TestPlan">
+					<!-- <input id="addnormaltestplan" type="image"
+						src="resources/images/addtestplan.png" alt="Add TestPlan"> -->
 				</div>
 				<div id="randomtestplan" class="row" style="display: none">
 
-
-					<input id="addrandomtestplan" type="image"
-						src="resources/images/addtestplan.png" alt="Add TestPlan">
+<input type="button" id="addrandomtestplan" class="btn btn-primary" value="Add TestPlan">
+					<!-- <input id="addrandomtestplan" type="image"
+						src="resources/images/addtestplan.png" alt="Add TestPlan"> -->
 				</div>
 			</div>
 		</center>
@@ -94,8 +100,8 @@
 							<tr>
 								<td><input type="file" name="fileName" id="fileName"
 									form="normaluploadForm" data-filename-placement="inside"></td>
-								<td><input id="uploadbutton" type="image"
-									src="resources/images/upload.png" alt="upload"></td>
+								<td><input type="submit" id="normaluploadbutton" class="btn btn-primary" value="Upload"><!-- <input id="normaluploadbutton" type="image"
+									src="resources/images/upload.png" alt="upload"> --></td>
 						</table>
 					</div>
 
@@ -109,8 +115,8 @@
 							<tr>
 								<td><input type="file" name="fileName" id="fileName"
 									form="randomuploadForm" data-filename-placement="inside"></td>
-								<td><input id="uploadbutton" type="image"
-									src="resources/images/upload.png" alt="upload"></td>
+								<td><input type="submit" id="randomuploadbutton" class="btn btn-primary" value="Upload"><!-- <input id="uploadbutton" type="image"
+									src="resources/images/upload.png" alt="upload"> --></td>
 						</table>
 					</div>
 
@@ -211,19 +217,19 @@
 				<table
 					class="table table-striped table-bordered table-condensed well">
 					<tr>
-						<td><input id="httpreq" type="image"
+						<td><input type="button" id="httpreq" class="btn btn-primary btn-lg btn-block" value="Http Request"><!-- <input id="httpreq" type="image"
 							src="resources/images/httpreq.png" alt="Http Request"
-							width="250px"></td>
+							width="250px"> --></td>
 					</tr>
 					<tr>
-						<td><input id="consttimer" type="image"
+						<td><input type="button" id="consttimer" class="btn btn-primary btn-lg btn-block" value="Constant Timer"><!-- <input id="consttimer" type="image"
 							src="resources/images/timer.png" alt="Constant Timer"
-							width="250px"></td>
+							width="250px"> --></td>
 					</tr>
 					<tr>
-						<td><input id="regexex" type="image"
+						<td><input type="button" id="regexex" class="btn btn-primary btn-lg btn-block" value="Regex Extractor"><!-- <input id="regexex" type="image"
 							src="resources/images/regexext.png" alt="Regex Extractor"
-							width="250px"></td>
+							width="250px"> --></td>
 					</tr>
 					<!-- 		<button id="httpreq" width="200px">Http Request</button></br>
 		<button id="consttimer" width="200px">Constant Timer</button></br>
@@ -305,12 +311,14 @@
 		<center>
 			<div class="row" id="saveplan">
 				<div id="savenormalplan" style="display: none">
-					<input id="savenormaltestplan" type="image"
-						src="resources/images/savetestplan.png" alt="Save TestPlan">
+				<input type="button" id="savenormaltestplan" class="btn btn-primary" value="Save TestPlan">
+					<!-- <input id="savenormaltestplan" type="image"
+						src="resources/images/savetestplan.png" alt="Save TestPlan"> -->
 				</div>
 				<div id="saverandomplan" class="row" style="display: none">
-					<input id="saverandomtestplan" type="image"
-						src="resources/images/savetestplan.png" alt="Save TestPlan">
+				<input type="button" id="saverandomtestplan" class="btn btn-primary" value="Save TestPlan">
+					<!-- <input id="saverandomtestplan" type="image"
+						src="resources/images/savetestplan.png" alt="Save TestPlan"> -->
 				</div>
 			</div>
 			<br>
@@ -319,19 +327,31 @@
 					class="table table-striped table-bordered table-condensed well"
 					style="width: 300px">
 					<tr>
-						<td><input id="start" type="image"
+						<td>
+						<div class="ui-grid-a">
+						      <div class="ui-block-a">
+						<input type="button" id="start" class="btn btn-success btn-block" value="Start" style="display: none"> 
+						  </div>
+      					<div class="ui-block-b">
+						
+						<input type="button" id="stop" class="btn btn-danger btn-block" value="Stop" style="display: none">
+						<!-- <input id="start" type="image"
 							src="resources/images/start.png" alt="Start Test"
 							style="display: none"><input id="stop" type="image"
 							src="resources/images/stop.png" alt="Stop Test"
-							style="display: none"></td>
-						<td><input id="savetofile" type="image"
+							style="display: none"> -->
+							</div>
+</div>
+							
+							</td>
+						<td><!-- <input id="savetofile" type="image"
 							src="resources/images/save.png" alt="Save To File"
-							style="display: none">
+							style="display: none"> --><input type="button" id="savetofile" class="btn btn-primary btn-block" value="Save To File" style="display: none">
 							<div id="downloadlink" style="display: none">
-
-								<a href="resources/tmpFiles/test.xml" download> <img
-									src="resources/images/download.png" alt="Download">
-								</a>
+<a href="resources/tmpFiles/test.xml" class="btn btn-primary btn-block" download>Download</a>
+								<!-- <a href="resources/tmpFiles/test.xml" download>  <img
+									src="resources/images/download.png" alt="Download"> 
+								</a> -->
 							</div></td>
 					</tr>
 				</table>

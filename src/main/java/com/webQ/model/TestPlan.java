@@ -38,15 +38,13 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 
 	private Integer reqRate;
 	private Integer duration;
-
 	private Integer id;
 	private Integer outputrowstart;
 	private Integer random;
 	private Integer startDelay = 0;
-	/*
-	 * public HttpResponse response; public Map<String, List<String>> regexmap =
-	 * new HashMap<String, List<String>>();
-	 */
+	private boolean running;
+	private Integer runningcount;
+
 	private List<Integer> httpreqlist = new ArrayList<Integer>();
 	Map<Integer, List<Long>> reqsDetails = new HashMap<Integer, List<Long>>();
 	private SimpleDateFormat sdf = new SimpleDateFormat(
@@ -56,21 +54,27 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 	private List<Object> testPlan = new ArrayList<Object>();
 	private final Logger logger = Logger.getLogger(MainController.class);
 
-	/*
-	 * public TestPlan(TestPlan obj) { this.reqRate=obj.reqRate;
-	 * this.duration=obj.duration; this.filenum=obj.filenum;
-	 * this.delay=obj.delay; this.startDelay=obj.startDelay;
-	 * this.httpreqlist=obj.httpreqlist; this.testPlan=obj.testPlan;
-	 * 
-	 * // TODO Auto-generated constructor stub } public TestPlan() { // TODO
-	 * Auto-generated constructor stub }
-	 */
+	public boolean isRunning() throws SuspendExecution{
+		return running;
+	}
+
+	public void setRunning(boolean running) throws SuspendExecution {
+		this.running = running;
+	}
+
+	public Integer getRunningcount() throws SuspendExecution{
+		return runningcount;
+	}
+
+	public void setRunningcount(Integer runningcount) throws SuspendExecution {
+		this.runningcount = runningcount;
+	}
 
 	public Integer getRandom() throws SuspendExecution {
 		return random;
 	}
 
-	public void setRandom(Integer random) {
+	public void setRandom(Integer random) throws SuspendExecution {
 		this.random = random;
 	}
 
@@ -139,10 +143,6 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 		System.out.println("Request Rate : " + reqRate + "  " + "Duration : "
 				+ duration);
 
-		/*
-		 * System.out.println("Delay : " + delay + "  " + "Start Delay : " +
-		 * startDelay);
-		 */
 		for (int i = 0; i < testPlan.size(); i++) {
 			if (testPlan.get(i).toString().contains("HttpRequest")) {
 				type = 1;
@@ -188,7 +188,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 		 * System.out.println(""); this.displayPlan(); System.out.println("");
 		 */
 		if (this.reqRate != 0) {
-
+			this.running = true;
 			this.reqsDetails.clear();
 			for (int i = 0; i < httpreqlist.size(); i++) {
 				Output outputrow = new Output();
@@ -198,7 +198,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 						+ (i + 1));
 				outputrow.setTime(strDate);
 				outputrow.setInputload("0 reqs/sec");
-				outputrow.setErrorrate("0.00%");
+				outputrow.setErrorrate("0%");
 				outputrow.setAvgThroughput("0 reqs/sec");
 				outputrow.setCurThroughput("0 reqs/sec");
 				outputrow.setResponsetime("0 msec");
@@ -233,12 +233,13 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 			Fiber[] fibers = new Fiber[fiberArraysize];
 			System.out.println("Array Size = " + fiberArraysize);
 			final int num = this.duration * this.reqRate;
-
+			// int runningcount=num;
+			this.setRunningcount(num);
 			final RateLimiter rl = RateLimiter.create(this.reqRate);
 			Date now1 = new Date();
 			logger.info("starttime " + sdf.format(now1));
 
-			outputFiber();
+			this.outputFiber();
 			final Semaphore sem = new Semaphore(150000);
 			for (int i = 0; i < num && MainController.test; i++) {
 				rl.acquire();
@@ -267,6 +268,9 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 
 										((Feature) this.testPlan.get(k))
 												.execute(currresp);
+										long elapsedTime = System
+												.currentTimeMillis()
+												- startTime;
 										if (currresp.getResponse()
 												.getStatusLine().toString()
 												.contains("OK")) {
@@ -275,9 +279,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 													1,
 													this.reqsDetails.get(k)
 															.get(1) + 1);
-											long elapsedTime = System
-													.currentTimeMillis()
-													- startTime;
+
 											this.reqsDetails.get(k).set(
 													2,
 													this.reqsDetails.get(k)
@@ -316,26 +318,30 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 										((Feature) this.testPlan.get(k))
 												.execute(currresp);
 									}
-
 								}
 							} catch (final Throwable t) {
 
 							} finally {
 
 								sem.release();
-
+								this.setRunningcount(this.getRunningcount() - 1);
 							}
-
 						}).start();
-
+				
 			}
-
+			Fiber.sleep(this.duration * 1000);
+			while (true) {
+				if (this.runningcount <= 0) {
+					this.running = false;
+					break;
+				}
+			}
 			Date now2 = new Date();
 			logger.info("endtime " + sdf.format(now2));
 
-			if (!MainController.test) {
-				MainController.test = true;
-			}
+			/*
+			 * if (!MainController.test) { MainController.test = true; }
+			 */
 			try {
 
 				fileWriter.flush();
@@ -387,7 +393,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 		}
 		Fiber<Void> outputfiber = new Fiber<Void>(() -> {
 			int i = 1;
-			while (true) {
+			while (this.running) {
 				Fiber.sleep(1000);
 				printOutput(i);
 				i++;
