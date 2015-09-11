@@ -167,18 +167,22 @@ public class HttpRequest implements Feature, Serializable {
 
 			} else {
 				HttpGet getrequest = new HttpGet(requrl);
+
 				/*
 				 * System.out.println(Fiber.currentFiber().getName() + " " +
 				 * requrl);
 				 */
+
 				CloseableHttpResponse response = null;
 				try {
 					response = MainController.client.execute(getrequest);
+
 					/*
 					 * System.out.println("Request: " +
 					 * Fiber.currentFiber().getName() + " " +
 					 * response.getStatusLine());
 					 */
+
 					resp.setResponse(response);
 				} catch (final Throwable t) {
 					/*

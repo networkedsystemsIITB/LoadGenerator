@@ -54,7 +54,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 	private List<Object> testPlan = new ArrayList<Object>();
 	private final Logger logger = Logger.getLogger(MainController.class);
 
-	public boolean isRunning() throws SuspendExecution{
+	public boolean isRunning() throws SuspendExecution {
 		return running;
 	}
 
@@ -62,7 +62,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 		this.running = running;
 	}
 
-	public Integer getRunningcount() throws SuspendExecution{
+	public Integer getRunningcount() throws SuspendExecution {
 		return runningcount;
 	}
 
@@ -156,6 +156,9 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 			switch (type) {
 			case 1:
 				System.out.println(((HttpRequest) testPlan.get(i)).getUrl());
+				System.out.println(((HttpRequest) testPlan.get(i)).getHttpType());
+				System.out.println(((HttpRequest) testPlan.get(i)).getPostParamList());
+				System.out.println(((HttpRequest) testPlan.get(i)).getPostBody());
 				break;
 			case 2:
 				System.out.println(((ConstantTimer) testPlan.get(i)).getTime());
@@ -172,12 +175,12 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 
 		}
 		System.out.println("");
-		/*
-		 * System.out.println("HttpReq Array"); for (int i = 0; i <
-		 * httpreqlist.size(); i++) { System.out.println(httpreqlist.get(i));
-		 * 
-		 * }
-		 */
+		
+		  System.out.println("HttpReq Array"); for (int i = 0; i <
+		  httpreqlist.size(); i++) { System.out.println(httpreqlist.get(i));
+		  
+		  }
+		 
 	}
 
 	@Override
@@ -303,7 +306,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 											this.reqsDetails.get(k).set(
 													2,
 													this.reqsDetails.get(k)
-															.get(2));
+															.get(2) + 1);
 											this.reqsDetails.get(k).set(
 													3,
 													this.reqsDetails.get(k)
@@ -322,15 +325,16 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 							} catch (final Throwable t) {
 
 							} finally {
-
+								// logger.info("inside finally");
 								sem.release();
 								this.setRunningcount(this.getRunningcount() - 1);
 							}
 						}).start();
-				
+
 			}
 			Fiber.sleep(this.duration * 1000);
 			while (true) {
+				// logger.info(this.getRunningcount());
 				if (this.runningcount <= 0) {
 					this.running = false;
 					break;

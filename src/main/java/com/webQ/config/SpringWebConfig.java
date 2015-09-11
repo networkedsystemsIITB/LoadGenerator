@@ -14,27 +14,29 @@ import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
 @Import(FiberWebMvcConfigurationSupport.class)
-@ComponentScan({"com.webQ.controller"})
+@ComponentScan({ "com.webQ.controller" })
 public class SpringWebConfig extends WebMvcConfigurerAdapter {
-  @Override
-  public void addResourceHandlers(ResourceHandlerRegistry registry) {
-    registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
-  }
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/resources/**").addResourceLocations(
+				"/resources/");
+	}
 
-  @Bean
-  public InternalResourceViewResolver viewResolver() {
-    InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-    viewResolver.setViewClass(JstlView.class);
-    viewResolver.setPrefix("/WEB-INF/views/jsp/");
-    viewResolver.setSuffix(".jsp");
-    
-    return viewResolver;
-  }
-  @Bean
-  public CommonsMultipartResolver multipartResolver(){
-	  CommonsMultipartResolver multiResolver=new CommonsMultipartResolver();
-	  multiResolver.setMaxUploadSize(100000);
-	  return multiResolver;
-	  
-  }
+	@Bean
+	public InternalResourceViewResolver viewResolver() {
+		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+		viewResolver.setViewClass(JstlView.class);
+		viewResolver.setPrefix("/WEB-INF/views/jsp/");
+		viewResolver.setSuffix(".jsp");
+
+		return viewResolver;
+	}
+
+	@Bean
+	public CommonsMultipartResolver multipartResolver() {
+		CommonsMultipartResolver multiResolver = new CommonsMultipartResolver();
+		multiResolver.setMaxUploadSize(100000);
+		return multiResolver;
+
+	}
 }

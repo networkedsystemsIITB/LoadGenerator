@@ -4,8 +4,6 @@ import co.paralleluniverse.fibers.SuspendExecution;
 
 public class Output {
 
-	
-
 	private String time;
 	private String request;
 	private String inputload;
@@ -30,10 +28,6 @@ public class Output {
 		this.request = request;
 	}
 
-	
-
-
-
 	public String getInputload() {
 		return inputload;
 	}
@@ -41,8 +35,6 @@ public class Output {
 	public void setInputload(String inputload) {
 		this.inputload = inputload;
 	}
-
-	
 
 	public String getResponsetime() {
 		return responsetime;
@@ -59,6 +51,7 @@ public class Output {
 	public void setErrorrate(String errorrate) {
 		this.errorrate = errorrate;
 	}
+
 	public String getAvgThroughput() {
 		return avgThroughput;
 	}

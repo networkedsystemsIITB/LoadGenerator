@@ -110,7 +110,7 @@ buildNumber.properties
 ## File-based project format:
 *.ipr
 *.iws
-*.log
+*.log*
 
 ## Plugin-specific files:
 

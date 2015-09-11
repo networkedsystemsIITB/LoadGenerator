@@ -10,10 +10,8 @@ import com.webQ.model.Response;
 
 import co.paralleluniverse.fibers.SuspendExecution;
 
-
-
 public interface Feature {
-	
+
 	public void execute(Response response) throws InterruptedException,
-	 SuspendExecution;
+			SuspendExecution;
 }

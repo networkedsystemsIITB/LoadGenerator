@@ -10,6 +10,7 @@ $(function() {
 
 	var hrefcount = 0;
 	var saved = true;
+	var savedparam = true;
 
 	$('#logo').click(function() {
 		location.reload();
@@ -143,8 +144,8 @@ $(function() {
 	});
 
 	/*
-	 * $(':checkbox').change(function() {
-	 *  // do stuff here. It will fire on any checkbox change
+	 * $(':checkbox').change(function() { // do stuff here. It will fire on any
+	 * checkbox change
 	 * 
 	 * alert("hi"); if ($("#delay").prop('checked') == true) {
 	 * $('#delaybox').show(); } else { $('#delaybox').hide(); } });
@@ -472,34 +473,49 @@ $(function() {
 	;
 
 	function AddParam() {
+		if (savedparam === true) {
+			var tab = $(this).parent().children("table:nth-child(1)");
 
-		var tab = $(this).parent().children("table:nth-child(1)");
-
-		var newRow = "<tr><td class='ui-helper-center'><input type='text' class='form-control' placeholder='Param Name'/></td>"
-				+ "<td class='ui-helper-center'><input type='text' class='form-control' placeholder='Param Value'/></td><td style='vertical-align: middle;'>"
-				+ "<input type='image' src='resources/images/save.jpeg' width=25 height=25 class='parSave'>"
-				+ "<input type='image' src='resources/images/delete.png' width=25 height=25 class='parDelete'/></td></tr>";
-		tab.append(newRow);
-		$(".parDelete").off().on("click", DeleteParam);
-		/* $(".parEdit").off().on("click", EditParam); */
-		$(".parSave").off().on("click", SaveParam);
-	};
+			var newRow = "<tr><td class='ui-helper-center'><input type='text' class='form-control' placeholder='Param Name'/></td>"
+					+ "<td class='ui-helper-center'><input type='text' class='form-control' placeholder='Param Value'/></td><td style='vertical-align: middle;'>"
+					+ "<input type='image' src='resources/images/save.jpeg' width=25 height=25 class='parSave'>"
+					+ "<input type='image' src='resources/images/delete.png' width=25 height=25 class='parDelete'/></td></tr>";
+			tab.append(newRow);
+			$(".parDelete").off().on("click", DeleteParam);
+			/* $(".parEdit").off().on("click", EditParam); */
+			$(".parSave").off().on("click", SaveParam);
+			savedparam = false;
+		} else {
+			$("#status").html("Save Param before adding");
+			$("#status").show();
+			$("#status").delay(2000).fadeOut("slow");
+		}
+	}
+	;
 	function EditParam() {
-		var tab = $(this).parent().parent();
-		var tdName = tab.children("td:nth-child(1)");
-		var tdValue = tab.children("td:nth-child(2)");
-		var tdButtons = tab.children("td:nth-child(3)");
-		tdName
-				.html("<input type='text' class='form-control' placeholder='Param Name' value='"
-						+ tdName.html() + "'/>");
-		tdValue
-				.html("<input type='text' class='form-control' placeholder='Param Value' value='"
-						+ tdValue.html() + "'/>");
-		tdButtons
-				.html("<input type='image' src='resources/images/save.jpeg' width=25 height=25 class='parSave'/>");
-		$(".parSave").off().on("click", SaveParam);
-	};
+		if (savedparam === true) {
+			var tab = $(this).parent().parent();
+			var tdName = tab.children("td:nth-child(1)");
+			var tdValue = tab.children("td:nth-child(2)");
+			var tdButtons = tab.children("td:nth-child(3)");
+			tdName
+					.html("<input type='text' class='form-control' placeholder='Param Name' value='"
+							+ tdName.html() + "'/>");
+			tdValue
+					.html("<input type='text' class='form-control' placeholder='Param Value' value='"
+							+ tdValue.html() + "'/>");
+			tdButtons
+					.html("<input type='image' src='resources/images/save.jpeg' width=25 height=25 class='parSave'/>");
+			$(".parSave").off().on("click", SaveParam);
+		} else {
+			$("#status").html("Save Param before editing");
+			$("#status").show();
+			$("#status").delay(2000).fadeOut("slow");
+		}
+	}
+	;
 	function SaveParam() {
+		savedparam = true;
 		var tab = $(this).parent().parent();
 		var tdName = tab.children("td:nth-child(1)");
 		var tdValue = tab.children("td:nth-child(2)");
@@ -513,251 +529,293 @@ $(function() {
 		$(".parDelete").off().on("click", DeleteParam);
 		$(".parEdit").off().on("click", EditParam);
 
-	};
+	}
+	;
 	function DeleteParam() {
 
 		var tab = $(this).parent().parent();
-		
+		var num = tab.index();
+
+		if (tab.parent().children('tr').length == (num + 1))
+			savedparam = true;
 		tab.remove();
-	};
+	}
+	;
 	function Save() {
-		saved = true;
-		var par = $(this).parent().parent();
-		var tdName = par.children("td:nth-child(1)").children(
-				"label:nth-child(1)");
+		if (savedparam === true) {
+			saved = true;
+			var par = $(this).parent().parent();
+			var tdName = par.children("td:nth-child(1)").children(
+					"label:nth-child(1)");
 
-		var tdButtons = par.children("td:nth-child(3)");
+			var tdButtons = par.children("td:nth-child(3)");
 
-		tdButtons
-				.html("<input type='image' src='resources/images/delete.png' width=25 height=25 class='btnDelete'/><input type='image' src='resources/images/edit.jpeg' width=25 height=25 class='btnEdit'/>");
-		$(".btnEdit").off().on("click", Edit);
-		$(".btnDelete").off().on("click", Delete);
+			tdButtons
+					.html("<input type='image' src='resources/images/delete.png' width=25 height=25 class='btnDelete'/><input type='image' src='resources/images/edit.jpeg' width=25 height=25 class='btnEdit'/>");
+			$(".btnEdit").off().on("click", Edit);
+			$(".btnDelete").off().on("click", Delete);
 
-		if (tdName.html() === "Http Request") {
-			/*
-			 * #ttable > thead:nth-child(2) > tr:nth-child(2) > td:nth-child(2) >
-			 * input:nth-child(1)
-			 */
+			if (tdName.html() === "Http Request") {
+				/*
+				 * #ttable > thead:nth-child(2) > tr:nth-child(2) >
+				 * td:nth-child(2) > input:nth-child(1)
+				 */
 
-			var tdUrl = par.children("td:nth-child(2)").children(
-					"div:nth-child(1)");
+				var tdUrl = par.children("td:nth-child(2)").children(
+						"div:nth-child(1)");
 
-			var httpType = par.children("td:nth-child(1)").children(
-					"select:nth-child(2)");
+				var httpType = par.children("td:nth-child(1)").children(
+						"select:nth-child(2)");
+				var httpval=httpType.val();
+				tdUrl.html(tdUrl.children("input[type=text]").val());
+				
+				if (httpType.val() === "GET") {
+					httpType.prop("disabled", true);
+					$.ajax({
+						type : "POST",
+						url : "/LoadGen/httpgetreq",
+						data : {
+							url : tdUrl.html(),
+							httpType : httpval,
+							rownum : par.index()
+						},
+						success : function(response) {
+							// we have the response
+							$("#status").html("Http Request Added");
+							$("#status").show();
+							$("#status").delay(2000).fadeOut("slow");
+							
 
-			tdUrl.html(tdUrl.children("input[type=text]").val());
-			$("#reqtype").prop("disabled", true);
-			if (httpType.val() === "GET") {
+						},
+						error : function(e) {
+							$("#status").html("Http Request failed to add");
+							$("#status").show();
+							$("#status").delay(2000).fadeOut("slow");
+						}
+					});
+					
+				} else {
+					
+					httpType.prop("disabled", true);
+					var tables = par.children("td:nth-child(2)").children(
+							"div:nth-child(2)").children("div:nth-child(2)")
+							.children("div:nth-child(1)").children(
+									"table:nth-child(1)");
+					/* table.children("td") */
+					/* if ((table).find("tr").not("thead tr").length == 1) { */
+					var rawbody = par.children("td:nth-child(2)").children(
+							"div:nth-child(2)").children("div:nth-child(2)")
+							.children("div:nth-child(2)").children(
+									"textarea:nth-child(1)");
+					var plus = par.children("td:nth-child(2)").children(
+							"div:nth-child(2)").children("div:nth-child(2)")
+							.children("div:nth-child(1)").children(
+									"input:nth-child(2)");
+					plus.hide();
+					// alert(rawbody.val());
+					var tableparam = tables.tableToJSON();
+					// table.children("")
+					//tables.$('td:nth-child(3)').hide();
+					var tabledata = {
+						"url" : tdUrl.html(),
+						"httpType" : httpval,
+						"rownum" : par.index(),
+						"postBody" : rawbody.val(),
+						"postParams" : tableparam
+
+					};
+
+					$.toJSON(tabledata);
+					// alert(JSON.stringify(tabledata));
+					/*
+					 * var tabledatacomb = tableparam.concat(tabledata);
+					 * alert(JSON.stringify(tabledatacomb)); var tabdata =
+					 * JSON.stringify(tabledatacomb);
+					 */
+					/* alert(JSON.stringify(tabledata)); */
+					$.ajax({
+						type : "POST",
+						url : "/LoadGen/httppostreq",
+						contentType : 'application/json; charset=utf-8',
+						dataType : 'json',
+
+						data : JSON.stringify(tabledata),
+
+						success : function(response) {
+							// we have the response
+							$("#status").html("Http Request Added");
+							$("#status").show();
+							$("#status").delay(2000).fadeOut("slow");
+
+						},
+						error : function(e) {
+							$("#status").html("Http Request failed to add");
+							$("#status").show();
+							$("#status").delay(2000).fadeOut("slow");
+						}
+					});
+					/* } *//*
+					 * else {
+					 * 
+					 * var tabledata = table.tableToJSON(); var
+					 * actualObj = JSON.parse(jsonText); actualObj+={
+					 * "url ":tdUrl.html(),
+					 * "httpType":httpType.val(),"rownum":par.index()};
+					 * tabledata.url=tdUrl.html();
+					 * tabledata.httpType=httpType.val();
+					 * tabledata.rownum=par.index();
+					 * 
+					 * //alert(actualData);
+					 * alert(JSON.stringify(actualObj)); }
+					 */
+					
+				}
+			} else if (tdName.html() === "Constant Timer") {
+				var tdTime = par.children("td:nth-child(2)");
+
+				tdTime.html(tdTime.children("input[type=text]").val());
+
 				$.ajax({
 					type : "POST",
-					url : "/LoadGen/httpgetreq",
+					url : "/LoadGen/consttimer",
 					data : {
-						url : tdUrl.html(),
-						httpType : httpType.val(),
+						time : tdTime.html(),
 						rownum : par.index()
 					},
 					success : function(response) {
 						// we have the response
-						$("#status").html("Http Request Added");
+						$("#status").html("Constant Timer Added");
 						$("#status").show();
 						$("#status").delay(2000).fadeOut("slow");
 
 					},
 					error : function(e) {
-						$("#status").html("Http Request failed to add");
+						$("#status").html("Constant Timer failed to add");
 						$("#status").show();
 						$("#status").delay(2000).fadeOut("slow");
 					}
 				});
-			} else {
-				/* alert("inside"); */
-				var table = par.children("td:nth-child(2)").children(
-						"div:nth-child(2)").children("div:nth-child(2)")
-						.children("div:nth-child(1)").children(
-								"table:nth-child(1)");
-				/*table.children("td")*/
-				/* if ((table).find("tr").not("thead tr").length == 1) { */
-				var rawbody = par.children("td:nth-child(2)").children(
-						"div:nth-child(2)").children("div:nth-child(2)")
-						.children("div:nth-child(2)").children(
-								"textarea:nth-child(1)");
-				// alert(rawbody.val());
-				var tableparam = table.tableToJSON();
+			} else if (tdName.html() === "Regex Extractor") {
+				var tdRegexName = par.children("td:nth-child(2)").children()
+						.children("tbody:nth-child(1)").children(
+								"tr:nth-child(2)").children("td:nth-child(1)");
+				var tdRegex = par.children("td:nth-child(2)").children()
+						.children("tbody:nth-child(1)").children(
+								"tr:nth-child(2)").children("td:nth-child(2)");
 
-				var tabledata = {
-					"url" : tdUrl.html(),
-					"httpType" : httpType.val(),
-					"rownum" : par.index(),
-					"postBody" : rawbody.val(),
-					"postParams" : tableparam
+				var global = par.children("td:nth-child(1)").children(
+						"div:nth-child(2)").children("input:nth-child(1)");
 
-				};
-
-				$.toJSON(tabledata);
-				alert(JSON.stringify(tabledata));
-				/*
-				 * var tabledatacomb = tableparam.concat(tabledata);
-				 * alert(JSON.stringify(tabledatacomb)); var tabdata =
-				 * JSON.stringify(tabledatacomb);
-				 */
-				/* alert(JSON.stringify(tabledata)); */
+				var globalvalue;
+				if (global.prop('checked') == true) {
+					globalvalue = 1;
+				} else {
+					globalvalue = 0;
+				}
+				tdRegexName
+						.html(tdRegexName.children("input[type=text]").val());
+				tdRegex.html(tdRegex.children("input[type=text]").val());
+				global.prop("disabled", true);
 				$.ajax({
 					type : "POST",
-					url : "/LoadGen/httppostreq",
-					contentType : 'application/json; charset=utf-8',
-					dataType : 'json',
-
-					data : JSON.stringify(tabledata),
-
+					url : "/LoadGen/regexextractor",
+					data : {
+						refName : tdRegexName.html(),
+						regex : tdRegex.html(),
+						global : globalvalue,
+						rownum : par.index()
+					},
 					success : function(response) {
 						// we have the response
-						$("#status").html("Http Request Added");
+						$("#status").html("Regex Added");
 						$("#status").show();
 						$("#status").delay(2000).fadeOut("slow");
-
 					},
 					error : function(e) {
-						$("#status").html("Http Request failed to add");
+						$("#status").html("Regex failed to add");
 						$("#status").show();
 						$("#status").delay(2000).fadeOut("slow");
 					}
 				});
-				/* } *//*
-						 * else {
-						 * 
-						 * var tabledata = table.tableToJSON(); var actualObj =
-						 * JSON.parse(jsonText); actualObj+={ "url
-						 * ":tdUrl.html(),
-						 * "httpType":httpType.val(),"rownum":par.index()};
-						 * tabledata.url=tdUrl.html();
-						 * tabledata.httpType=httpType.val();
-						 * tabledata.rownum=par.index();
-						 * 
-						 * //alert(actualData);
-						 * alert(JSON.stringify(actualObj)); }
-						 */
-
+				
 			}
-		} else if (tdName.html() === "Constant Timer") {
-			var tdTime = par.children("td:nth-child(2)");
-
-			tdTime.html(tdTime.children("input[type=text]").val());
-
-			$.ajax({
-				type : "POST",
-				url : "/LoadGen/consttimer",
-				data : {
-					time : tdTime.html(),
-					rownum : par.index()
-				},
-				success : function(response) {
-					// we have the response
-					$("#status").html("Constant Timer Added");
-					$("#status").show();
-					$("#status").delay(2000).fadeOut("slow");
-
-				},
-				error : function(e) {
-					$("#status").html("Constant Timer failed to add");
-					$("#status").show();
-					$("#status").delay(2000).fadeOut("slow");
-				}
-			});
-		} else if (tdName.html() === "Regex Extractor") {
-			var tdRegexName = par.children("td:nth-child(2)").children()
-					.children("tbody:nth-child(1)").children("tr:nth-child(2)")
-					.children("td:nth-child(1)");
-			var tdRegex = par.children("td:nth-child(2)").children().children(
-					"tbody:nth-child(1)").children("tr:nth-child(2)").children(
-					"td:nth-child(2)");
-
-			var global = par.children("td:nth-child(1)").children(
-					"div:nth-child(2)").children("input:nth-child(1)");
-			var globalvalue;
-			if (global.prop('checked') == true) {
-				globalvalue = 1;
-			} else {
-				globalvalue = 0;
-			}
-			tdRegexName.html(tdRegexName.children("input[type=text]").val());
-			tdRegex.html(tdRegex.children("input[type=text]").val());
-			$("#globalregex").prop("disabled", true);
-			$.ajax({
-				type : "POST",
-				url : "/LoadGen/regexextractor",
-				data : {
-					refName : tdRegexName.html(),
-					regex : tdRegex.html(),
-					global : globalvalue,
-					rownum : par.index()
-				},
-				success : function(response) {
-					// we have the response
-					$("#status").html("Regex Added");
-					$("#status").show();
-					$("#status").delay(2000).fadeOut("slow");
-				},
-				error : function(e) {
-					$("#status").html("Regex failed to add");
-					$("#status").show();
-					$("#status").delay(2000).fadeOut("slow");
-				}
-			});
+		} else {
+			$("#status").html("Save Param First");
+			$("#status").show();
+			$("#status").delay(2000).fadeOut("slow");
 		}
-
 	}
 	;
 	function Edit() {
-		var par = $(this).parent().parent();
+		if (saved === true) {
+			var par = $(this).parent().parent();
 
-		var tdName = par.children("td:nth-child(1)").children(
-				"label:nth-child(1)");
+			var tdName = par.children("td:nth-child(1)").children(
+					"label:nth-child(1)");
 
-		var tdButtons = par.children("td:nth-child(3)");
-		var num = par.index();
-		// alert(num);
-		if (tdName.html() === "Http Request") {
-			var tdUrl = par.children("td:nth-child(2)").children(
-					"div:nth-child(1)");
+			var tdButtons = par.children("td:nth-child(3)");
+			var num = par.index();
+			// alert(num);
+			if (tdName.html() === "Http Request") {
+				var tdUrl = par.children("td:nth-child(2)").children(
+						"div:nth-child(1)");
 
-			tdUrl
-					.html("<input type='text' class='form-control' placeholder='Enter URL' id='txtParam' value='"
-							+ tdUrl.html() + "'/>");
-			$("#reqtype").prop("disabled", false);
-		} else if (tdName.html() === "Constant Timer") {
-			var tdTime = par.children("td:nth-child(2)");
-			tdTime
-					.html("<input type='text' class='form-control' placeholder='Enter Time(millisecs)'id='txtParam' value='"
-							+ tdTime.html() + "'/>");
+				tdUrl
+						.html("<input type='text' class='form-control' placeholder='Enter URL' id='txtParam' value='"
+								+ tdUrl.html() + "'/>");
+				var httpType = par.children("td:nth-child(1)").children(
+						"select:nth-child(2)");
 
-		} else if (tdName.html() === "Regex Extractor") {
-			var tdRegexName = par.children("td:nth-child(2)").children()
-					.children("tbody:nth-child(1)").children("tr:nth-child(2)")
-					.children("td:nth-child(1)");
-			var tdRegex = par.children("td:nth-child(2)").children().children(
-					"tbody:nth-child(1)").children("tr:nth-child(2)").children(
-					"td:nth-child(2)");
-			tdRegexName
-					.html("<input type='text' class='form-control' placeholder='Enter Reference Name' id='txtParam' value='"
-							+ tdRegexName.html() + "'/>");
-			tdRegex
-					.html("<input type='text' class='form-control' placeholder='Enter Regex' id='txtParam' value='"
-							+ tdRegex.html() + "'/>");
-			$("#globalregex").prop("disabled", false);
+				httpType.prop("disabled", false);
+				var plus = par.children("td:nth-child(2)").children(
+						"div:nth-child(2)").children("div:nth-child(2)")
+						.children("div:nth-child(1)").children(
+								"input:nth-child(2)");
+				plus.show();
+			} else if (tdName.html() === "Constant Timer") {
+				var tdTime = par.children("td:nth-child(2)");
+				tdTime
+						.html("<input type='text' class='form-control' placeholder='Enter Time(millisecs)'id='txtParam' value='"
+								+ tdTime.html() + "'/>");
+
+			} else if (tdName.html() === "Regex Extractor") {
+				var tdRegexName = par.children("td:nth-child(2)").children()
+						.children("tbody:nth-child(1)").children(
+								"tr:nth-child(2)").children("td:nth-child(1)");
+				var tdRegex = par.children("td:nth-child(2)").children()
+						.children("tbody:nth-child(1)").children(
+								"tr:nth-child(2)").children("td:nth-child(2)");
+				tdRegexName
+						.html("<input type='text' class='form-control' placeholder='Enter Reference Name' id='txtParam' value='"
+								+ tdRegexName.html() + "'/>");
+				tdRegex
+						.html("<input type='text' class='form-control' placeholder='Enter Regex' id='txtParam' value='"
+								+ tdRegex.html() + "'/>");
+				var global = par.children("td:nth-child(1)").children(
+						"div:nth-child(2)").children("input:nth-child(1)");
+				global.prop("disabled", false);
+
+			}
+			tdButtons
+					.html("<input type='image' src='resources/images/save.jpeg' width=25 height=25 class='btnSave'/>");
+			$(".btnSave").off().on("click", Save);
+			// $(".btnEdit").bind("click", Edit);
+			// $(".btnDelete").bind("click", Delete);
+		} else {
+			$("#status").html("Save Feature before editing");
+			$("#status").show();
+			$("#status").delay(2000).fadeOut("slow");
 		}
-		tdButtons
-				.html("<input type='image' src='resources/images/save.jpeg' width=25 height=25 class='btnSave'/>");
-		$(".btnSave").off().on("click", Save);
-		// $(".btnEdit").bind("click", Edit);
-		// $(".btnDelete").bind("click", Delete);
 	}
 	;
 
 	function Delete() {
 		var par = $(this).parent().parent();
 		var num = par.index();
-		if ($('#tbody').children('tr').length == num+1)
-		saved=true;
+		if ($('#tbody').children('tr').length == num + 1) {
+			saved = true;
+			savedparam = true;
+		}
 		par.remove();
 		if ($('#tbody').children('tr').length == 0)
 			$('#testtable').hide();
@@ -783,6 +841,7 @@ $(function() {
 
 	}
 	;
+
 	function NormalStart() {
 		$('#start').hide();
 		$('#stop').show();
@@ -993,7 +1052,8 @@ $(function() {
 				$("#status").delay(2000).fadeOut("slow");
 			}
 		});
-	};
+	}
+	;
 });
 function checkChange() {
 	if ($("#delay").prop('checked') == true) {

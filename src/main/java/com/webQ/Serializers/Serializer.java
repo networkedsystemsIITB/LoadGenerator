@@ -16,113 +16,100 @@ import com.webQ.model.Test;
 import com.webQ.model.TestPlan;
 
 public class Serializer {
-	 public static void serializeTestObject(Test test,String path) throws Exception{
-		 
-		        XMLEncoder encoder =
-		           new XMLEncoder(
-		              new BufferedOutputStream(
-		                new FileOutputStream(path)));
-		        encoder.writeObject(test);
-		        encoder.close();
-		    
+	public static void serializeTestObject(Test test, String path)
+			throws Exception {
 
-		   
-		       
-		   
-		 /* 
-		   try{
-	 
-			FileOutputStream fout = new FileOutputStream(path);
-			ObjectOutputStream oos = new ObjectOutputStream(fout);   
-			
-			oos.writeObject(testPlans);
-			
-			
-			oos.close();
-			
-	 
-		   }catch(Exception ex){
-			   ex.printStackTrace();
-		   }*/
-	   }
-	 public static Test deserialzeTestObject(String path) throws FileNotFoundException{
-		 XMLDecoder decoder =
-		            new XMLDecoder(new BufferedInputStream(
-		                new FileInputStream(path)));
-		 Test test=new Test();
-		        test = (Test)decoder.readObject();
-		        decoder.close();
-		        return test;
-		  /* TestPlan testplan;
-		   List<TestPlan> testPlans=new ArrayList<TestPlan>();
-	 
-		   try{
-	 
-			   FileInputStream fin = new FileInputStream(path);
-			   ObjectInputStream ois = new ObjectInputStream(fin);
-			   testPlans =  (List<TestPlan>) ois.readObject();
-			   ois.close();
-	 
-			   return testPlans;
-	 
-		   }catch(Exception ex){
-			   ex.printStackTrace();
-			   return null;
-		   } */
-	   } 
-	 public static void serializeTestPlanObject(List<TestPlan> testPlans,String path) throws Exception{
-		 
-	        XMLEncoder encoder =
-	           new XMLEncoder(
-	              new BufferedOutputStream(
-	                new FileOutputStream(path)));
-	        encoder.writeObject(testPlans);
-	        encoder.close();
-	    
+		XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+				new FileOutputStream(path)));
+		encoder.writeObject(test);
+		encoder.close();
 
-	   
-	       
-	   
-	 /* 
-	   try{
+		/*
+		 * try{
+		 * 
+		 * FileOutputStream fout = new FileOutputStream(path);
+		 * ObjectOutputStream oos = new ObjectOutputStream(fout);
+		 * 
+		 * oos.writeObject(testPlans);
+		 * 
+		 * 
+		 * oos.close();
+		 * 
+		 * 
+		 * }catch(Exception ex){ ex.printStackTrace(); }
+		 */
+	}
 
-		FileOutputStream fout = new FileOutputStream(path);
-		ObjectOutputStream oos = new ObjectOutputStream(fout);   
-		
-		oos.writeObject(testPlans);
-		
-		
-		oos.close();
-		
+	public static Test deserialzeTestObject(String path)
+			throws FileNotFoundException {
+		XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(
+				new FileInputStream(path)));
+		Test test = new Test();
+		test = (Test) decoder.readObject();
+		decoder.close();
+		return test;
+		/*
+		 * TestPlan testplan; List<TestPlan> testPlans=new
+		 * ArrayList<TestPlan>();
+		 * 
+		 * try{
+		 * 
+		 * FileInputStream fin = new FileInputStream(path); ObjectInputStream
+		 * ois = new ObjectInputStream(fin); testPlans = (List<TestPlan>)
+		 * ois.readObject(); ois.close();
+		 * 
+		 * return testPlans;
+		 * 
+		 * }catch(Exception ex){ ex.printStackTrace(); return null; }
+		 */
+	}
 
-	   }catch(Exception ex){
-		   ex.printStackTrace();
-	   }*/
-}
-public static List<TestPlan> deserialzeTestPlanObject(String path) throws FileNotFoundException{
-	 XMLDecoder decoder =
-	            new XMLDecoder(new BufferedInputStream(
-	                new FileInputStream(path)));
-	 List<TestPlan> testPlans = new ArrayList<TestPlan>();
-	        testPlans = (List<TestPlan>)decoder.readObject();
-	        decoder.close();
-	        return testPlans;
-	  /* TestPlan testplan;
-	   List<TestPlan> testPlans=new ArrayList<TestPlan>();
+	public static void serializeTestPlanObject(List<TestPlan> testPlans,
+			String path) throws Exception {
 
-	   try{
+		XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+				new FileOutputStream(path)));
+		encoder.writeObject(testPlans);
+		encoder.close();
 
-		   FileInputStream fin = new FileInputStream(path);
-		   ObjectInputStream ois = new ObjectInputStream(fin);
-		   testPlans =  (List<TestPlan>) ois.readObject();
-		   ois.close();
+		/*
+		 * try{
+		 * 
+		 * FileOutputStream fout = new FileOutputStream(path);
+		 * ObjectOutputStream oos = new ObjectOutputStream(fout);
+		 * 
+		 * oos.writeObject(testPlans);
+		 * 
+		 * 
+		 * oos.close();
+		 * 
+		 * 
+		 * }catch(Exception ex){ ex.printStackTrace(); }
+		 */
+	}
 
-		   return testPlans;
-
-	   }catch(Exception ex){
-		   ex.printStackTrace();
-		   return null;
-	   } */
-} 
+	public static List<TestPlan> deserialzeTestPlanObject(String path)
+			throws FileNotFoundException {
+		XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(
+				new FileInputStream(path)));
+		List<TestPlan> testPlans = new ArrayList<TestPlan>();
+		testPlans = (List<TestPlan>) decoder.readObject();
+		decoder.close();
+		return testPlans;
+		/*
+		 * TestPlan testplan; List<TestPlan> testPlans=new
+		 * ArrayList<TestPlan>();
+		 * 
+		 * try{
+		 * 
+		 * FileInputStream fin = new FileInputStream(path); ObjectInputStream
+		 * ois = new ObjectInputStream(fin); testPlans = (List<TestPlan>)
+		 * ois.readObject(); ois.close();
+		 * 
+		 * return testPlans;
+		 * 
+		 * }catch(Exception ex){ ex.printStackTrace(); return null; }
+		 */
+	}
 
 }

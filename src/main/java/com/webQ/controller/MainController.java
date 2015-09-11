@@ -51,13 +51,6 @@ import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 
-
-
-
-
-
-
-
 /*import org.apache.log4j.Logger;*/
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -98,28 +91,37 @@ public class MainController implements Serializable {
 
 	public static final CloseableHttpClient client = FiberHttpClientBuilder
 			.create(5).setMaxConnPerRoute(10000).setMaxConnTotal(30).build();
-/*IOReactorConfig config = IOReactorConfig.DEFAULT;
-	public static CloseableHttpAsyncClient client;*/
-	
-/*	public static CloseableHttpClient client;
-*/	 /*final DefaultConnectingIOReactor ioreactor = new DefaultConnectingIOReactor(config.
-             setConnectTimeout(10000).
-             setIoThreadCount(10).
-             setSoTimeout(10000).
-             build());*/
-/*	 final PoolingNHttpClientConnectionManager mngr = new PoolingNHttpClientConnectionManager(ioreactor);
-*/    // mngr. 
-	 //mngr.setDefaultMaxPerRoute(10000);
-   //  mngr.setMaxTotal(30);
-     /*final CloseableHttpAsyncClient ahc = HttpAsyncClientBuilder.create().
-             setConnectionManager(mngr).
-             setDefaultRequestConfig(RequestConfig.custom().setLocalAddress(null).build()).build();*/
-/*	public static final CloseableHttpAsyncClient client = FiberCloseableHttpAsyncClient.wrap(HttpAsyncClients.
-	        custom().
-	        setMaxConnPerRoute(10000).
-	        setMaxConnTotal(30).
-	        build());*/
-	
+
+	/*
+	 * IOReactorConfig config = IOReactorConfig.DEFAULT; public static
+	 * CloseableHttpAsyncClient client;
+	 */
+
+	/*
+	 * public static CloseableHttpClient client;
+	 *//*
+		 * final DefaultConnectingIOReactor ioreactor = new
+		 * DefaultConnectingIOReactor(config. setConnectTimeout(10000).
+		 * setIoThreadCount(10). setSoTimeout(10000). build());
+		 */
+	/*
+	 * final PoolingNHttpClientConnectionManager mngr = new
+	 * PoolingNHttpClientConnectionManager(ioreactor);
+	 */// mngr.
+		// mngr.setDefaultMaxPerRoute(10000);
+		// mngr.setMaxTotal(30);
+	/*
+	 * final CloseableHttpAsyncClient ahc = HttpAsyncClientBuilder.create().
+	 * setConnectionManager(mngr).
+	 * setDefaultRequestConfig(RequestConfig.custom()
+	 * .setLocalAddress(null).build()).build();
+	 */
+	/*
+	 * public static final CloseableHttpAsyncClient client =
+	 * FiberCloseableHttpAsyncClient.wrap(HttpAsyncClients. custom().
+	 * setMaxConnPerRoute(10000). setMaxConnTotal(30). build());
+	 */
+
 	@Autowired
 	public MainController(HelloWorldService helloWorldService)
 			throws SuspendExecution {
@@ -128,20 +130,22 @@ public class MainController implements Serializable {
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView home() throws SuspendExecution, IOReactorException {
-		//ConnectingIOReactor ioreactor = new DefaultConnectingIOReactor(config);
-		 /*final DefaultConnectingIOReactor ioreactor = new DefaultConnectingIOReactor(IOReactorConfig.custom().
-                 setConnectTimeout(10000).
-                 setIoThreadCount(10).
-                 setSoTimeout(10000).
-                 build());
-		final PoolingNHttpClientConnectionManager mngr = new PoolingNHttpClientConnectionManager(ioreactor);
-		mngr.setDefaultMaxPerRoute(10000);
-	    mngr.setMaxTotal(30);
-	    final CloseableHttpAsyncClient ahc = HttpAsyncClientBuilder.create().
-	             setConnectionManager(mngr).
-	             setDefaultRequestConfig(RequestConfig.custom().setLocalAddress(null).build()).build();
-	    //client = new FiberHttpClient(ahc);
-	    client= FiberCloseableHttpAsyncClient.wrap(ahc);*/
+		// ConnectingIOReactor ioreactor = new
+		// DefaultConnectingIOReactor(config);
+		/*
+		 * final DefaultConnectingIOReactor ioreactor = new
+		 * DefaultConnectingIOReactor(IOReactorConfig.custom().
+		 * setConnectTimeout(10000). setIoThreadCount(10). setSoTimeout(10000).
+		 * build()); final PoolingNHttpClientConnectionManager mngr = new
+		 * PoolingNHttpClientConnectionManager(ioreactor);
+		 * mngr.setDefaultMaxPerRoute(10000); mngr.setMaxTotal(30); final
+		 * CloseableHttpAsyncClient ahc = HttpAsyncClientBuilder.create().
+		 * setConnectionManager(mngr).
+		 * setDefaultRequestConfig(RequestConfig.custom
+		 * ().setLocalAddress(null).build()).build(); //client = new
+		 * FiberHttpClient(ahc); client=
+		 * FiberCloseableHttpAsyncClient.wrap(ahc);
+		 */
 		testPlans.clear();
 		testPlan.clear();
 		httpreqlist.clear();
@@ -166,8 +170,7 @@ public class MainController implements Serializable {
 				logger.info("Failed to create directory!");
 			}
 		}
-		File f = new File(
-				"/home/stanly/Project/LoadGenerator/loadgen.log");
+		File f = new File("/home/stanly/Project/LoadGenerator/loadgen.log");
 		PrintWriter writer;
 		try {
 			writer = new PrintWriter(f);
@@ -177,9 +180,6 @@ public class MainController implements Serializable {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-
-		
 
 		return new ModelAndView("home", "command", new TestPlan());
 	}
@@ -232,7 +232,7 @@ public class MainController implements Serializable {
 			BindingResult result) throws SuspendExecution {
 		HttpRequest req = new HttpRequest();
 		JSONObject obj = new JSONObject(tabdata);
-		Integer rownum = obj.getInt("rownum");
+		int rownum = obj.getInt("rownum");
 		req.setUrl(obj.getString("url"));
 		req.setHttpType(obj.getString("httpType"));
 		req.setPostBody(obj.getString("postBody"));
@@ -246,9 +246,13 @@ public class MainController implements Serializable {
 
 		}
 		req.setPostParamList(postParamList);
-		/*
-		 * System.out.println(req.getHttpType());
-		 */
+
+/*		System.out.println(req.getHttpType());
+		System.out.println(req.getPostParamList());
+		System.out.println(req.getUrl());
+		System.out.println(req.getPostBody());
+		System.out.println(rownum);*/
+
 		if (rownum == testPlan.size()) {
 			testPlan.add(req);
 			httpreqlist.add(rownum);
@@ -293,8 +297,10 @@ public class MainController implements Serializable {
 			throws SuspendExecution {
 		newTestPlan.setTestPlan(testPlan);
 		newTestPlan.setHttpreqlist(httpreqlist);
-		System.out.println("Duration : " + newTestPlan.getDuration());
-		System.out.println("Delay : " + newTestPlan.getStartDelay());
+		/*
+		 * System.out.println("Duration : " + newTestPlan.getDuration());
+		 * System.out.println("Delay : " + newTestPlan.getStartDelay());
+		 */
 		newTestPlan.displayPlan();
 		/*
 		 * for(int i=0;i<httpreqlist.size();i++)
@@ -377,11 +383,11 @@ public class MainController implements Serializable {
 		if (logger.isInfoEnabled()) {
 			logger.info("Starting");
 		}
-		int ArraySize=testPlans.size();
+		int ArraySize = testPlans.size();
 		Fiber[] fibers = new Fiber[ArraySize];
-		//System.out.println("");
+		// System.out.println("");
 		logger.info("<------------------------LoadGen Starting-------------------------->");
-		//System.out.println("");
+		// System.out.println("");
 
 		int i = 1;
 
@@ -402,7 +408,7 @@ public class MainController implements Serializable {
 					System.out.println("");
 					currtestplan.execute(null);
 				}).start();
-				int index=i-2;
+				int index = i - 2;
 				fibers[index] = testplansfiber;
 			} else {
 				test = true;
@@ -549,12 +555,12 @@ public class MainController implements Serializable {
 			testPlanslist.add(newtestPlans);
 
 		}
-		int ArraySize=testPlanslist.size()*testPlan.size();
+		int ArraySize = testPlanslist.size() * testPlan.size();
 		Fiber[] fibers = new Fiber[ArraySize];
 		/* Fiber<Void> testplansfiber = new Fiber<Void>(() -> { */
-		int k=0;
+		int k = 0;
 		for (List<TestPlan> currtestPlans : testPlanslist) {
-			
+
 			int i = 1;
 			for (TestPlan currtestplan : currtestPlans) {
 				if (test) {
@@ -587,16 +593,18 @@ public class MainController implements Serializable {
 						outputlist.add(new Output());
 					Fiber<Void> testplansfiber = new Fiber<Void>(() -> {
 
-						/*
-						 * System.out.println("outside testplan");
-						 * currtestplan.displayPlan(); System.out.println("");
-						 */
+						System.out.println("outside testplan");
+						currtestplan.displayPlan();
+						System.out.println("");
+
 						// currrateindex++;
 
 							currtestplan.execute(null);
 						}).start();
-					int index=(k*currtestPlans.size())+(i-2);
-					fibers[index]=testplansfiber;
+					/*
+					 * int index=(k*currtestPlans.size())+(i-2);
+					 * fibers[index]=testplansfiber;
+					 */
 				} else {
 					test = true;
 					break;
@@ -606,16 +614,11 @@ public class MainController implements Serializable {
 			Fiber.sleep(randomtest.getEpoch() * 1000);
 			logger.info("");
 		}
-		for (Fiber fiber : fibers) {
-			try {
-				if (!test)
-					break;
-				fiber.join();
-			} catch (ExecutionException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
+		/*
+		 * for (Fiber fiber : fibers) { try { if (!test) break; fiber.join(); }
+		 * catch (ExecutionException e1) { // TODO Auto-generated catch block
+		 * e1.printStackTrace(); } }
+		 */
 		if (logger.isInfoEnabled()) {
 			logger.info("Test Finished");
 		}
@@ -663,7 +666,7 @@ public class MainController implements Serializable {
 		int currMaxReqRate, remainingMix, newMix, currrateindex = 0;
 		List<Integer> requestMix = new ArrayList<Integer>();
 		List<List<TestPlan>> testPlanslist = new ArrayList<List<TestPlan>>();
-		
+
 		for (int currepoch = 0; currepoch < totalepochs; currepoch++) {
 			if (randomtest.getMaxreqRate() != 0)
 				currMaxReqRate = randInt(1, randomtest.getMaxreqRate());
@@ -701,34 +704,16 @@ public class MainController implements Serializable {
 			testPlanslist.add(newtestPlans);
 
 		}
-		int ArraySize=testPlanslist.size()*testPlan.size();
+		int ArraySize = testPlanslist.size() * testPlan.size();
 		Fiber[] fibers = new Fiber[ArraySize];
-		int k=0;
+		int k = 0;
 		/* Fiber<Void> testplansfiber = new Fiber<Void>(() -> { */
 		for (List<TestPlan> currtestPlans : testPlanslist) {
 
 			int i = 1;
 			for (TestPlan currtestplan : currtestPlans) {
 				if (test) {
-					/*
-					 * System.out.println("outside testplan");
-					 * currtestplan.displayPlan(); System.out.println("");
-					 */
-					/*
-					 * System.out.println("Testplan" + filecount);
-					 * 
-					 * currtestplan.setFilenum(filecount);
-					 */
-					// filecount++;
 
-					/*
-					 * logger.info("Current Request Rate" +
-					 * requestMix.get(currrateindex));
-					 */
-					/*
-					 * currtestplan.setReqRate(listIterator.next());
-					 * currtestplan.setDuration(randomtest.getEpoch());
-					 */
 					currtestplan.setRandom(1);
 					currtestplan.setId(i);
 
@@ -739,17 +724,13 @@ public class MainController implements Serializable {
 						outputlist.add(new Output());
 					Fiber<Void> testplansfiber = new Fiber<Void>(() -> {
 
-						/*
-						 * System.out.println("outside testplan");
-						 * currtestplan.displayPlan(); System.out.println("");
-						 */
-						// currrateindex++;
+						System.out.println("outside testplan");
+						currtestplan.displayPlan();
+						System.out.println("");
 
-							currtestplan.execute(null);
-						}).start();
-					int index=(k*currtestPlans.size())+(i-2);
-					fibers[index]=testplansfiber;
-					
+						currtestplan.execute(null);
+					}).start();
+
 				} else {
 					test = true;
 					break;
@@ -759,16 +740,11 @@ public class MainController implements Serializable {
 			Fiber.sleep(randomtest.getEpoch() * 1000);
 			logger.info("");
 		}
-		for (Fiber fiber : fibers) {
-			try {
-				if (!test)
-					break;
-				fiber.join();
-			} catch (ExecutionException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
+		/*
+		 * for (Fiber fiber : fibers) { try { if (!test) break; fiber.join(); }
+		 * catch (ExecutionException e1) { // TODO Auto-generated catch block
+		 * e1.printStackTrace(); } }
+		 */
 		if (logger.isInfoEnabled()) {
 			logger.info("Test Finished");
 		}
@@ -809,7 +785,7 @@ public class MainController implements Serializable {
 						logger.info("Failed to create directory!");
 					}
 				}
-				
+
 				File f = new File(
 						"/home/stanly/Project/LoadGenerator/loadgen.log");
 				PrintWriter writer;
@@ -823,10 +799,11 @@ public class MainController implements Serializable {
 				}
 				byte[] bytes = file.getBytes();
 
-			/*	File dir = new File("webapps/LoadGen/resources/tmpFiles");
-				// System.out.println(dir.getPath());
-				if (!dir.exists())
-					dir.mkdirs();*/
+				/*
+				 * File dir = new File("webapps/LoadGen/resources/tmpFiles"); //
+				 * System.out.println(dir.getPath()); if (!dir.exists())
+				 * dir.mkdirs();
+				 */
 
 				// Create the file on server
 				File serverFile = new File(dir.getAbsolutePath()
@@ -835,9 +812,9 @@ public class MainController implements Serializable {
 						new FileOutputStream(serverFile));
 				stream.write(bytes);
 				stream.close();
-/*
-				testPlans.clear();
-				globalregexmap.clear();*/
+				/*
+				 * testPlans.clear(); globalregexmap.clear();
+				 */
 				testPlans = Serializer.deserialzeTestPlanObject(dir
 						.getAbsolutePath()
 						+ File.separator
@@ -899,7 +876,7 @@ public class MainController implements Serializable {
 						logger.info("Failed to create directory!");
 					}
 				}
-				//Log File Creation
+				// Log File Creation
 				File f = new File(
 						"/home/stanly/Project/LoadGenerator/loadgen.log");
 				PrintWriter writer;
@@ -917,10 +894,11 @@ public class MainController implements Serializable {
 
 				// Creating the directory to store file
 				// String rootPath = System.getProperty("/home/stanly");
-				/*File dir = new File("webapps/LoadGen/resources/tmpFiles");
-				// System.out.println(dir.getPath());
-				if (!dir.exists())
-					dir.mkdirs();*/
+				/*
+				 * File dir = new File("webapps/LoadGen/resources/tmpFiles"); //
+				 * System.out.println(dir.getPath()); if (!dir.exists())
+				 * dir.mkdirs();
+				 */
 
 				// Create the file on server
 				File serverFile = new File(dir.getAbsolutePath()
@@ -1003,13 +981,20 @@ public class MainController implements Serializable {
 		tabledata += firstrow;
 		for (int i = 0; i < outputlist.size(); i++) {
 			String newrow = "<tr>";
-			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>" + outputlist.get(i).getTime() + "</td>";
-			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>" + outputlist.get(i).getRequest() + "</td>";
-			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>" + outputlist.get(i).getInputload() + "</td>";
-			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>" + outputlist.get(i).getAvgThroughput() + "</td>";
-			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>" + outputlist.get(i).getCurThroughput() + "</td>";
-			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>" + outputlist.get(i).getResponsetime() + "</td>";
-			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>" + outputlist.get(i).getErrorrate() + "</td>";
+			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>"
+					+ outputlist.get(i).getTime() + "</td>";
+			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>"
+					+ outputlist.get(i).getRequest() + "</td>";
+			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>"
+					+ outputlist.get(i).getInputload() + "</td>";
+			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>"
+					+ outputlist.get(i).getAvgThroughput() + "</td>";
+			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>"
+					+ outputlist.get(i).getCurThroughput() + "</td>";
+			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>"
+					+ outputlist.get(i).getResponsetime() + "</td>";
+			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>"
+					+ outputlist.get(i).getErrorrate() + "</td>";
 			newrow += "</tr>";
 			tabledata += newrow;
 		}
