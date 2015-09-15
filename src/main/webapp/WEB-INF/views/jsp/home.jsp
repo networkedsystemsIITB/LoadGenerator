@@ -4,18 +4,24 @@
 <head>
 <title>Load Generator</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet"
-	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-<!-- <script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
+<!-- <link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
+	<!-- <script
+	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script> -->
+	<!-- <link rel="stylesheet"
+	href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"> -->
+<link rel="stylesheet" type="text/css" href="resources/css/bootstrap.min.css">
+	
+
+	
+	<link rel="stylesheet" type="text/css" href="resources/css/jquery-ui.css">
+<script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
 	<script src="resources/js/jquery-1.11.3.min.js"></script>
-<script
-	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<link rel="stylesheet"
-	href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<!-- <script src="http://malsup.github.com/jquery.form.js"></script> -->
+<!-- <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script> -->
+<script src="resources/js/jquery-1.10.2.js"></script>
+<script src="resources/js/jquery-ui.js"></script>
+
 <script type="text/javascript" src="resources/js/home.js"></script>
 
 <script type="text/javascript"
@@ -23,14 +29,10 @@
 <script type="text/javascript" src="resources/js/jquery.tabletojson.js"></script>
 <script type="text/javascript" src="resources/js/jquery.json.js"></script>
 <link rel="stylesheet" type="text/css" href="resources/css/home.css">
-
+<link rel="icon" type="image/png" href="resources/images/lg.png"> 
 </head>
 <body>
-	<%-- <form method="POST" action="uploadFile" enctype="multipart/form-data">
-        File to upload: <input type="file" name="file"><br /> 
-        Name: <input type="text" name="filename"><br /> <br /> 
-        <input type="submit" value="Upload"> Press here to upload the file!
-    </form> --%>
+	
 	<div id="home" class="container">
 		<center>
 

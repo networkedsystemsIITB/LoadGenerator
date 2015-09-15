@@ -90,38 +90,9 @@ public class MainController implements Serializable {
 	public static List<Output> outputlist = new ArrayList<Output>();
 
 	public static final CloseableHttpClient client = FiberHttpClientBuilder
-			.create(5).setMaxConnPerRoute(10000).setMaxConnTotal(30).build();
+			.create(10).setMaxConnPerRoute(30000).setMaxConnTotal(200).build();
 
-	/*
-	 * IOReactorConfig config = IOReactorConfig.DEFAULT; public static
-	 * CloseableHttpAsyncClient client;
-	 */
-
-	/*
-	 * public static CloseableHttpClient client;
-	 *//*
-		 * final DefaultConnectingIOReactor ioreactor = new
-		 * DefaultConnectingIOReactor(config. setConnectTimeout(10000).
-		 * setIoThreadCount(10). setSoTimeout(10000). build());
-		 */
-	/*
-	 * final PoolingNHttpClientConnectionManager mngr = new
-	 * PoolingNHttpClientConnectionManager(ioreactor);
-	 */// mngr.
-		// mngr.setDefaultMaxPerRoute(10000);
-		// mngr.setMaxTotal(30);
-	/*
-	 * final CloseableHttpAsyncClient ahc = HttpAsyncClientBuilder.create().
-	 * setConnectionManager(mngr).
-	 * setDefaultRequestConfig(RequestConfig.custom()
-	 * .setLocalAddress(null).build()).build();
-	 */
-	/*
-	 * public static final CloseableHttpAsyncClient client =
-	 * FiberCloseableHttpAsyncClient.wrap(HttpAsyncClients. custom().
-	 * setMaxConnPerRoute(10000). setMaxConnTotal(30). build());
-	 */
-
+	
 	@Autowired
 	public MainController(HelloWorldService helloWorldService)
 			throws SuspendExecution {
@@ -130,22 +101,7 @@ public class MainController implements Serializable {
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView home() throws SuspendExecution, IOReactorException {
-		// ConnectingIOReactor ioreactor = new
-		// DefaultConnectingIOReactor(config);
-		/*
-		 * final DefaultConnectingIOReactor ioreactor = new
-		 * DefaultConnectingIOReactor(IOReactorConfig.custom().
-		 * setConnectTimeout(10000). setIoThreadCount(10). setSoTimeout(10000).
-		 * build()); final PoolingNHttpClientConnectionManager mngr = new
-		 * PoolingNHttpClientConnectionManager(ioreactor);
-		 * mngr.setDefaultMaxPerRoute(10000); mngr.setMaxTotal(30); final
-		 * CloseableHttpAsyncClient ahc = HttpAsyncClientBuilder.create().
-		 * setConnectionManager(mngr).
-		 * setDefaultRequestConfig(RequestConfig.custom
-		 * ().setLocalAddress(null).build()).build(); //client = new
-		 * FiberHttpClient(ahc); client=
-		 * FiberCloseableHttpAsyncClient.wrap(ahc);
-		 */
+	
 		testPlans.clear();
 		testPlan.clear();
 		httpreqlist.clear();
@@ -247,12 +203,6 @@ public class MainController implements Serializable {
 		}
 		req.setPostParamList(postParamList);
 
-/*		System.out.println(req.getHttpType());
-		System.out.println(req.getPostParamList());
-		System.out.println(req.getUrl());
-		System.out.println(req.getPostBody());
-		System.out.println(rownum);*/
-
 		if (rownum == testPlan.size()) {
 			testPlan.add(req);
 			httpreqlist.add(rownum);
@@ -301,7 +251,7 @@ public class MainController implements Serializable {
 		 * System.out.println("Duration : " + newTestPlan.getDuration());
 		 * System.out.println("Delay : " + newTestPlan.getStartDelay());
 		 */
-		newTestPlan.displayPlan();
+		//newTestPlan.displayPlan();
 		/*
 		 * for(int i=0;i<httpreqlist.size();i++)
 		 * System.out.println(httpreqlist.get(i)); newTestPlan.displayPlan();
@@ -322,7 +272,7 @@ public class MainController implements Serializable {
 		newTestPlan.setTestPlan(testPlan);
 		newTestPlan.setHttpreqlist(httpreqlist);
 
-		newTestPlan.displayPlan();
+		//newTestPlan.displayPlan();
 		/*
 		 * for(int i=0;i<httpreqlist.size();i++)
 		 * System.out.println(httpreqlist.get(i)); newTestPlan.displayPlan();
@@ -403,9 +353,9 @@ public class MainController implements Serializable {
 				for (int j = 0; j < currtestplan.getHttpreqlist().size(); j++)
 					outputlist.add(new Output());
 				Fiber<Void> testplansfiber = new Fiber<Void>(() -> {
-					System.out.println("");
+					/*System.out.println("");
 					currtestplan.displayPlan();
-					System.out.println("");
+					System.out.println("");*/
 					currtestplan.execute(null);
 				}).start();
 				int index = i - 2;
@@ -593,9 +543,9 @@ public class MainController implements Serializable {
 						outputlist.add(new Output());
 					Fiber<Void> testplansfiber = new Fiber<Void>(() -> {
 
-						System.out.println("outside testplan");
+						/*System.out.println("outside testplan");
 						currtestplan.displayPlan();
-						System.out.println("");
+						System.out.println("");*/
 
 						// currrateindex++;
 
@@ -724,9 +674,9 @@ public class MainController implements Serializable {
 						outputlist.add(new Output());
 					Fiber<Void> testplansfiber = new Fiber<Void>(() -> {
 
-						System.out.println("outside testplan");
+						/*System.out.println("outside testplan");
 						currtestplan.displayPlan();
-						System.out.println("");
+						System.out.println("");*/
 
 						currtestplan.execute(null);
 					}).start();

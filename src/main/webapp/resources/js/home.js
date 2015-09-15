@@ -507,6 +507,7 @@ $(function() {
 			tdButtons
 					.html("<input type='image' src='resources/images/save.jpeg' width=25 height=25 class='parSave'/>");
 			$(".parSave").off().on("click", SaveParam);
+			savedparam=false;
 		} else {
 			$("#status").html("Save Param before editing");
 			$("#status").show();
@@ -613,7 +614,11 @@ $(function() {
 									"input:nth-child(2)");
 					plus.hide();
 					// alert(rawbody.val());
+					
 					var tableparam = tables.tableToJSON();
+					var postparam=par.children("td:nth-child(2)").children("div:nth-child(2)");
+					postparam.hide();
+					//talbes.hide();
 					// table.children("")
 					//tables.$('td:nth-child(3)').hide();
 					var tabledata = {
@@ -759,6 +764,10 @@ $(function() {
 			if (tdName.html() === "Http Request") {
 				var tdUrl = par.children("td:nth-child(2)").children(
 						"div:nth-child(1)");
+				var tables = par.children("td:nth-child(2)").children(
+				"div:nth-child(2)").children("div:nth-child(2)")
+				.children("div:nth-child(1)").children(
+						"table:nth-child(1)");
 
 				tdUrl
 						.html("<input type='text' class='form-control' placeholder='Enter URL' id='txtParam' value='"
@@ -767,11 +776,16 @@ $(function() {
 						"select:nth-child(2)");
 
 				httpType.prop("disabled", false);
-				var plus = par.children("td:nth-child(2)").children(
+				/*var plus = par.children("td:nth-child(2)").children(
 						"div:nth-child(2)").children("div:nth-child(2)")
 						.children("div:nth-child(1)").children(
 								"input:nth-child(2)");
-				plus.show();
+				plus.show();*/
+				if(httpType.val()==="POST"){
+				var postparam=par.children("td:nth-child(2)").children("div:nth-child(2)");
+				postparam.show();
+				}
+				//tables.show();
 			} else if (tdName.html() === "Constant Timer") {
 				var tdTime = par.children("td:nth-child(2)");
 				tdTime
@@ -801,6 +815,7 @@ $(function() {
 			$(".btnSave").off().on("click", Save);
 			// $(".btnEdit").bind("click", Edit);
 			// $(".btnDelete").bind("click", Delete);
+			saved=false;
 		} else {
 			$("#status").html("Save Feature before editing");
 			$("#status").show();

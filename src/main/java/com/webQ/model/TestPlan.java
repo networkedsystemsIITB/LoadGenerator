@@ -187,9 +187,9 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 	public void execute(Response resp) throws InterruptedException,
 			SuspendExecution {
 		// TODO Auto-generated method stub
-		/*
-		 * System.out.println(""); this.displayPlan(); System.out.println("");
-		 */
+		
+		  System.out.println(""); this.displayPlan(); System.out.println("");
+		 
 		if (this.reqRate != 0) {
 			this.running = true;
 			this.reqsDetails.clear();
@@ -229,12 +229,12 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 			 */
 			Fiber.sleep(this.getStartDelay() * 1000);
 			if (this.random == 1) {
-				System.out.println("Epoch Number : " + this.getId());
+				//System.out.println("Epoch Number : " + this.getId());
 				logger.info("Epoch Number : " + this.getId());
 			}
 			int fiberArraysize = this.duration * this.reqRate;
 			Fiber[] fibers = new Fiber[fiberArraysize];
-			System.out.println("Array Size = " + fiberArraysize);
+			//System.out.println("Array Size = " + fiberArraysize);
 			final int num = this.duration * this.reqRate;
 			// int runningcount=num;
 			this.setRunningcount(num);
@@ -243,7 +243,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 			logger.info("starttime " + sdf.format(now1));
 
 			this.outputFiber();
-			final Semaphore sem = new Semaphore(150000);
+			final Semaphore sem = new Semaphore(1500000);
 			for (int i = 0; i < num && MainController.test; i++) {
 				rl.acquire();
 				if (sem.availablePermits() == 0)
@@ -466,7 +466,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			System.out.println("Error in CsvFileWriter !!!");
+			logger.info("Error in CsvFileWriter !!!");
 
 			e.printStackTrace();
 		}
