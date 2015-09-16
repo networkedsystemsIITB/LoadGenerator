@@ -66,8 +66,8 @@ $(function() {
 		$('#normalparamtable').show();
 		$('#randomparamtable').hide();
 		$('#features').show();
-		$('#saveplan').show();
-		$('#savenormalplan').show();
+		/*$('#saveplan').show();
+		$('#savenormalplan').show();*/
 		$('#buttons').hide();
 		$('#start').hide();
 		$('#stop').hide();
@@ -79,8 +79,8 @@ $(function() {
 		$("#consttimer").off().on("click", AddConstTimer);
 		$("#regexex").off().on("click", AddRegexEx);
 
-		$("#testtable").resizable();
-		$('#normaltestplan').hide();
+		//$("#testtable").resizable();
+		$("#testplanhome").hide();
 
 	});
 	$('#addrandomtestplan').click(function() {
@@ -90,8 +90,8 @@ $(function() {
 		$('#randomparamtable').show();
 		$('#normalparamtable').hide();
 		$('#features').show();
-		$('#saveplan').show();
-		$('#saverandomplan').show();
+		/*$('#saveplan').show();
+		$('#saverandomplan').show();*/
 		$('#buttons').hide();
 		$('#start').hide();
 		$('#stop').hide();
@@ -103,8 +103,9 @@ $(function() {
 		$("#consttimer").off().on("click", AddConstTimer);
 		$("#regexex").off().on("click", AddRegexEx);
 
-		$("#testtable").resizable();
-		$('#randomtestplan').hide();
+		/*$("#testtable").resizable();*/
+		/*$('#randomtestplan').hide();*/
+		$("#testplanhome").hide();
 
 	});
 
@@ -114,7 +115,8 @@ $(function() {
 		$('#features').hide();
 		$('#saveplan').hide();
 		$('#savenormalplan').hide();
-		$('#normaltestplan').show();
+		/*$('#normaltestplan').show();*/
+		$('#testplanhome').show();
 		$('#buttons').show();
 		$('#start').show();
 		$('#stop').hide();
@@ -123,6 +125,7 @@ $(function() {
 		$("#start").off().on("click", NormalStart);
 		$("#savetofile").off().on("click", NormalSaveToFile);
 		SaveNormalPlan();
+		
 
 	});
 
@@ -131,7 +134,8 @@ $(function() {
 		$('#features').hide();
 		$('#saveplan').hide();
 		$('#saverandomplan').hide();
-		$('#randomtestplan').show();
+		/*$('#randomtestplan').show();*/
+		$('#testplanhome').show();
 		$('#buttons').show();
 		$('#start').show();
 		$('#stop').hide();
@@ -306,6 +310,8 @@ $(function() {
 
 	function AddHttpReq() {
 		if (saved === true) {
+			$('#saveplan').hide();
+			$('#savenormalplan').hide();
 			$('#testtable').show();
 			/* onchange='getval(this);' */
 			var uniq1 = hrefcount++;
@@ -416,6 +422,8 @@ $(function() {
 	;
 	function AddConstTimer() {
 		if (saved === true) {
+			$('#saveplan').hide();
+			$('#savenormalplan').hide();
 			$('#testtable').show();
 			var addRow = "<tr><td style='vertical-align: middle;'><label class='control-label'>Constant Timer</label></td> "
 					+ "<td class='ui-helper-center'><input type='text' class='form-control' placeholder='Enter Time(millisecs)'/></td> "
@@ -444,6 +452,8 @@ $(function() {
 	;
 	function AddRegexEx() {
 		if (saved === true) {
+			$('#saveplan').hide();
+			$('#savenormalplan').hide();
 			$('#testtable').show();
 			var addRow = "<tr><td style='vertical-align: middle;'><label class='control-label'>Regex Extractor</label><div >"
 					+ "<input type='checkbox' name='globalregex' id='globalregex'/>"
@@ -544,6 +554,8 @@ $(function() {
 	;
 	function Save() {
 		if (savedparam === true) {
+			$('#saveplan').show();
+			$('#savenormalplan').show();
 			saved = true;
 			var par = $(this).parent().parent();
 			var tdName = par.children("td:nth-child(1)").children(
@@ -589,6 +601,7 @@ $(function() {
 
 						},
 						error : function(e) {
+							
 							$("#status").html("Http Request failed to add");
 							$("#status").show();
 							$("#status").delay(2000).fadeOut("slow");
@@ -641,10 +654,12 @@ $(function() {
 					$.ajax({
 						type : "POST",
 						url : "/LoadGen/httppostreq",
-						contentType : 'application/json; charset=utf-8',
+						/*contentType : 'application/json; charset=utf-8',
 						dataType : 'json',
 
-						data : JSON.stringify(tabledata),
+						data : JSON.stringify(tabledata),*/
+						data :{tabdata:JSON.stringify(tabledata) },
+					
 
 						success : function(response) {
 							// we have the response
@@ -654,6 +669,7 @@ $(function() {
 
 						},
 						error : function(e) {
+							alert(e.responseText);
 							$("#status").html("Http Request failed to add");
 							$("#status").show();
 							$("#status").delay(2000).fadeOut("slow");
@@ -753,6 +769,8 @@ $(function() {
 	;
 	function Edit() {
 		if (saved === true) {
+			$('#saveplan').hide();
+			$('#savenormalplan').hide();
 			var par = $(this).parent().parent();
 
 			var tdName = par.children("td:nth-child(1)").children(
@@ -832,8 +850,11 @@ $(function() {
 			savedparam = true;
 		}
 		par.remove();
-		if ($('#tbody').children('tr').length == 0)
+		if ($('#tbody').children('tr').length == 0){
 			$('#testtable').hide();
+		$('#saveplan').hide();
+		$('#savenormalplan').hide();
+		}
 		// alert(num);
 		$.ajax({
 			type : "POST",

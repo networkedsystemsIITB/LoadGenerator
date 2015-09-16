@@ -170,7 +170,7 @@ public class MainController implements Serializable {
 	@RequestMapping(value = "/httpgetreq", method = RequestMethod.POST)
 	public @ResponseBody void home_page(
 			@ModelAttribute("SpringWeb") HttpRequest req,
-			@RequestParam("rownum") int rownum, BindingResult result)
+			@RequestParam("rownum") int rownum)
 			throws SuspendExecution {
 
 		if (rownum == testPlan.size()) {
@@ -182,10 +182,10 @@ public class MainController implements Serializable {
 		// TestPlan.displayPlan();
 
 	}
-
-	@RequestMapping(value = "/httppostreq", method = RequestMethod.POST)
-	public @ResponseBody void home_page(@RequestBody String tabdata,
-			BindingResult result) throws SuspendExecution {
+	/*@RequestMapping(value = "/httppostreq", method = RequestMethod.POST)
+	public @ResponseBody void home_page(@RequestBody String tabdata) throws SuspendExecution {*/
+    @RequestMapping(value = "/httppostreq", method = RequestMethod.POST)
+	public @ResponseBody void home_page(@RequestParam("tabdata") String tabdata) throws SuspendExecution {
 		HttpRequest req = new HttpRequest();
 		JSONObject obj = new JSONObject(tabdata);
 		int rownum = obj.getInt("rownum");
@@ -193,7 +193,7 @@ public class MainController implements Serializable {
 		req.setHttpType(obj.getString("httpType"));
 		req.setPostBody(obj.getString("postBody"));
 		Map<String, String> postParamList = new HashMap<String, String>();
-
+		System.out.println(req.getUrl());
 		JSONArray paramtable = obj.getJSONArray("postParams");
 		for (int i = 0; i < paramtable.length(); ++i) {
 			JSONObject params = paramtable.getJSONObject(i);
