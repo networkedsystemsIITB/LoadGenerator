@@ -90,7 +90,7 @@ public class MainController implements Serializable {
 	public static List<Output> outputlist = new ArrayList<Output>();
 
 	public static final CloseableHttpClient client = FiberHttpClientBuilder
-			.create(10).setMaxConnPerRoute(30000).setMaxConnTotal(200).build();
+			.create(10).setMaxConnPerRoute(100000).setMaxConnTotal(10000).build();
 
 	
 	@Autowired
@@ -918,7 +918,7 @@ public class MainController implements Serializable {
 
 	@RequestMapping(value = "/output", method = RequestMethod.POST)
 	public @ResponseBody String home_page() throws SuspendExecution {
-		String tabledata = "<table class='table table-striped table-bordered table-condensed well'>";
+		String tabledata = "<table class='table table-striped table-bordered table-condensed well' id='outtable'>";
 		String firstrow = "<tr>";
 		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Time</td>";
 		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Request</td>";

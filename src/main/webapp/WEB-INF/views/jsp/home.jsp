@@ -11,7 +11,6 @@
 <!-- <link rel="stylesheet"
 	href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"> -->
 
-
 <link rel="stylesheet" type="text/css"
 	href="resources/css/jquery-ui.css">
 
@@ -31,6 +30,18 @@
 	href="resources/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="resources/css/home.css">
 <link rel="icon" type="image/png" href="resources/images/lg.png">
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+
+      // Load the Visualization API and the piechart package.
+      google.load('visualization', '1.0', {'packages':['corechart']});
+      google.load('visualization', '1.1', {packages: ['line']});
+	   // google.setOnLoadCallback(drawChart);
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.setOnLoadCallback(drawChart);
+      </script>
+
 </head>
 <body>
 
@@ -406,6 +417,7 @@
 					<div id="status" class="well alert alert-warning" style="display: none"></div>
 				</div>
 			</div>
+			 <div class="row" id="chart_div"></div>
 
 		</center>
 

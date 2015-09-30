@@ -138,6 +138,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 
 	public void displayPlan() throws SuspendExecution {
 		int type;
+		System.out.println("");
 		System.out.println("TestPlan Details");
 		System.out.println("");
 		System.out.println("Request Rate : " + reqRate + "  " + "Duration : "
@@ -155,18 +156,18 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 			}
 			switch (type) {
 			case 1:
-				System.out.println(((HttpRequest) testPlan.get(i)).getUrl());
-				System.out.println(((HttpRequest) testPlan.get(i)).getHttpType());
-				System.out.println(((HttpRequest) testPlan.get(i)).getPostParamList());
-				System.out.println(((HttpRequest) testPlan.get(i)).getPostBody());
+				System.out.println("URL : "+((HttpRequest) testPlan.get(i)).getUrl());
+				System.out.println("ReqType : "+((HttpRequest) testPlan.get(i)).getHttpType());
+				System.out.println("PostParams : "+((HttpRequest) testPlan.get(i)).getPostParamList());
+				System.out.println("PostBody : "+((HttpRequest) testPlan.get(i)).getPostBody());
 				break;
 			case 2:
-				System.out.println(((ConstantTimer) testPlan.get(i)).getTime());
+				System.out.println("Timer : "+((ConstantTimer) testPlan.get(i)).getTime());
 				break;
 			case 3:
-				System.out.println(((RegexExtractor) testPlan.get(i))
+				System.out.println("Regex Name : "+((RegexExtractor) testPlan.get(i))
 						.getRefName());
-				System.out.println(((RegexExtractor) testPlan.get(i))
+				System.out.println("Regex : "+((RegexExtractor) testPlan.get(i))
 						.getRegex());
 				break;
 			default:
@@ -175,12 +176,11 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 
 		}
 		System.out.println("");
-		
 		  System.out.println("HttpReq Array"); for (int i = 0; i <
 		  httpreqlist.size(); i++) { System.out.println(httpreqlist.get(i));
 		  
 		  }
-		 
+		  System.out.println(""); 
 	}
 
 	@Override
@@ -188,7 +188,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 			SuspendExecution {
 		// TODO Auto-generated method stub
 		
-		  System.out.println(""); this.displayPlan(); System.out.println("");
+		  this.displayPlan();
 		 
 		if (this.reqRate != 0) {
 			this.running = true;
@@ -368,19 +368,13 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 	private void outputFiber() throws InterruptedException, SuspendExecution {
 		// TODO Auto-generated method stub
 		try {
-			// Delimiter used in CSV file
-
-			// CSV file header
+			
 
 			final String FILE_HEADER = String.format(
 					"%-30s%-25s%-18s%-18s%-18s%-15s%-10s", "Time", "Request",
 					"Input Load", "Avg Througput", "Cur Througput",
 					"Response Time", "Error Rate");
-			/*
-			 * final String FILE_HEADER =
-			 * "Time\tRequest\tInput Load\tAvg Througput\tCur Througput\tResponse Time\tError Rate"
-			 * ;
-			 */
+			
 			fileWriter = new FileWriter("/home/stanly/output" + this.getId()
 					+ ".csv");
 
@@ -404,6 +398,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 			}
 
 		}).start();
+		
 
 	}
 
@@ -456,7 +451,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 						outputrow.getCurThroughput(),
 						outputrow.getResponsetime(), outputrow.getErrorrate());
 
-				fileWriter.append(message);
+			fileWriter.append(message);
 				fileWriter.append("\n");
 
 				logger.info(message);

@@ -1,7 +1,11 @@
 package com.webQ.model;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -168,27 +172,45 @@ public class HttpRequest implements Feature, Serializable {
 			} else {
 				HttpGet getrequest = new HttpGet(requrl);
 
-				/*
-				 * System.out.println(Fiber.currentFiber().getName() + " " +
-				 * requrl);
-				 */
+				/*URL obj = new URL(requrl);
+				HttpURLConnection con = (HttpURLConnection) obj.openConnection();*/
+				 /* System.out.println(Fiber.currentFiber().getName() + " " +
+				  requrl);*/
+				 
 
 				CloseableHttpResponse response = null;
 				try {
+					//logger.info(Fiber.currentFiber().getName());
+					//con.setRequestMethod("GET");
+
+					//add request header
+					/*con.setRequestProperty("User-Agent", USER_AGENT);
+					BufferedReader in = new BufferedReader(
+					        new InputStreamReader(con.getInputStream()));
+					String inputLine;
+					StringBuffer response1 = new StringBuffer();
+
+					while ((inputLine = in.readLine()) != null) {
+						response1.append(inputLine);
+					}*/
+					//response=response1.;
+					//in.close();
+
+					//print result
+					//System.out.println(response.toString());
 					response = MainController.client.execute(getrequest);
 
-					/*
-					 * System.out.println("Request: " +
-					 * Fiber.currentFiber().getName() + " " +
-					 * response.getStatusLine());
-					 */
+					
+					  /*System.out.println("Request: " +
+					  Fiber.currentFiber().getName() + " " +
+					  response.getStatusLine());*/
+					
 
 					resp.setResponse(response);
 				} catch (final Throwable t) {
-					/*
-					 * System.out.println(t);
-					 * System.out.println("Exception in httpget");
-					 */
+					System.out.println(t);
+					 System.out.println("Exception in httpget");
+					
 					resp.setResponse(response);
 				}
 

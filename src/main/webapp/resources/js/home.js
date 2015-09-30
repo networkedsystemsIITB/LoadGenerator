@@ -1,5 +1,12 @@
 $(function() {
+	/*google.load('visualization', '1.0', {
+		'packages' : [ 'corechart' ]
+	});
 
+	// Set a callback to run when the Google Visualization API is loaded.
+	google.setOnLoadCallback(drawChart);*/
+	/* google.load('visualization', '1.1', {packages: ['line']});
+	    google.setOnLoadCallback(drawChart);*/
 	/* Clones */
 
 	var homeClone = $("#home").clone();
@@ -66,8 +73,10 @@ $(function() {
 		$('#normalparamtable').show();
 		$('#randomparamtable').hide();
 		$('#features').show();
-		/*$('#saveplan').show();
-		$('#savenormalplan').show();*/
+		
+		  $('#saveplan').show();
+		$('#savenormalplan').show();
+		 
 		$('#buttons').hide();
 		$('#start').hide();
 		$('#stop').hide();
@@ -79,19 +88,21 @@ $(function() {
 		$("#consttimer").off().on("click", AddConstTimer);
 		$("#regexex").off().on("click", AddRegexEx);
 
-		//$("#testtable").resizable();
+		// $("#testtable").resizable();
 		$("#testplanhome").hide();
 
 	});
 	$('#addrandomtestplan').click(function() {
-
+		
 		$("#features").replaceWith(featuresClone.clone());
 		$('#params').show();
 		$('#randomparamtable').show();
 		$('#normalparamtable').hide();
 		$('#features').show();
-		/*$('#saveplan').show();
-		$('#saverandomplan').show();*/
+		
+		 $('#saveplan').show(); 
+		 $('#saverandomplan').show();
+		 
 		$('#buttons').hide();
 		$('#start').hide();
 		$('#stop').hide();
@@ -103,10 +114,10 @@ $(function() {
 		$("#consttimer").off().on("click", AddConstTimer);
 		$("#regexex").off().on("click", AddRegexEx);
 
-		/*$("#testtable").resizable();*/
-		/*$('#randomtestplan').hide();*/
+		/* $("#testtable").resizable(); */
+		/* $('#randomtestplan').hide(); */
 		$("#testplanhome").hide();
-
+		
 	});
 
 	$('#savenormaltestplan').click(function() {
@@ -115,7 +126,7 @@ $(function() {
 		$('#features').hide();
 		$('#saveplan').hide();
 		$('#savenormalplan').hide();
-		/*$('#normaltestplan').show();*/
+		/* $('#normaltestplan').show(); */
 		$('#testplanhome').show();
 		$('#buttons').show();
 		$('#start').show();
@@ -125,16 +136,15 @@ $(function() {
 		$("#start").off().on("click", NormalStart);
 		$("#savetofile").off().on("click", NormalSaveToFile);
 		SaveNormalPlan();
-		
 
 	});
 
 	$('#saverandomtestplan').click(function() {
-
+		
 		$('#features').hide();
 		$('#saveplan').hide();
 		$('#saverandomplan').hide();
-		/*$('#randomtestplan').show();*/
+		/* $('#randomtestplan').show(); */
 		$('#testplanhome').show();
 		$('#buttons').show();
 		$('#start').show();
@@ -143,6 +153,7 @@ $(function() {
 		$("#downloadlink").hide();
 		$("#start").off().on("click", RandomStart);
 		$("#savetofile").off().on("click", RandomSaveToFile);
+		
 		SaveRandomPlan();
 
 	});
@@ -285,7 +296,7 @@ $(function() {
 	}
 	;
 	function SaveRandomPlan() {
-
+		
 		$.ajax({
 			type : "POST",
 			url : "/LoadGen/saverandomtestplan",
@@ -304,14 +315,14 @@ $(function() {
 				$("#status").delay(2000).fadeOut("slow");
 			}
 		});
-
+		
 	}
 	;
 
 	function AddHttpReq() {
 		if (saved === true) {
-			$('#saveplan').hide();
-			$('#savenormalplan').hide();
+			/*$('#saveplan').hide();
+			$('#savenormalplan').hide();*/
 			$('#testtable').show();
 			/* onchange='getval(this);' */
 			var uniq1 = hrefcount++;
@@ -422,8 +433,8 @@ $(function() {
 	;
 	function AddConstTimer() {
 		if (saved === true) {
-			$('#saveplan').hide();
-			$('#savenormalplan').hide();
+		/*	$('#saveplan').hide();
+			$('#savenormalplan').hide();*/
 			$('#testtable').show();
 			var addRow = "<tr><td style='vertical-align: middle;'><label class='control-label'>Constant Timer</label></td> "
 					+ "<td class='ui-helper-center'><input type='text' class='form-control' placeholder='Enter Time(millisecs)'/></td> "
@@ -452,8 +463,8 @@ $(function() {
 	;
 	function AddRegexEx() {
 		if (saved === true) {
-			$('#saveplan').hide();
-			$('#savenormalplan').hide();
+			/*$('#saveplan').hide();
+			$('#savenormalplan').hide();*/
 			$('#testtable').show();
 			var addRow = "<tr><td style='vertical-align: middle;'><label class='control-label'>Regex Extractor</label><div >"
 					+ "<input type='checkbox' name='globalregex' id='globalregex'/>"
@@ -517,7 +528,7 @@ $(function() {
 			tdButtons
 					.html("<input type='image' src='resources/images/save.jpeg' width=25 height=25 class='parSave'/>");
 			$(".parSave").off().on("click", SaveParam);
-			savedparam=false;
+			savedparam = false;
 		} else {
 			$("#status").html("Save Param before editing");
 			$("#status").show();
@@ -554,8 +565,8 @@ $(function() {
 	;
 	function Save() {
 		if (savedparam === true) {
-			$('#saveplan').show();
-			$('#savenormalplan').show();
+		/*	$('#saveplan').show();
+			$('#savenormalplan').show();*/
 			saved = true;
 			var par = $(this).parent().parent();
 			var tdName = par.children("td:nth-child(1)").children(
@@ -579,9 +590,9 @@ $(function() {
 
 				var httpType = par.children("td:nth-child(1)").children(
 						"select:nth-child(2)");
-				var httpval=httpType.val();
+				var httpval = httpType.val();
 				tdUrl.html(tdUrl.children("input[type=text]").val());
-				
+
 				if (httpType.val() === "GET") {
 					httpType.prop("disabled", true);
 					$.ajax({
@@ -597,19 +608,18 @@ $(function() {
 							$("#status").html("Http Request Added");
 							$("#status").show();
 							$("#status").delay(2000).fadeOut("slow");
-							
 
 						},
 						error : function(e) {
-							
+
 							$("#status").html("Http Request failed to add");
 							$("#status").show();
 							$("#status").delay(2000).fadeOut("slow");
 						}
 					});
-					
+
 				} else {
-					
+
 					httpType.prop("disabled", true);
 					var tables = par.children("td:nth-child(2)").children(
 							"div:nth-child(2)").children("div:nth-child(2)")
@@ -627,13 +637,14 @@ $(function() {
 									"input:nth-child(2)");
 					plus.hide();
 					// alert(rawbody.val());
-					
+
 					var tableparam = tables.tableToJSON();
-					var postparam=par.children("td:nth-child(2)").children("div:nth-child(2)");
+					var postparam = par.children("td:nth-child(2)").children(
+							"div:nth-child(2)");
 					postparam.hide();
-					//talbes.hide();
+					// talbes.hide();
 					// table.children("")
-					//tables.$('td:nth-child(3)').hide();
+					// tables.$('td:nth-child(3)').hide();
 					var tabledata = {
 						"url" : tdUrl.html(),
 						"httpType" : httpval,
@@ -654,12 +665,15 @@ $(function() {
 					$.ajax({
 						type : "POST",
 						url : "/LoadGen/httppostreq",
-						/*contentType : 'application/json; charset=utf-8',
-						dataType : 'json',
-
-						data : JSON.stringify(tabledata),*/
-						data :{tabdata:JSON.stringify(tabledata) },
-					
+						/*
+						 * contentType : 'application/json; charset=utf-8',
+						 * dataType : 'json',
+						 * 
+						 * data : JSON.stringify(tabledata),
+						 */
+						data : {
+							tabdata : JSON.stringify(tabledata)
+						},
 
 						success : function(response) {
 							// we have the response
@@ -676,20 +690,20 @@ $(function() {
 						}
 					});
 					/* } *//*
-					 * else {
-					 * 
-					 * var tabledata = table.tableToJSON(); var
-					 * actualObj = JSON.parse(jsonText); actualObj+={
-					 * "url ":tdUrl.html(),
-					 * "httpType":httpType.val(),"rownum":par.index()};
-					 * tabledata.url=tdUrl.html();
-					 * tabledata.httpType=httpType.val();
-					 * tabledata.rownum=par.index();
-					 * 
-					 * //alert(actualData);
-					 * alert(JSON.stringify(actualObj)); }
-					 */
-					
+							 * else {
+							 * 
+							 * var tabledata = table.tableToJSON(); var
+							 * actualObj = JSON.parse(jsonText); actualObj+={
+							 * "url ":tdUrl.html(),
+							 * "httpType":httpType.val(),"rownum":par.index()};
+							 * tabledata.url=tdUrl.html();
+							 * tabledata.httpType=httpType.val();
+							 * tabledata.rownum=par.index();
+							 * 
+							 * //alert(actualData);
+							 * alert(JSON.stringify(actualObj)); }
+							 */
+
 				}
 			} else if (tdName.html() === "Constant Timer") {
 				var tdTime = par.children("td:nth-child(2)");
@@ -758,7 +772,7 @@ $(function() {
 						$("#status").delay(2000).fadeOut("slow");
 					}
 				});
-				
+
 			}
 		} else {
 			$("#status").html("Save Param First");
@@ -769,8 +783,8 @@ $(function() {
 	;
 	function Edit() {
 		if (saved === true) {
-			$('#saveplan').hide();
-			$('#savenormalplan').hide();
+		/*	$('#saveplan').hide();
+			$('#savenormalplan').hide();*/
 			var par = $(this).parent().parent();
 
 			var tdName = par.children("td:nth-child(1)").children(
@@ -783,9 +797,9 @@ $(function() {
 				var tdUrl = par.children("td:nth-child(2)").children(
 						"div:nth-child(1)");
 				var tables = par.children("td:nth-child(2)").children(
-				"div:nth-child(2)").children("div:nth-child(2)")
-				.children("div:nth-child(1)").children(
-						"table:nth-child(1)");
+						"div:nth-child(2)").children("div:nth-child(2)")
+						.children("div:nth-child(1)").children(
+								"table:nth-child(1)");
 
 				tdUrl
 						.html("<input type='text' class='form-control' placeholder='Enter URL' id='txtParam' value='"
@@ -794,16 +808,18 @@ $(function() {
 						"select:nth-child(2)");
 
 				httpType.prop("disabled", false);
-				/*var plus = par.children("td:nth-child(2)").children(
-						"div:nth-child(2)").children("div:nth-child(2)")
-						.children("div:nth-child(1)").children(
-								"input:nth-child(2)");
-				plus.show();*/
-				if(httpType.val()==="POST"){
-				var postparam=par.children("td:nth-child(2)").children("div:nth-child(2)");
-				postparam.show();
+				/*
+				 * var plus = par.children("td:nth-child(2)").children(
+				 * "div:nth-child(2)").children("div:nth-child(2)")
+				 * .children("div:nth-child(1)").children(
+				 * "input:nth-child(2)"); plus.show();
+				 */
+				if (httpType.val() === "POST") {
+					var postparam = par.children("td:nth-child(2)").children(
+							"div:nth-child(2)");
+					postparam.show();
 				}
-				//tables.show();
+				// tables.show();
 			} else if (tdName.html() === "Constant Timer") {
 				var tdTime = par.children("td:nth-child(2)");
 				tdTime
@@ -833,7 +849,7 @@ $(function() {
 			$(".btnSave").off().on("click", Save);
 			// $(".btnEdit").bind("click", Edit);
 			// $(".btnDelete").bind("click", Delete);
-			saved=false;
+			saved = false;
 		} else {
 			$("#status").html("Save Feature before editing");
 			$("#status").show();
@@ -850,10 +866,10 @@ $(function() {
 			savedparam = true;
 		}
 		par.remove();
-		if ($('#tbody').children('tr').length == 0){
+		if ($('#tbody').children('tr').length == 0) {
 			$('#testtable').hide();
-		$('#saveplan').hide();
-		$('#savenormalplan').hide();
+		/*	$('#saveplan').hide();
+			$('#savenormalplan').hide();*/
 		}
 		// alert(num);
 		$.ajax({
@@ -908,6 +924,7 @@ $(function() {
 	}
 	;
 	function RandomStart() {
+		
 		var tab = $("#randomparamtable");
 		var maxreqrate = tab.children().children("tr:nth-child(2)").children(
 				"td:nth-child(2)").children("input:nth-child(1)").val();
@@ -915,7 +932,7 @@ $(function() {
 				"td:nth-child(2)").children("input:nth-child(1)").val();
 		var epoch = tab.children().children("tr:nth-child(4)").children(
 				"td:nth-child(2)").children("input:nth-child(1)").val();
-
+		
 		$('#start').hide();
 		$('#stop').show();
 		$("#stop").off().on("click", RandomStop);
@@ -1099,14 +1116,16 @@ function checkChange() {
 	}
 };
 function output() {
-
+	//drawChart();
 	$.ajax({
 		type : "POST",
 		url : '/LoadGen/output',
 		dataType : "HTML",
 		success : function(data) {
-
+			//drawChart();
 			$('#output').html(data);
+			/*$('#outtable').
+			drawChart();*/
 		},
 		complete : function() {
 			// Schedule the next request when the current one's complete
@@ -1114,3 +1133,44 @@ function output() {
 		}
 	});
 };
+/*function drawChart() {
+
+    // Create the data table.
+	//console.log("start");
+    var data = new google.visualization.DataTable();
+    data.addColumn('number', 'Day');
+    data.addColumn('number', 'Guardians of the Galaxy');
+    data.addColumn('number', 'The Avengers');
+    data.addColumn('number', 'Transformers: Age of Extinction');
+
+    data.addRows([
+      [1,  37.8, 80.8, 41.8],
+      [2,  30.9, 69.5, 32.4],
+      [3,  25.4,   57, 25.7],
+      [4,  11.7, 18.8, 10.5],
+      [5,  11.9, 17.6, 10.4],
+      [6,   8.8, 13.6,  7.7],
+      [7,   7.6, 12.3,  9.6],
+      [8,  12.3, 29.2, 10.6],
+      [9,  16.9, 42.9, 14.8],
+      [10, 12.8, 30.9, 11.6],
+      [11,  5.3,  7.9,  4.7],
+      [12,  6.6,  8.4,  5.2],
+      [13,  4.8,  6.3,  3.6],
+      [14,  4.2,  6.2,  3.4]
+    ]);
+
+    var options = {
+      chart: {
+        title: 'Box Office Earnings in First Two Weeks of Opening',
+        subtitle: 'in millions of dollars (USD)'
+      },
+      width: 900,
+      height: 500
+    };
+    //.log("middle");
+    var chart = new google.charts.Line(document.getElementById('chart_div'));
+
+    chart.draw(data, options);
+   // console.log("end");
+  }*/
