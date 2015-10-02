@@ -90,9 +90,9 @@ public class MainController implements Serializable {
 	public static List<Output> outputlist = new ArrayList<Output>();
 
 	public static final CloseableHttpClient client = FiberHttpClientBuilder
-			.create(10).setMaxConnPerRoute(100000).setMaxConnTotal(10000).build();
+			.create(20).setMaxConnPerRoute(100000).setMaxConnTotal(10000)
+			.build();
 
-	
 	@Autowired
 	public MainController(HelloWorldService helloWorldService)
 			throws SuspendExecution {
@@ -101,7 +101,7 @@ public class MainController implements Serializable {
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView home() throws SuspendExecution, IOReactorException {
-	
+
 		testPlans.clear();
 		testPlan.clear();
 		httpreqlist.clear();
@@ -170,8 +170,7 @@ public class MainController implements Serializable {
 	@RequestMapping(value = "/httpgetreq", method = RequestMethod.POST)
 	public @ResponseBody void home_page(
 			@ModelAttribute("SpringWeb") HttpRequest req,
-			@RequestParam("rownum") int rownum)
-			throws SuspendExecution {
+			@RequestParam("rownum") int rownum) throws SuspendExecution {
 
 		if (rownum == testPlan.size()) {
 			testPlan.add(req);
@@ -182,10 +181,15 @@ public class MainController implements Serializable {
 		// TestPlan.displayPlan();
 
 	}
-	/*@RequestMapping(value = "/httppostreq", method = RequestMethod.POST)
-	public @ResponseBody void home_page(@RequestBody String tabdata) throws SuspendExecution {*/
-    @RequestMapping(value = "/httppostreq", method = RequestMethod.POST)
-	public @ResponseBody void home_page(@RequestParam("tabdata") String tabdata) throws SuspendExecution {
+
+	/*
+	 * @RequestMapping(value = "/httppostreq", method = RequestMethod.POST)
+	 * public @ResponseBody void home_page(@RequestBody String tabdata) throws
+	 * SuspendExecution {
+	 */
+	@RequestMapping(value = "/httppostreq", method = RequestMethod.POST)
+	public @ResponseBody void home_page(@RequestParam("tabdata") String tabdata)
+			throws SuspendExecution {
 		HttpRequest req = new HttpRequest();
 		JSONObject obj = new JSONObject(tabdata);
 		int rownum = obj.getInt("rownum");
@@ -251,7 +255,7 @@ public class MainController implements Serializable {
 		 * System.out.println("Duration : " + newTestPlan.getDuration());
 		 * System.out.println("Delay : " + newTestPlan.getStartDelay());
 		 */
-		//newTestPlan.displayPlan();
+		// newTestPlan.displayPlan();
 		/*
 		 * for(int i=0;i<httpreqlist.size();i++)
 		 * System.out.println(httpreqlist.get(i)); newTestPlan.displayPlan();
@@ -272,7 +276,7 @@ public class MainController implements Serializable {
 		newTestPlan.setTestPlan(testPlan);
 		newTestPlan.setHttpreqlist(httpreqlist);
 
-		//newTestPlan.displayPlan();
+		// newTestPlan.displayPlan();
 		/*
 		 * for(int i=0;i<httpreqlist.size();i++)
 		 * System.out.println(httpreqlist.get(i)); newTestPlan.displayPlan();
@@ -353,9 +357,10 @@ public class MainController implements Serializable {
 				for (int j = 0; j < currtestplan.getHttpreqlist().size(); j++)
 					outputlist.add(new Output());
 				Fiber<Void> testplansfiber = new Fiber<Void>(() -> {
-					/*System.out.println("");
-					currtestplan.displayPlan();
-					System.out.println("");*/
+					/*
+					 * System.out.println(""); currtestplan.displayPlan();
+					 * System.out.println("");
+					 */
 					currtestplan.execute(null);
 				}).start();
 				int index = i - 2;
@@ -442,6 +447,10 @@ public class MainController implements Serializable {
 			 */
 	}
 
+	static int log(int x, int base) {
+		return (int) (Math.log(x) / Math.log(base));
+	}
+
 	@RequestMapping(value = "/randomloadgen", method = RequestMethod.POST)
 	public void execute(@ModelAttribute("SpringWeb") Test newTest,
 			ModelMap model) throws SuspendExecution, InterruptedException {
@@ -462,16 +471,38 @@ public class MainController implements Serializable {
 		logger.info("MaxDur Value" + " : " + randomtest.getMaxduration());
 		logger.info("Epoch Value" + " : " + randomtest.getEpoch());
 		int filecount = 1;
+		int flag, newepochcount = 0;
+		if (randomtest.getMaxreqRate() <= 500)
+			flag = 0;
+		else
+			flag = 1;
+
 		int totalepochs = randomtest.getMaxduration() / randomtest.getEpoch();
+		if (flag == 0)
+			newepochcount = randomtest.getMaxreqRate() / 10;
+		else {
+			newepochcount = log(randomtest.getMaxreqRate(), 2);
+			newepochcount -= 2;
+		}
+
+		totalepochs = Math.min(totalepochs, newepochcount);
 		logger.info("Total Epochs: " + totalepochs);
 
-		int currMaxReqRate, remainingMix, newMix, currrateindex = 0;
+		int currMaxReqRate = 0, remainingMix, newMix, currrateindex = 0;
 		List<Integer> requestMix = new ArrayList<Integer>();
 		List<List<TestPlan>> testPlanslist = new ArrayList<List<TestPlan>>();
+		if (flag == 0)
+			currMaxReqRate = 0;
+		else
+			currMaxReqRate = 4;
 		for (int currepoch = 0; currepoch < totalepochs; currepoch++) {
-			if (randomtest.getMaxreqRate() != 0)
-				currMaxReqRate = randInt(1, randomtest.getMaxreqRate());
-			else
+			if (randomtest.getMaxreqRate() != 0) {
+				if (flag == 0)
+					currMaxReqRate += 10;
+				else
+					currMaxReqRate *= 2;
+				// currMaxReqRate = randInt(1, randomtest.getMaxreqRate());
+			} else
 				currMaxReqRate = 0;
 			remainingMix = currMaxReqRate;
 			requestMix.clear();
@@ -543,9 +574,10 @@ public class MainController implements Serializable {
 						outputlist.add(new Output());
 					Fiber<Void> testplansfiber = new Fiber<Void>(() -> {
 
-						/*System.out.println("outside testplan");
-						currtestplan.displayPlan();
-						System.out.println("");*/
+						/*
+						 * System.out.println("outside testplan");
+						 * currtestplan.displayPlan(); System.out.println("");
+						 */
 
 						// currrateindex++;
 
@@ -610,16 +642,41 @@ public class MainController implements Serializable {
 		logger.info("MaxDur Value" + " : " + randomtest.getMaxduration());
 		logger.info("Epoch Value" + " : " + randomtest.getEpoch());
 		int filecount = 1;
+		
+		int flag, newepochcount = 0;
+		if (randomtest.getMaxreqRate() <= 500)
+			flag = 0;
+		else
+			flag = 1;
+
 		int totalepochs = randomtest.getMaxduration() / randomtest.getEpoch();
+		if (flag == 0)
+			newepochcount = randomtest.getMaxreqRate() / 10;
+		else {
+			newepochcount = log(randomtest.getMaxreqRate(), 2);
+			newepochcount -= 2;
+		}
+		
+	
+		totalepochs = Math.min(totalepochs, newepochcount);
 		logger.info("Total Epochs: " + totalepochs);
 
-		int currMaxReqRate, remainingMix, newMix, currrateindex = 0;
+		int currMaxReqRate = 0, remainingMix, newMix, currrateindex = 0;
 		List<Integer> requestMix = new ArrayList<Integer>();
 		List<List<TestPlan>> testPlanslist = new ArrayList<List<TestPlan>>();
-
+		if (flag == 0)
+			currMaxReqRate = 0;
+		else
+			currMaxReqRate = 4;
 		for (int currepoch = 0; currepoch < totalepochs; currepoch++) {
-			if (randomtest.getMaxreqRate() != 0)
-				currMaxReqRate = randInt(1, randomtest.getMaxreqRate());
+			if (randomtest.getMaxreqRate() != 0) {
+				if (flag == 0)
+					currMaxReqRate += 10;
+				else
+					currMaxReqRate *= 2;
+
+			}
+
 			else
 				currMaxReqRate = 0;
 			remainingMix = currMaxReqRate;
@@ -674,9 +731,10 @@ public class MainController implements Serializable {
 						outputlist.add(new Output());
 					Fiber<Void> testplansfiber = new Fiber<Void>(() -> {
 
-						/*System.out.println("outside testplan");
-						currtestplan.displayPlan();
-						System.out.println("");*/
+						/*
+						 * System.out.println("outside testplan");
+						 * currtestplan.displayPlan(); System.out.println("");
+						 */
 
 						currtestplan.execute(null);
 					}).start();

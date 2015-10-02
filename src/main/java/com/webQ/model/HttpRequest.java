@@ -172,45 +172,22 @@ public class HttpRequest implements Feature, Serializable {
 			} else {
 				HttpGet getrequest = new HttpGet(requrl);
 
-				/*URL obj = new URL(requrl);
-				HttpURLConnection con = (HttpURLConnection) obj.openConnection();*/
-				 /* System.out.println(Fiber.currentFiber().getName() + " " +
-				  requrl);*/
-				 
-
 				CloseableHttpResponse response = null;
 				try {
-					//logger.info(Fiber.currentFiber().getName());
-					//con.setRequestMethod("GET");
-
-					//add request header
-					/*con.setRequestProperty("User-Agent", USER_AGENT);
-					BufferedReader in = new BufferedReader(
-					        new InputStreamReader(con.getInputStream()));
-					String inputLine;
-					StringBuffer response1 = new StringBuffer();
-
-					while ((inputLine = in.readLine()) != null) {
-						response1.append(inputLine);
-					}*/
-					//response=response1.;
-					//in.close();
-
-					//print result
-					//System.out.println(response.toString());
 					response = MainController.client.execute(getrequest);
 
-					
-					  /*System.out.println("Request: " +
-					  Fiber.currentFiber().getName() + " " +
-					  response.getStatusLine());*/
-					
+					/*
+					 * System.out.println("Request: " +
+					 * Fiber.currentFiber().getName() + " " +
+					 * response.getStatusLine());
+					 */
 
 					resp.setResponse(response);
 				} catch (final Throwable t) {
-					System.out.println(t);
-					 System.out.println("Exception in httpget");
-					
+					/*
+					 * MainController.logger.info(t);
+					 */
+
 					resp.setResponse(response);
 				}
 
