@@ -276,8 +276,8 @@
                 -Xmixed
                 -XX:+TieredCompilation
                 -XX:+AggressiveOpts 
-                -Xms20G 
-                -Xmx30G 
+                -Xms10G
+                -Xmx30G
                 -XX:MaxNewSize=4G 
                 -XX:NewSize=4G 
                 -XX:PermSize=5G 

@@ -30,8 +30,8 @@
 	href="resources/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="resources/css/home.css">
 <link rel="icon" type="image/png" href="resources/images/lg.png">
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
+<!-- <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+ -->    <script type="text/javascript">
 
       // Load the Visualization API and the piechart package.
       google.load('visualization', '1.0', {'packages':['corechart']});

@@ -90,7 +90,7 @@ public class MainController implements Serializable {
 	public static List<Output> outputlist = new ArrayList<Output>();
 
 	public static final CloseableHttpClient client = FiberHttpClientBuilder
-			.create(20).setMaxConnPerRoute(100000).setMaxConnTotal(10000)
+			.create(10).setMaxConnPerRoute(100000).setMaxConnTotal(10000)
 			.build();
 
 	@Autowired
@@ -479,7 +479,7 @@ public class MainController implements Serializable {
 
 		int totalepochs = randomtest.getMaxduration() / randomtest.getEpoch();
 		if (flag == 0)
-			newepochcount = randomtest.getMaxreqRate() / 10;
+			newepochcount = randomtest.getMaxreqRate() / 2;
 		else {
 			newepochcount = log(randomtest.getMaxreqRate(), 2);
 			newepochcount -= 2;
@@ -498,7 +498,7 @@ public class MainController implements Serializable {
 		for (int currepoch = 0; currepoch < totalepochs; currepoch++) {
 			if (randomtest.getMaxreqRate() != 0) {
 				if (flag == 0)
-					currMaxReqRate += 10;
+					currMaxReqRate += 2;
 				else
 					currMaxReqRate *= 2;
 				// currMaxReqRate = randInt(1, randomtest.getMaxreqRate());
@@ -651,7 +651,7 @@ public class MainController implements Serializable {
 
 		int totalepochs = randomtest.getMaxduration() / randomtest.getEpoch();
 		if (flag == 0)
-			newepochcount = randomtest.getMaxreqRate() / 10;
+			newepochcount = randomtest.getMaxreqRate() / 2;
 		else {
 			newepochcount = log(randomtest.getMaxreqRate(), 2);
 			newepochcount -= 2;
@@ -671,7 +671,7 @@ public class MainController implements Serializable {
 		for (int currepoch = 0; currepoch < totalepochs; currepoch++) {
 			if (randomtest.getMaxreqRate() != 0) {
 				if (flag == 0)
-					currMaxReqRate += 10;
+					currMaxReqRate += 2;
 				else
 					currMaxReqRate *= 2;
 
