@@ -356,11 +356,8 @@ public class MainController implements Serializable {
 				i++;
 				for (int j = 0; j < currtestplan.getHttpreqlist().size(); j++)
 					outputlist.add(new Output());
+				
 				Fiber<Void> testplansfiber = new Fiber<Void>(() -> {
-					/*
-					 * System.out.println(""); currtestplan.displayPlan();
-					 * System.out.println("");
-					 */
 					currtestplan.execute(null);
 				}).start();
 				int index = i - 2;
@@ -374,77 +371,20 @@ public class MainController implements Serializable {
 			try {
 				if (!test)
 					break;
+				System.out.println("hello");
 				fiber.join();
+				System.out.println("da");
+				
 			} catch (ExecutionException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
-		/*
-		 * try { testplansfiber.join(); } catch (ExecutionException e1) { //
-		 * TODO Auto-generated catch block e1.printStackTrace(); }
-		 */
+		//test=false;
 		if (logger.isInfoEnabled()) {
 			logger.info("Test Finished");
 		}
 		System.out.println("Test Finished");
-
-		// testPlans.clear();
-		/*
-		 * executor.setTestPlan(testPlan); executor.setHttpreqlist(httpreqlist);
-		 * 
-		 * 
-		 * executor.displayPlan(); System.out.println(""); //TestPlan
-		 * executor=new TestPlan();
-		 * 
-		 * executor.execute(null);
-		 */
-		/*
-		 * for (int i = 0; i < load.getDuration(); ++i) {
-		 * 
-		 * for (int j = 0; j < load.getReqRate(); ++j) { Fiber<Void> f1 = new
-		 * Fiber<Void>( () -> { try{
-		 * 
-		 * TestPlan executor=new TestPlan();
-		 * 
-		 * executor.execute(null);
-		 */
-		/*
-		 * //HttpResponse tokengen_response =
-		 * httpRequest("http://10.129.26.133:8000/proxy1?limit=100");
-		 * //val.req++; HttpResponse tokengen_response =
-		 * httpRequest("http://www.google.com"); HttpRequest obj=new
-		 * HttpRequest(); System.out.println("Request: " +
-		 * Fiber.currentFiber().getName() + " " + tokengen_response
-		 * .getStatusLine()); obj.setUrl("http://www.google.com");
-		 * obj.execute(null); Matcher m = regexExtractor(
-		 * "JMeter: (.*?); url=(.+?),", tokengen_response.toString());
-		 * 
-		 * 
-		 * if (m.find()) {
-		 * 
-		 * System.out.println("Request: " + Fiber.currentFiber().getName() +
-		 * " ,Waittime:" + m.group(1) + " ,URL :" + m.group(2));
-		 * constantTimer((long) (Float.parseFloat(m .group(1)) * 1000));
-		 * HttpResponse tokencheck_response = httpRequest(m .group(2));
-		 * //val.resp++; System.out.println("Request: " +
-		 * Fiber.currentFiber().getName() + " " + tokencheck_response
-		 * .getStatusLine());
-		 * 
-		 * 
-		 * 
-		 * 
-		 * }
-		 *//*
-			 * } catch (Exception ex) {
-			 * System.out.println(ex.getLocalizedMessage()); }
-			 * 
-			 * }).start();
-			 * 
-			 * Fiber.sleep(0, run_wait); }
-			 * //System.out.println("Req: "+val.req/(
-			 * i+1)+" "+"Resp: "+val.resp/(i+1)); }
-			 */
 	}
 
 	static int log(int x, int base) {
@@ -472,36 +412,31 @@ public class MainController implements Serializable {
 		logger.info("Epoch Value" + " : " + randomtest.getEpoch());
 		int filecount = 1;
 		int flag, newepochcount = 0;
-		if (randomtest.getMaxreqRate() <= 500)
-			flag = 0;
-		else
-			flag = 1;
-
+		/*
+		 * if (randomtest.getMaxreqRate() <= 500) flag = 0; else flag = 1;
+		 */
 		int totalepochs = randomtest.getMaxduration() / randomtest.getEpoch();
-		if (flag == 0)
-			newepochcount = randomtest.getMaxreqRate() / 2;
-		else {
-			newepochcount = log(randomtest.getMaxreqRate(), 2);
-			newepochcount -= 2;
-		}
-
-		totalepochs = Math.min(totalepochs, newepochcount);
+		/*
+		 * if (flag == 0) newepochcount = randomtest.getMaxreqRate() / 2; else {
+		 * newepochcount = log(randomtest.getMaxreqRate(), 2); newepochcount -=
+		 * 2; }
+		 * 
+		 * totalepochs = Math.min(totalepochs, newepochcount);
+		 */
 		logger.info("Total Epochs: " + totalepochs);
 
 		int currMaxReqRate = 0, remainingMix, newMix, currrateindex = 0;
 		List<Integer> requestMix = new ArrayList<Integer>();
 		List<List<TestPlan>> testPlanslist = new ArrayList<List<TestPlan>>();
-		if (flag == 0)
-			currMaxReqRate = 0;
-		else
-			currMaxReqRate = 4;
+		/*
+		 * if (flag == 0) currMaxReqRate = 0; else currMaxReqRate = 4;
+		 */
 		for (int currepoch = 0; currepoch < totalepochs; currepoch++) {
 			if (randomtest.getMaxreqRate() != 0) {
-				if (flag == 0)
-					currMaxReqRate += 2;
-				else
-					currMaxReqRate *= 2;
-				// currMaxReqRate = randInt(1, randomtest.getMaxreqRate());
+				/*
+				 * if (flag == 0) currMaxReqRate += 2; else currMaxReqRate *= 2;
+				 */
+				currMaxReqRate = randInt(1, randomtest.getMaxreqRate());
 			} else
 				currMaxReqRate = 0;
 			remainingMix = currMaxReqRate;
@@ -642,39 +577,33 @@ public class MainController implements Serializable {
 		logger.info("MaxDur Value" + " : " + randomtest.getMaxduration());
 		logger.info("Epoch Value" + " : " + randomtest.getEpoch());
 		int filecount = 1;
-		
-		int flag, newepochcount = 0;
-		if (randomtest.getMaxreqRate() <= 500)
-			flag = 0;
-		else
-			flag = 1;
 
+		int flag, newepochcount = 0;
+		/*
+		 * if (randomtest.getMaxreqRate() <= 500) flag = 0; else flag = 1;
+		 */
 		int totalepochs = randomtest.getMaxduration() / randomtest.getEpoch();
-		if (flag == 0)
-			newepochcount = randomtest.getMaxreqRate() / 2;
-		else {
-			newepochcount = log(randomtest.getMaxreqRate(), 2);
-			newepochcount -= 2;
-		}
-		
-	
-		totalepochs = Math.min(totalepochs, newepochcount);
+		/*
+		 * if (flag == 0) newepochcount = randomtest.getMaxreqRate() / 2; else {
+		 * newepochcount = log(randomtest.getMaxreqRate(), 2); newepochcount -=
+		 * 2; }
+		 * 
+		 * totalepochs = Math.min(totalepochs, newepochcount);
+		 */
 		logger.info("Total Epochs: " + totalepochs);
 
 		int currMaxReqRate = 0, remainingMix, newMix, currrateindex = 0;
 		List<Integer> requestMix = new ArrayList<Integer>();
 		List<List<TestPlan>> testPlanslist = new ArrayList<List<TestPlan>>();
-		if (flag == 0)
-			currMaxReqRate = 0;
-		else
-			currMaxReqRate = 4;
+		/*
+		 * if (flag == 0) currMaxReqRate = 0; else currMaxReqRate = 4;
+		 */
 		for (int currepoch = 0; currepoch < totalepochs; currepoch++) {
 			if (randomtest.getMaxreqRate() != 0) {
-				if (flag == 0)
-					currMaxReqRate += 2;
-				else
-					currMaxReqRate *= 2;
-
+				/*
+				 * if (flag == 0) currMaxReqRate += 2; else currMaxReqRate *= 2;
+				 */
+				currMaxReqRate = randInt(1, randomtest.getMaxreqRate());
 			}
 
 			else
@@ -975,7 +904,7 @@ public class MainController implements Serializable {
 	}
 
 	@RequestMapping(value = "/output", method = RequestMethod.POST)
-	public @ResponseBody String home_page() throws SuspendExecution {
+	public @ResponseBody String outputTable() throws SuspendExecution {
 		String tabledata = "<table class='table table-striped table-bordered table-condensed well' id='outtable'>";
 		String firstrow = "<tr>";
 		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Time</td>";
@@ -985,7 +914,10 @@ public class MainController implements Serializable {
 		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Cur Throughput</td>";
 		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Response Time</td>";
 		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Error Rate</td>";
+		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Graphs</td>";
+
 		firstrow += "</tr>";
+		 
 		tabledata += firstrow;
 		for (int i = 0; i < outputlist.size(); i++) {
 			String newrow = "<tr>";
@@ -1003,12 +935,31 @@ public class MainController implements Serializable {
 					+ outputlist.get(i).getResponsetime() + "</td>";
 			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>"
 					+ outputlist.get(i).getErrorrate() + "</td>";
+			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'><input type='button' id='graphButton' class='btn btn-default btnGraph' value='Graphs'> </td>";
 			newrow += "</tr>";
 			tabledata += newrow;
 		}
 		tabledata += "</table>";
 		// System.out.println(tabledata);
 		return tabledata;
+	}
+
+	@RequestMapping(value = "/graph", method = RequestMethod.POST)
+	public @ResponseBody String graph() throws SuspendExecution {
+		String data = "";
+		for (int i = 0; i < outputlist.size(); i++) {
+			/*
+			 * data += outputlist.get(i).getCurThroughput().split(" ", 2)+" " +
+			 * outputlist.get(i).getResponsetime().split(" ", 2)+" " +
+			 * outputlist.get(i).getErrorrate().split("%", 2);
+			 */
+			String tpt[] = outputlist.get(i).getCurThroughput().split(" ", 2);
+			String rsp[] = outputlist.get(i).getResponsetime().split(" ", 2);
+			String err[] = outputlist.get(i).getErrorrate().split("%", 2);
+			data = tpt[0] + " " + rsp[0] + " " + err[0];
+			// System.out.println(data);
+		}
+		return data;
 	}
 
 	public static void deleteFolder(File folder) throws SuspendExecution {
@@ -1031,8 +982,6 @@ public class MainController implements Serializable {
 		// variable so that it is not re-seeded every call.
 		Random rand = new Random();
 
-		// nextInt is normally exclusive of the top value,
-		// so add 1 to make it inclusive
 		int randomNum = rand.nextInt((max - min) + 1) + min;
 
 		return randomNum;

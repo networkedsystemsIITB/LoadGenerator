@@ -157,6 +157,7 @@ $(function() {
 		SaveRandomPlan();
 
 	});
+	
 
 	/*
 	 * $(':checkbox').change(function() { // do stuff here. It will fire on any
@@ -1116,16 +1117,13 @@ function checkChange() {
 	}
 };
 function output() {
-	//drawChart();
 	$.ajax({
 		type : "POST",
 		url : '/LoadGen/output',
 		dataType : "HTML",
 		success : function(data) {
-			//drawChart();
 			$('#output').html(data);
-			/*$('#outtable').
-			drawChart();*/
+			$(".btnGraph").off().on("click", graph);
 		},
 		complete : function() {
 			// Schedule the next request when the current one's complete
@@ -1133,6 +1131,8 @@ function output() {
 		}
 	});
 };
+
+
 /*function drawChart() {
 
     // Create the data table.

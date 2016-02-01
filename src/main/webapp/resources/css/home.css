@@ -1,8 +1,9 @@
-body {
-	background-image: url("/LoadGen/resources/images/bg.jpg");
+ body {
+	/* background-image: url("/LoadGen/resources/images/bg.jpg");
 	background-repeat: no-repeat;
-	background-size: cover;
-}
+	background-size: cover; */
+	background-color: #7E8F7C;
+} 
 
 .center {
 	margin: auto;
@@ -70,3 +71,7 @@ input[readonly] {
   background-color: white !important;
   cursor: text !important;
 }
+
+.column-left{ float: left; width: 33%; height: 300px; }
+.column-right{ float: right; width: 33%;height: 300px;  }
+.column-center{ display: inline-block; width: 33%;height: 300px;  }

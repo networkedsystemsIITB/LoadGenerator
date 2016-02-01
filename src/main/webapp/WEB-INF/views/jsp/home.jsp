@@ -13,7 +13,7 @@
 
 <link rel="stylesheet" type="text/css"
 	href="resources/css/jquery-ui.css">
-
+<script src="//d3js.org/d3.v3.min.js"></script>
 <script src="resources/js/jquery-1.11.3.min.js"></script>
 <!-- <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script> -->
@@ -22,16 +22,20 @@
 <script src="resources/js/jquery-1.11.3.min.js"></script>
 <script type="text/javascript" src="resources/js/jquery.tabletojson.js"></script>
 <script type="text/javascript" src="resources/js/jquery.json.js"></script>
+<script type="text/javascript" src="resources/js/graph.js"></script>
 <script type="text/javascript" src="resources/js/home.js"></script>
 <script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
 <script type="text/javascript"
 	src="resources/js/bootstrap.file-input.js"></script>
 <link rel="stylesheet" type="text/css"
 	href="resources/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="resources/css/graph.css">
 <link rel="stylesheet" type="text/css" href="resources/css/home.css">
+
+
 <link rel="icon" type="image/png" href="resources/images/lg.png">
 <!-- <script type="text/javascript" src="https://www.google.com/jsapi"></script>
- -->    <script type="text/javascript">
+     <script type="text/javascript">
 
       // Load the Visualization API and the piechart package.
       google.load('visualization', '1.0', {'packages':['corechart']});
@@ -40,7 +44,7 @@
 
       // Set a callback to run when the Google Visualization API is loaded.
       google.setOnLoadCallback(drawChart);
-      </script>
+      </script>-->
 
 </head>
 <body>
@@ -412,6 +416,11 @@
 </table> --%>
 				</div>
 			</div>
+			<div id="graph" class="col-lg-13 well" style="display: none">
+   <div class="column-center">Time vs Avg. Response Time</div>
+   <div class="column-left">Time vs Throughput</div>
+   <div class="column-right">Time vs Error Rate</div>
+</div>
 			<div class="row">
 				<div class="col-lg-4">
 					<div id="status" class="well alert alert-warning" style="display: none"></div>
