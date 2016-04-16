@@ -957,7 +957,10 @@ public class MainController implements Serializable {
 			String tpt[] = outputlist.get(rownum).getCurThroughput().split(" ", 2);
 			String rsp[] = outputlist.get(rownum).getResponsetime().split(" ", 2);
 			String err[] = outputlist.get(rownum).getErrorrate().split("%", 2);
-			data = tpt[0] + " " + rsp[0] + " " + err[0];
+			String time[] = outputlist.get(rownum).getTime().split(" ",2);
+			//System.out.println(time);
+			data = tpt[0] + " " + rsp[0] + " " + err[0] + " " + time[0]+time[1];
+			//System.out.println(data);
 			//System.out.println(rownum);
 		//}
 		return data;

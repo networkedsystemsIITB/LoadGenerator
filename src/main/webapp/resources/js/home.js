@@ -909,7 +909,7 @@ $(function() {
 		$.ajax({
 			type : "POST",
 			url : "/LoadGen/normalloadgen",
-
+			timeout: 10000,
 			success : function(response) {
 				// we have the response
 
@@ -917,13 +917,22 @@ $(function() {
 				$("#status").show();
 				$("#status").delay(2000).fadeOut("slow");
 			},
+			error: function(xhrn, s, error) {
+				//  var err = eval("(" + xhrn.responseText + ")");
+				  $("#status").html("LoadGen failed to start");
+				  $("#status").show();
+				  $("#status").delay(2000).fadeOut("slow");
+				 // console.log(xhrn.responseText);
+				}
+			/*
 			error : function(e) {
 				//$("#status").html("LoadGen failed to started");
 
 				$("#status").html("LoadGen failed to start");
 				$("#status").show();
 				$("#status").delay(2000).fadeOut("slow");
-			}
+			},*/
+			
 		});
 
 	}
@@ -949,6 +958,7 @@ $(function() {
 		$.ajax({
 			type : "POST",
 			url : "/LoadGen/randomloadgen",
+			timeout: 10000,
 			data : {
 
 				maxreqRate : maxreqrate,
@@ -987,7 +997,7 @@ $(function() {
 		$.ajax({
 			type : "POST",
 			url : "/LoadGen/randomfileloadgen",
-
+			timeout: 10000,
 			success : function(response) {
 				// we have the response
 
@@ -1098,7 +1108,7 @@ function randomoutput() {
 	
 	function CallGraph(){
 		var par=$(this).parent().parent();
-		update(par.index());
+		graph(par.index());
 	};
 
 	function NormalSaveToFile() {
