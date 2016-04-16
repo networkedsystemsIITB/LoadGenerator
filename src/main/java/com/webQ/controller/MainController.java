@@ -371,9 +371,9 @@ public class MainController implements Serializable {
 			try {
 				if (!test)
 					break;
-				System.out.println("hello");
+				//System.out.println("hello");
 				fiber.join();
-				System.out.println("da");
+				//System.out.println("da");
 				
 			} catch (ExecutionException e1) {
 				// TODO Auto-generated catch block
@@ -786,7 +786,7 @@ public class MainController implements Serializable {
 		 * System.out.println(MainController.class.getClassLoader
 		 * ().getResource("logging.properties"));
 		 */
-		System.out.println("file upload");
+		//System.out.println("file upload");
 		if (!file.isEmpty()) {
 			try {
 				testPlans.clear();
@@ -912,7 +912,7 @@ public class MainController implements Serializable {
 		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Input Load</td>";
 		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Avg Throughput</td>";
 		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Cur Throughput</td>";
-		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Response Time</td>";
+		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Cur Response Time</td>";
 		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Error Rate</td>";
 		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Graphs</td>";
 
@@ -945,20 +945,21 @@ public class MainController implements Serializable {
 	}
 
 	@RequestMapping(value = "/graph", method = RequestMethod.POST)
-	public @ResponseBody String graph() throws SuspendExecution {
+	public @ResponseBody String graph(@RequestParam("rownum") int rownum) throws SuspendExecution {
 		String data = "";
-		for (int i = 0; i < outputlist.size(); i++) {
+		//for (int i = 0; i < outputlist.size(); i++) {
 			/*
 			 * data += outputlist.get(i).getCurThroughput().split(" ", 2)+" " +
 			 * outputlist.get(i).getResponsetime().split(" ", 2)+" " +
 			 * outputlist.get(i).getErrorrate().split("%", 2);
 			 */
-			String tpt[] = outputlist.get(i).getCurThroughput().split(" ", 2);
-			String rsp[] = outputlist.get(i).getResponsetime().split(" ", 2);
-			String err[] = outputlist.get(i).getErrorrate().split("%", 2);
+			rownum--;
+			String tpt[] = outputlist.get(rownum).getCurThroughput().split(" ", 2);
+			String rsp[] = outputlist.get(rownum).getResponsetime().split(" ", 2);
+			String err[] = outputlist.get(rownum).getErrorrate().split("%", 2);
 			data = tpt[0] + " " + rsp[0] + " " + err[0];
-			// System.out.println(data);
-		}
+			//System.out.println(rownum);
+		//}
 		return data;
 	}
 

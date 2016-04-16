@@ -56,7 +56,7 @@ tick();
  setTimeout(graph, 1000);
  }
  });*/
-function graph() {
+function graph(num) {
 	$("#graph").show();
 	d3.selectAll("svg").remove();
 	var n = 30;// random = d3.random.normal(50, 5);
@@ -102,7 +102,7 @@ function graph() {
 	- margin.bottom;;
 	
 	var xr = d3.scale.linear().domain([ 0, n - 1 ]).range([ 0, widthr ]);
-	var yr = d3.scale.linear().domain([ 0, 300 ]).range([ heightr, 0 ]);
+	var yr = d3.scale.linear().domain([ 0, 100 ]).range([ heightr, 0 ]);
 	var liner = d3.svg.line().x(function(d, i) {
 		return xr(i);
 	}).y(function(d, i) {
@@ -149,7 +149,7 @@ function graph() {
 	tick();
 	function tick() {
 		// push a new data point onto the back
-		var value=getData();
+		var value=getData(num);
 		if(value.length>0){
 			var res = value.split(" ");
 			tpt= parseInt(res[0]);
@@ -192,7 +192,7 @@ function graph() {
 
 	}
 	
-	function getData(){
+	function getData(row){
 		
 		//return 100;
 		var val="";
@@ -200,6 +200,9 @@ function graph() {
 		.ajax({
 			type : "POST",
 			url : '/LoadGen/graph',
+			data : {
+				rownum : row
+			},
 			async : false,
 			cache : false,
 			timeout : 30000,

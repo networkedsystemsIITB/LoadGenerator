@@ -14,7 +14,7 @@ $(function() {
 	var featuresClone = $("#features").clone();
 
 	/* count for id creation */
-
+	
 	var hrefcount = 0;
 	var saved = true;
 	var savedparam = true;
@@ -894,7 +894,8 @@ $(function() {
 
 	}
 	;
-
+	var prevData="";
+	var flag=0;
 	function NormalStart() {
 		$('#start').hide();
 		$('#stop').show();
@@ -902,7 +903,9 @@ $(function() {
 
 		$("#stop").off().on("click", NormalStop);
 		$('#output').show();
-		output();
+		flag=0;
+		prevData="";
+		normaloutput();
 		$.ajax({
 			type : "POST",
 			url : "/LoadGen/normalloadgen",
@@ -915,6 +918,7 @@ $(function() {
 				$("#status").delay(2000).fadeOut("slow");
 			},
 			error : function(e) {
+				//$("#status").html("LoadGen failed to started");
 
 				$("#status").html("LoadGen failed to start");
 				$("#status").show();
@@ -939,7 +943,9 @@ $(function() {
 		$("#stop").off().on("click", RandomStop);
 		$('#output').show();
 		$('#addrandomtestplan').hide();
-		output();
+		flag=0;
+		prevData="";
+		randomoutput();
 		$.ajax({
 			type : "POST",
 			url : "/LoadGen/randomloadgen",
@@ -975,7 +981,9 @@ $(function() {
 		$("#stop").off().on("click", RandomStop);
 		$('#addrandomtestplan').hide();
 		$('#output').show();
-		output();
+		flag=0;
+		prevData="";
+		randomoutput();
 		$.ajax({
 			type : "POST",
 			url : "/LoadGen/randomfileloadgen",
@@ -997,6 +1005,50 @@ $(function() {
 
 	}
 	;
+
+	function normaloutput() {
+		$.ajax({
+			type : "POST",
+			url : '/LoadGen/output',
+			dataType : "HTML",
+			success : function(data) {
+				if(data==prevData){
+					NormalStop();
+					flag=1;
+				}
+				$('#output').html(data);
+				prevData=data;
+				$(".btnGraph").off().on("click", CallGraph);
+			},
+			complete : function() {
+				// Schedule the next request when the current one's complete
+				if(flag==0)
+					setTimeout(normaloutput, 1000);
+			}
+		});
+	};
+function randomoutput() {
+		
+		$.ajax({
+			type : "POST",
+			url : '/LoadGen/output',
+			dataType : "HTML",
+			success : function(data) {
+				if(data==prevData){
+					RandomStop();
+					flag=1;
+				}
+				$('#output').html(data);
+				prevData=data;
+				$(".btnGraph").off().on("click", CallGraph);
+			},
+			complete : function() {
+				// Schedule the next request when the current one's complete
+				if(flag==0)
+					setTimeout(randomoutput, 1000);
+			}
+		});
+	};
 	function NormalStop() {
 		$('#stop').hide();
 		$('#start').show();
@@ -1043,6 +1095,11 @@ $(function() {
 
 	}
 	;
+	
+	function CallGraph(){
+		var par=$(this).parent().parent();
+		update(par.index());
+	};
 
 	function NormalSaveToFile() {
 
@@ -1116,21 +1173,8 @@ function checkChange() {
 		$('#delaybox').hide();
 	}
 };
-function output() {
-	$.ajax({
-		type : "POST",
-		url : '/LoadGen/output',
-		dataType : "HTML",
-		success : function(data) {
-			$('#output').html(data);
-			$(".btnGraph").off().on("click", graph);
-		},
-		complete : function() {
-			// Schedule the next request when the current one's complete
-			setTimeout(output, 1000);
-		}
-	});
-};
+
+
 
 
 /*function drawChart() {
