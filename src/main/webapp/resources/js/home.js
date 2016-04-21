@@ -896,11 +896,13 @@ $(function() {
 	;
 	var prevData="";
 	var flag=0;
+	var testStartTime=0;
 	function NormalStart() {
 		$('#start').hide();
 		$('#stop').show();
 		$('#addnormaltestplan').hide();
-
+		var d = new Date();
+		testStartTime = d.getTime();
 		$("#stop").off().on("click", NormalStop);
 		$('#output').show();
 		flag=0;
@@ -1108,7 +1110,7 @@ function randomoutput() {
 	
 	function CallGraph(){
 		var par=$(this).parent().parent();
-		graph(par.index());
+		graph(par.index(),testStartTime);
 	};
 
 	function NormalSaveToFile() {

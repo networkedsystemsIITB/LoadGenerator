@@ -236,6 +236,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 			 * System.out.println("Duration : "+ duration);
 			 * System.out.println("Reqrate : "+ reqRate);
 			 */
+			this.outputFiber();
 			Fiber.sleep(this.getStartDelay() * 1000);
 			if (this.random == 1) {
 				// System.out.println("Epoch Number : " + this.getId());
@@ -251,7 +252,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 			Date now1 = new Date();
 			logger.info("starttime " + sdf.format(now1));
 
-			this.outputFiber();
+			//this.outputFiber();
 			final Semaphore sem = new Semaphore(1500000);
 			int j=0;
 			Fiber[] execfibers = new Fiber[num];

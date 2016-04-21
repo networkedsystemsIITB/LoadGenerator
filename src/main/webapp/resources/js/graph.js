@@ -56,10 +56,11 @@ tick();
  setTimeout(graph, 1000);
  }
  });*/
-function graph(num) {
+function graph(num,testStartTime) {
 	
 	$("#graph").show();
 	d3.selectAll("svg").remove();
+	//console.log(testStartTime);
 	
 	//Initialization
 	var maxt=0;
@@ -188,7 +189,10 @@ function graph(num) {
 			prevtime=time;
 			if(tpt>=maxt)
 				maxt=tpt+20;
-
+			var d = new Date();
+			var testCurTime = d.getTime();
+			var timediff = testCurTime-testStartTime;
+			timediff=Math.ceil(timediff/(1000*1.0));
 			var xnt = d3.scale.linear().domain([0,30]).range([0,widtht]);
             var ynt = d3.scale.linear().domain([0,maxt]).range([heightt,0]).nice();
             
@@ -250,14 +254,14 @@ function graph(num) {
 	            .call(xAxise);
 	        
 		  // redraw the line, and slide it to the left
-		patht
-	      .attr("d", linet)
-	      .attr("transform", null)
-	      .style("stroke", "red")
-	      .transition()
-	      .duration(1000)
-	      .ease("linear")
-	      .attr("transform", "translate(" + xnt(-1) + ",0)");
+		  patht
+		      .attr("d", linet)
+		      .attr("transform", null)
+		      .style("stroke", "red")
+		      .transition()
+		      .duration(1000)
+		      .ease("linear")
+		      .attr("transform", "translate(" + xnt(-1) + ",0)");
 	      pathr
 		      .attr("d", liner)
 		      .attr("transform", null)
@@ -265,7 +269,8 @@ function graph(num) {
 		      .transition()
 		      .duration(1000)
 		      .ease("linear")
-		      .attr("transform", "translate(" + xnr(-1) + ",0)");
+	      		.attr("transform", "translate(" + xnr(-1)  + ",0)");
+
 		  pathe
 		      .attr("d", linee)
 		      .attr("transform", null)
@@ -281,7 +286,7 @@ function graph(num) {
 			  datar.shift();
 			  datae.shift();
 		  }
-			}
+		}
 
 	}
 	
