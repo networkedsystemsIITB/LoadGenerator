@@ -53,6 +53,12 @@
       <scope>provided</scope>
     </dependency>
     <!-- Apache Commons FileUpload -->
+    <dependency>
+	<groupId>jfree</groupId>
+	<artifactId>jfreechart</artifactId>
+	<version>1.0.13</version>
+	</dependency>
+    
 <dependency>
     <groupId>commons-fileupload</groupId>
     <artifactId>commons-fileupload</artifactId>
@@ -68,9 +74,11 @@
 	<artifactId>json</artifactId>
 	<version>20141113</version>
 </dependency>
-
-
- 
+<dependency>
+    <groupId>com.itextpdf</groupId>
+    <artifactId>itextpdf</artifactId>
+    <version>5.0.6</version>
+</dependency>
 <!-- Apache Commons IO -->
 <dependency>
     <groupId>commons-io</groupId>

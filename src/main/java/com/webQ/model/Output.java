@@ -5,12 +5,30 @@ import co.paralleluniverse.fibers.SuspendExecution;
 public class Output {
 
 	private String time;
+	private String duration;
 	private String request;
 	private String inputload;
 	private String avgThroughput;
 	private String curThroughput;
-	private String responsetime;
+	private String curresponsetime;
 	private String errorrate;
+	private String avgResponsetime;
+
+	public String getDuration() {
+		return duration;
+	}
+
+	public void setDuration(String duration) {
+		this.duration = duration;
+	}
+
+	public String getAvgResponsetime() {
+		return avgResponsetime;
+	}
+
+	public void setAvgResponsetime(String avgResponsetime) {
+		this.avgResponsetime = avgResponsetime;
+	}
 
 	public String getTime() {
 		return time;
@@ -37,11 +55,11 @@ public class Output {
 	}
 
 	public String getResponsetime() {
-		return responsetime;
+		return curresponsetime;
 	}
 
 	public void setResponsetime(String responsetime) {
-		this.responsetime = responsetime;
+		this.curresponsetime = responsetime;
 	}
 
 	public String getErrorrate() {

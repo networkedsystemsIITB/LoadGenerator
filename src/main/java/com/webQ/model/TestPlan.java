@@ -49,7 +49,11 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 	Map<Integer, List<Long>> reqsDetails = new HashMap<Integer, List<Long>>();
 	private SimpleDateFormat sdf = new SimpleDateFormat(
 			"yyyy-MM-dd HH:mm:ss.SSS");
-	private FileWriter fileWriter = null;
+	//private FileWriter fileWriter = null;
+	private List<FileWriter> tptwriter=new ArrayList<FileWriter>();
+	private List<FileWriter> respwriter=new ArrayList<FileWriter>();
+	private List<FileWriter> errwriter=new ArrayList<FileWriter>();
+
 
 	private List<Object> testPlan = new ArrayList<Object>();
 	private final Logger logger = Logger.getLogger(MainController.class);
@@ -195,7 +199,9 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 		// TODO Auto-generated method stub
 
 		this.displayPlan();
-
+		tptwriter.clear();
+		respwriter.clear();
+		errwriter.clear();
 		if (this.reqRate != 0) {
 			this.running = true;
 			this.reqsDetails.clear();
@@ -203,14 +209,28 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 				Output outputrow = new Output();
 				Date now = new Date();
 				String strDate = sdf.format(now);
+			
 				outputrow.setRequest("TestPlan-" + this.getId() + "-Request-"
 						+ (i + 1));
+				//System.out.println("durat "+this.duration.toString());
+				outputrow.setDuration(Integer.toString(this.duration));
 				outputrow.setTime(strDate);
 				outputrow.setInputload("0 reqs/sec");
 				outputrow.setErrorrate("0%");
 				outputrow.setAvgThroughput("0 reqs/sec");
 				outputrow.setCurThroughput("0 reqs/sec");
 				outputrow.setResponsetime("0 msec");
+				outputrow.setAvgResponsetime("0 msec");
+				try {
+					tptwriter.add(new FileWriter("webapps/LoadGen/resources/tmpFiles/"+outputrow.getRequest()+"tpt.txt"));
+					respwriter.add(new FileWriter("webapps/LoadGen/resources/tmpFiles/"+outputrow.getRequest()+"resp.txt"));
+					errwriter.add(new FileWriter("webapps/LoadGen/resources/tmpFiles/"+outputrow.getRequest()+"err.txt"));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					logger.info("Error Creating file");
+					e.printStackTrace();
+				}
+
 				MainController.outputlist.set(this.getOutputrowstart() + i,
 						outputrow);
 				List<Long> temp = new ArrayList<Long>();
@@ -375,7 +395,7 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 			}
 			//Fiber.sleep(1000);
 			this.running=false;
-			System.out.println("here i am");
+			//System.out.println("here i am");
 			//Fiber.sleep(this.duration * 1000);
 			/*while (true) {
 				//logger.info("Running Count "+this.getRunningcount());
@@ -399,27 +419,36 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 
 	private void outputFiber() throws InterruptedException, SuspendExecution {
 		// TODO Auto-generated method stub
-		try {
+		
+		final String FILE_HEADER = String.format(
+				"%-30s%-25s%-18s%-18s%-18s%-23s%-10s", "Time", "Request",
+				"Input Load", "Avg Througput", "Cur Througput",
+				"Cur Response Time", "Error Rate");
+		logger.info(FILE_HEADER);
+		/*try {
 
-			final String FILE_HEADER = String.format(
-					"%-30s%-25s%-18s%-18s%-18s%-23s%-10s", "Time", "Request",
-					"Input Load", "Avg Througput", "Cur Througput",
-					"Cur Response Time", "Error Rate");
-
-			fileWriter = new FileWriter("/home/stanly/output" + this.getId()
-					+ ".csv");
-
-			fileWriter.append(FILE_HEADER.toString());
-			logger.info(FILE_HEADER);
+			for (FileWriter fw:tptwriter) {
+				fw.append("0 0\n");
+			}
+			
+			for (FileWriter fw:respwriter) {
+				fw.append("0 0\n");
+			}
+			
+			for (FileWriter fw:errwriter) {
+				fw.append("0 0\n");
+			}
+		
+			
 			// Add a new line separator after the header
 
-			fileWriter.append("\n");
+			
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Failed to create file");
 			e.printStackTrace();
-		}
+		}*/
 		Fiber<Void> outputfiber = new Fiber<Void>(() -> {
 			long i = 1;
 			while (this.running) {
@@ -428,10 +457,22 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 				i++;
 			}
 			try {
+				
+				for (FileWriter fw:tptwriter) {
+					fw.flush();
+					fw.close();
+				}
+				for (FileWriter fw:respwriter) {
+					fw.flush();
+					fw.close();
+				}
+				for (FileWriter fw:errwriter) {
+					fw.flush();
+					fw.close();
+				}
+/*				fileWriter.flush();
 
-				fileWriter.flush();
-
-				fileWriter.close();
+				fileWriter.close();*/
 
 			} catch (IOException e) {
 
@@ -457,10 +498,13 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 				Date now = new Date();
 				String strDate = sdf.format(now);
 				Long avgThroughput;
+				if(timesec!=1)
+					tptwriter.get(l-1).append(Long.toString(timesec-1)+" "+entry.getValue().get(3).toString()+"\n");
 				/*Long timediv=(long) Math.ceil((double)((System.currentTimeMillis()-(entry.getValue().get(5)))/(1000*1.0)));
 				*/outputrow.setRequest("TestPlan-" + this.getId() + "-Request-"
 						+ (l));
 				outputrow.setTime(strDate);
+				outputrow.setDuration(Integer.toString(this.duration));
 				//System.out.println(timediv);
 				/*
 				 * outputrow.setInputload(this.getReqRate().toString() +
@@ -474,9 +518,14 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 					double errorrate = ((1.00 * (entry.getValue().get(2))) / (entry
 							.getValue().get(1) + entry.getValue().get(2))) * 100;
 					outputrow.setErrorrate(df.format(errorrate) + "%");
+					if(timesec!=1)
+						errwriter.get(l-1).append(Long.toString(timesec-1)+" "+df.format(errorrate).toString()+"\n");				
 				}
 				else{
 					outputrow.setErrorrate("0%");
+					if(timesec!=1)
+						errwriter.get(l-1).append(Long.toString(timesec-1)+" 0"+"\n");				
+
 				}
 				if(entry.getValue().get(1)!=0&&entry.getValue().get(6)==-1)
 					entry.getValue().set(6,timesec-1);
@@ -486,11 +535,26 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 				outputrow.setCurThroughput(entry.getValue().get(3)
 						+ " reqs/sec");
 
-				if (entry.getValue().get(3)!=0)
-					outputrow.setResponsetime(entry.getValue().get(5)
-							/ entry.getValue().get(3) + " msec");
-				else
+				if (entry.getValue().get(3)!=0){
+					long rtime=entry.getValue().get(5)
+							/ entry.getValue().get(3) ;
+					outputrow.setResponsetime(rtime+ " msec");
+					if(timesec!=1)
+						respwriter.get(l-1).append(Long.toString(timesec-1)+" "+Long.toString(rtime)+"\n");
+
+				}
+				else{
 					outputrow.setResponsetime("0 msec");
+					if(timesec!=1)
+						respwriter.get(l-1).append(Long.toString(timesec-1)+" 0"+"\n");
+
+				}
+				
+				if (avgThroughput!=0)
+					outputrow.setAvgResponsetime(entry.getValue().get(4)
+							/ (avgThroughput*timediv) + " msec");
+				else
+					outputrow.setAvgResponsetime("0 msec");
 
 				entry.getValue().set(3, (long) 0);
 				entry.getValue().set(5, (long) 0);
@@ -503,9 +567,10 @@ public class TestPlan implements Feature, Serializable, Cloneable {
 						outputrow.getCurThroughput(),
 						outputrow.getResponsetime(), outputrow.getErrorrate());
 
-				fileWriter.append(message);
-				fileWriter.append("\n");
+				/*fileWriter.append(message);
+				fileWriter.append("\n");*/
 				logger.info(message);
+				
 				l++;
 			}
 

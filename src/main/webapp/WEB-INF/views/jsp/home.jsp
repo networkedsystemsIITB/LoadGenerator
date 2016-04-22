@@ -29,7 +29,7 @@
 	src="resources/js/bootstrap.file-input.js"></script>
 <link rel="stylesheet" type="text/css"
 	href="resources/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="resources/css/graph.css">
+<link rel="stylesheet" type="text/css" href="resources/css/graph.css">
 <link rel="stylesheet" type="text/css" href="resources/css/home.css">
 
 
@@ -125,8 +125,7 @@
 								<td><input type="file" name="fileName" id="fileName"
 									form="normaluploadForm" data-filename-placement="inside"></td>
 								<td><input type="submit" id="normaluploadbutton"
-									class="btn btn-primary" value="Upload">
-								<!-- <input id="normaluploadbutton" type="image"
+									class="btn btn-primary" value="Upload"> <!-- <input id="normaluploadbutton" type="image"
 									src="resources/images/upload.png" alt="upload"> --></td>
 						</table>
 					</div>
@@ -142,8 +141,7 @@
 								<td><input type="file" name="fileName" id="fileName"
 									form="randomuploadForm" data-filename-placement="inside"></td>
 								<td><input type="submit" id="randomuploadbutton"
-									class="btn btn-primary" value="Upload">
-								<!-- <input id="uploadbutton" type="image"
+									class="btn btn-primary" value="Upload"> <!-- <input id="uploadbutton" type="image"
 									src="resources/images/upload.png" alt="upload"> --></td>
 						</table>
 					</div>
@@ -236,65 +234,67 @@
 
 
 			</div>
-		</center>
+			</center>
+<center>
 
-		<div id="features" class="row" style="display: none">
+			<div id="features" class="row" style="display: none">
 
-			<div class="col-lg-3" style='vertical-align: middle;'>
+				<div class="col-lg-3" style='vertical-align: middle;'>
 
-				<table
-					class="table table-striped table-bordered table-condensed well">
-					<tr>
-						<td><input type="button" id="httpreq"
-							class="btn btn-primary btn-lg btn-block" value="Http Request">
-						<!-- <input id="httpreq" type="image"
+					<table
+						class="table table-striped table-bordered table-condensed well">
+						<tr>
+							<td><input type="button" id="httpreq"
+								class="btn btn-primary btn-lg btn-block" value="Http Request">
+								<!-- <input id="httpreq" type="image"
 							src="resources/images/httpreq.png" alt="Http Request"
 							width="250px"> --></td>
-					</tr>
-					<tr>
-						<td><input type="button" id="consttimer"
-							class="btn btn-primary btn-lg btn-block" value="Constant Timer">
-						<!-- <input id="consttimer" type="image"
+						</tr>
+						<tr>
+							<td><input type="button" id="consttimer"
+								class="btn btn-primary btn-lg btn-block" value="Constant Timer">
+								<!-- <input id="consttimer" type="image"
 							src="resources/images/timer.png" alt="Constant Timer"
 							width="250px"> --></td>
-					</tr>
-					<tr>
-						<td><input type="button" id="regexex"
-							class="btn btn-primary btn-lg btn-block" value="Regex Extractor">
-						<!-- <input id="regexex" type="image"
+						</tr>
+						<tr>
+							<td><input type="button" id="regexex"
+								class="btn btn-primary btn-lg btn-block" value="Regex Extractor">
+								<!-- <input id="regexex" type="image"
 							src="resources/images/regexext.png" alt="Regex Extractor"
 							width="250px"> --></td>
-					</tr>
-					<!-- 		<button id="httpreq" width="200px">Http Request</button></br>
+						</tr>
+						<!-- 		<button id="httpreq" width="200px">Http Request</button></br>
 		<button id="consttimer" width="200px">Constant Timer</button></br>
 		<button id="regexex" width="200px">Regex Extractor</button></br> -->
-				</table>
+					</table>
 
+				</div>
+
+				<div id="testtable" class="col-lg-8 well" style="display: none">
+					<!-- 		<div id="resizable" class="ui-widget-content"> -->
+					<table id="ttable"
+						class="table table-striped table-bordered table-condensed">
+						<col style="width: 30%">
+						<col style="width: 60%">
+						<col style="width: 10%">
+
+						<thead>
+							<tr>
+								<th class='ui-helper-center' style='vertical-align: middle;'>Test
+									Feature</th>
+								<th class='ui-helper-center' style='vertical-align: middle;'>Parameters</th>
+								<th></th>
+							</tr>
+						</thead>
+
+						<tbody id="tbody"></tbody>
+					</table>
+
+					<!-- </div> -->
+				</div>
 			</div>
-
-			<div id="testtable" class="col-lg-8 well" style="display: none">
-				<!-- 		<div id="resizable" class="ui-widget-content"> -->
-				<table id="ttable"
-					class="table table-striped table-bordered table-condensed">
-					<col style="width: 30%">
-					<col style="width: 60%">
-					<col style="width: 10%">
-
-					<thead>
-						<tr>
-							<th class='ui-helper-center' style='vertical-align: middle;'>Test
-								Feature</th>
-							<th class='ui-helper-center' style='vertical-align: middle;'>Parameters</th>
-							<th></th>
-						</tr>
-					</thead>
-
-					<tbody id="tbody"></tbody>
-				</table>
-
-				<!-- </div> -->
-			</div>
-		</div>
+		</center>
 		<!-- <div id="features" class="row" style="display: none">
 
 			<div class="col-lg-3">
@@ -358,6 +358,7 @@
 				</div>
 			</div>
 			<br>
+			
 			<div id="buttons" class="row" style="display: none">
 				<table
 					class="table table-striped table-bordered table-condensed well"
@@ -386,16 +387,16 @@
 						<td>
 							<!-- <input id="savetofile" type="image"
 							src="resources/images/save.png" alt="Save To File"
-							style="display: none"> -->
-							<input type="button" id="savetofile"
+							style="display: none"> --> <input type="button" id="savetofile"
 							class="btn btn-primary btn-block" value="Save To File"
 							style="display: none">
 							<div id="downloadlink" style="display: none">
 								<a href="resources/tmpFiles/test.xml"
 									class="btn btn-primary btn-block" download>Download</a>
-								<!-- <a href="resources/tmpFiles/test.xml" download>  <img
-									src="resources/images/download.png" alt="Download"> 
-								</a> -->
+							</div>
+							<div id="summarylink" style="display: none">
+								<a href="resources/tmpFiles/summary.pdf"
+									class="btn btn-primary btn-block" download>Test Summary</a>
 							</div>
 						</td>
 					</tr>
@@ -417,17 +418,17 @@
 				</div>
 			</div>
 			<div id="graph" class="col-lg-13 well" style="display: none">
-   <div class="column-center">Time vs Avg. Response Time</div>
-   <div class="column-left">Time vs Throughput</div>
-   <div class="column-right">Time vs Error Rate</div>
-</div>
+				<div class="column-center">Time vs Avg. Response Time</div>
+				<div class="column-left">Time vs Throughput</div>
+				<div class="column-right">Time vs Error Rate</div>
+			</div>
 			<div class="row">
 				<div class="col-lg-4">
-					<div id="status" class="well alert alert-warning" style="display: none"></div>
+					<div id="status" class="well alert alert-warning"
+						style="display: none"></div>
 				</div>
 			</div>
-			 <div class="row" id="chart_div"></div>
-
+			<div class="row" id="chart_div"></div>
 		</center>
 
 	</div>

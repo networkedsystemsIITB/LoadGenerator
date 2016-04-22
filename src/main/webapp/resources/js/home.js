@@ -83,6 +83,7 @@ $(function() {
 
 		$('#savetofile').hide();
 		$("#downloadlink").hide();
+		$("#summarylink").hide();
 
 		$("#httpreq").off().on("click", AddHttpReq);
 		$("#consttimer").off().on("click", AddConstTimer);
@@ -109,6 +110,8 @@ $(function() {
 
 		$('#savetofile').hide();
 		$("#downloadlink").hide();
+		$("#summarylink").hide();
+
 
 		$("#httpreq").off().on("click", AddHttpReq);
 		$("#consttimer").off().on("click", AddConstTimer);
@@ -133,6 +136,8 @@ $(function() {
 		$('#stop').hide();
 		$('#savetofile').show();
 		$("#downloadlink").hide();
+		$("#summarylink").hide();
+
 		$("#start").off().on("click", NormalStart);
 		$("#savetofile").off().on("click", NormalSaveToFile);
 		SaveNormalPlan();
@@ -151,6 +156,8 @@ $(function() {
 		$('#stop').hide();
 		$('#savetofile').show();
 		$("#downloadlink").hide();
+		$("#summarylink").hide();
+
 		$("#start").off().on("click", RandomStart);
 		$("#savetofile").off().on("click", RandomSaveToFile);
 		
@@ -175,6 +182,8 @@ $(function() {
 		$('#stop').hide();
 		$('#savetofile').show();
 		$("#downloadlink").hide();
+		$("#summarylink").hide();
+
 		$("#start").off().on("click", NormalStart);
 		$("#savetofile").off().on("click", NormalSaveToFile);
 
@@ -211,6 +220,8 @@ $(function() {
 		$('#stop').hide();
 		$('#savetofile').show();
 		$("#downloadlink").hide();
+		$("#summarylink").hide();
+
 		$("#start").off().on("click", RandomFileStart);
 		$("#savetofile").off().on("click", RandomSaveToFile);
 
@@ -1025,6 +1036,7 @@ $(function() {
 			dataType : "HTML",
 			success : function(data) {
 				if(data==prevData){
+					CreateSummary();
 					NormalStop();
 					flag=1;
 				}
@@ -1047,6 +1059,7 @@ function randomoutput() {
 			dataType : "HTML",
 			success : function(data) {
 				if(data==prevData){
+					CreateSummary();
 					RandomStop();
 					flag=1;
 				}
@@ -1113,6 +1126,36 @@ function randomoutput() {
 		graph(par.index(),testStartTime);
 	};
 
+	function CreateSummary() {
+
+		$.ajax({
+			type : "POST",
+			async: false,
+			url : "/LoadGen/createsummary",
+
+			success : function(response) {
+				// we have the response
+				$("#buttons").show();
+				$("#start").show();
+				$("#stop").hide();
+				$("#downloadlink").hide();
+				$("#savetofile").hide();
+				$("#summarylink").show();
+				$("#status").html("Summary Generated");
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");
+			},
+			error : function(e) {
+				$("#status").html("Summary failed to generate");
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");
+			}
+		});
+
+	}
+	;
+	
+	
 	function NormalSaveToFile() {
 
 		$.ajax({
@@ -1126,6 +1169,7 @@ function randomoutput() {
 				$("#stop").hide();
 				$("#downloadlink").show();
 				$("#savetofile").hide();
+				$("#summarylink").hide();
 				$("#status").html("Test Saved to file");
 				$("#status").show();
 				$("#status").delay(2000).fadeOut("slow");
@@ -1165,6 +1209,7 @@ function randomoutput() {
 				$("#stop").hide();
 				$("#downloadlink").show();
 				$("#savetofile").hide();
+				$("#summarylink").hide();
 				$("#status").html("Test Saved to file");
 				$("#status").show();
 				$("#status").delay(2000).fadeOut("slow");

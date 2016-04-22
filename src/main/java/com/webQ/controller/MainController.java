@@ -6,6 +6,19 @@ import co.paralleluniverse.fibers.httpasyncclient.FiberCloseableHttpAsyncClient;
 import co.paralleluniverse.fibers.httpclient.FiberHttpClient;
 import co.paralleluniverse.fibers.httpclient.FiberHttpClientBuilder;
 
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.webQ.Serializers.Serializer;
 import com.webQ.model.ConstantTimer;
 import com.webQ.model.HttpRequest;
@@ -28,6 +41,11 @@ import org.apache.http.nio.reactor.IOReactor;
 import org.apache.http.nio.reactor.IOReactorException;
 import org.apache.http.protocol.HttpContext;
 import org.apache.log4j.Logger;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,11 +69,15 @@ import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 
+
 /*import org.apache.log4j.Logger;*/
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
@@ -110,32 +132,6 @@ public class MainController implements Serializable {
 		globalregexmap.clear();
 		outputlist.clear();
 		test = true;
-		File folder = new File("webapps/LoadGen/resources/tmpFiles");
-		if (folder.exists()) {
-			logger.info(folder.getAbsolutePath());
-			deleteFolder(folder);
-		} else {
-			logger.info(folder.getAbsolutePath());
-			logger.info("relative resolution failed");
-		}
-		File file = new File("webapps/LoadGen/resources/tmpFiles");
-		if (!file.exists()) {
-			if (file.mkdir()) {
-				logger.info("Directory is created!");
-			} else {
-				logger.info("Failed to create directory!");
-			}
-		}
-		File f = new File("/home/stanly/Project/LoadGenerator/loadgen.log");
-		PrintWriter writer;
-		try {
-			writer = new PrintWriter(f);
-			writer.print("");
-			writer.close();
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 
 		return new ModelAndView("home", "command", new TestPlan());
 	}
@@ -314,26 +310,36 @@ public class MainController implements Serializable {
 	public void execute(ModelMap model) throws SuspendExecution,
 			InterruptedException {
 		test = true;
+
+		File f = new File("/home/stanly/Project/LoadGenerator/loadgen.log");
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(f);
+			writer.print("");
+			writer.close();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		File folder = new File("webapps/LoadGen/resources/tmpFiles");
+		if (folder.exists()) {
+			logger.info(folder.getAbsolutePath());
+			deleteFolder(folder);
+		} else {
+			logger.info(folder.getAbsolutePath());
+			logger.info("folder not exists");
+		}
+		File file = new File("webapps/LoadGen/resources/tmpFiles");
+		if (!file.exists()) {
+			if (file.mkdir()) {
+				logger.info("Directory is created!");
+			} else {
+				logger.info("Failed to create directory!");
+			}
+		}
+
 		int rowstart = 0;
-		// PrintWriter out = response.getWriter();
-		// System.out.println("dddddd");
-		/*
-		 * model.addAttribute("reqRate", load.getReqRate());
-		 * model.addAttribute("duration", load.getDuration());
-		 */
-
-		// int run_wait = 1000000000 / load.getReqRate();
-
-		/*
-		 * value val = new value(); val.req=0; val.resp=0;
-		 */
-		/*
-		 * System.out.println("Random Value" + " : " +newTest.getRandom());
-		 * System.out.println("MaxReq Value" + " : " +newTest.getMaxreqRate());
-		 * System.out.println("MaxDur Value" + " : " +newTest.getMaxduration());
-		 * System.out.println("Epoch Value" + " : " +newTest.getEpoch());
-		 * newTest.setTestPlans(testPlans);
-		 */
 		if (logger.isInfoEnabled()) {
 			logger.info("Starting");
 		}
@@ -344,7 +350,7 @@ public class MainController implements Serializable {
 		// System.out.println("");
 
 		int i = 1;
-
+		// System.out.println("size "+testPlans.size());
 		for (TestPlan currtestplan : testPlans) {
 			if (test) {
 				System.out.println("Testplan" + i);
@@ -356,7 +362,7 @@ public class MainController implements Serializable {
 				i++;
 				for (int j = 0; j < currtestplan.getHttpreqlist().size(); j++)
 					outputlist.add(new Output());
-				
+
 				Fiber<Void> testplansfiber = new Fiber<Void>(() -> {
 					currtestplan.execute(null);
 				}).start();
@@ -371,16 +377,16 @@ public class MainController implements Serializable {
 			try {
 				if (!test)
 					break;
-				//System.out.println("hello");
+				// System.out.println("hello");
 				fiber.join();
-				//System.out.println("da");
-				
+				// System.out.println("da");
+
 			} catch (ExecutionException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
-		//test=false;
+		// test=false;
 		if (logger.isInfoEnabled()) {
 			logger.info("Test Finished");
 		}
@@ -395,6 +401,34 @@ public class MainController implements Serializable {
 	public void execute(@ModelAttribute("SpringWeb") Test newTest,
 			ModelMap model) throws SuspendExecution, InterruptedException {
 		test = true;
+		File f = new File("/home/stanly/Project/LoadGenerator/loadgen.log");
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(f);
+			writer.print("");
+			writer.close();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		File folder = new File("webapps/LoadGen/resources/tmpFiles");
+		if (folder.exists()) {
+			logger.info(folder.getAbsolutePath());
+			deleteFolder(folder);
+		} else {
+			logger.info(folder.getAbsolutePath());
+			logger.info("folder not exists");
+		}
+		File file = new File("webapps/LoadGen/resources/tmpFiles");
+		if (!file.exists()) {
+			if (file.mkdir()) {
+				logger.info("Directory is created!");
+			} else {
+				logger.info("Failed to create directory!");
+			}
+		}
+
 		int rowstart = 0;
 		newTest.setTestPlans(testPlans);
 
@@ -563,6 +597,33 @@ public class MainController implements Serializable {
 	@RequestMapping(value = "/randomfileloadgen", method = RequestMethod.POST)
 	public void execute() throws SuspendExecution, InterruptedException {
 		test = true;
+		File f = new File("/home/stanly/Project/LoadGenerator/loadgen.log");
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(f);
+			writer.print("");
+			writer.close();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		File folder = new File("webapps/LoadGen/resources/tmpFiles");
+		if (folder.exists()) {
+			logger.info(folder.getAbsolutePath());
+			deleteFolder(folder);
+		} else {
+			logger.info(folder.getAbsolutePath());
+			logger.info("folder not exists");
+		}
+		File file = new File("webapps/LoadGen/resources/tmpFiles");
+		if (!file.exists()) {
+			if (file.mkdir()) {
+				logger.info("Directory is created!");
+			} else {
+				logger.info("Failed to create directory!");
+			}
+		}
+
 		testPlans = randomtest.getTestPlans();
 		int rowstart = 0;
 
@@ -706,23 +767,6 @@ public class MainController implements Serializable {
 				globalregexmap.clear();
 				outputlist.clear();
 				test = true;
-				File folder = new File("webapps/LoadGen/resources/tmpFiles");
-				if (folder.exists()) {
-					logger.info(folder.getAbsolutePath());
-					deleteFolder(folder);
-				} else {
-					logger.info(folder.getAbsolutePath());
-					logger.info("relative resolution failed");
-				}
-				File dir = new File("webapps/LoadGen/resources/tmpFiles");
-				if (!dir.exists()) {
-					if (dir.mkdir()) {
-						logger.info("Directory is created!");
-					} else {
-						logger.info("Failed to create directory!");
-					}
-				}
-
 				File f = new File(
 						"/home/stanly/Project/LoadGenerator/loadgen.log");
 				PrintWriter writer;
@@ -733,6 +777,22 @@ public class MainController implements Serializable {
 				} catch (FileNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+				}
+				File folder = new File("webapps/LoadGen/resources/tmpFiles");
+				if (folder.exists()) {
+					logger.info(folder.getAbsolutePath());
+					deleteFolder(folder);
+				} else {
+					logger.info(folder.getAbsolutePath());
+					logger.info("folder not exists");
+				}
+				File dir = new File("webapps/LoadGen/resources/tmpFiles");
+				if (!dir.exists()) {
+					if (dir.mkdir()) {
+						logger.info("Directory is created!");
+					} else {
+						logger.info("Failed to create directory!");
+					}
 				}
 				byte[] bytes = file.getBytes();
 
@@ -786,7 +846,7 @@ public class MainController implements Serializable {
 		 * System.out.println(MainController.class.getClassLoader
 		 * ().getResource("logging.properties"));
 		 */
-		//System.out.println("file upload");
+		// System.out.println("file upload");
 		if (!file.isEmpty()) {
 			try {
 				testPlans.clear();
@@ -797,22 +857,6 @@ public class MainController implements Serializable {
 				globalregexmap.clear();
 				outputlist.clear();
 				test = true;
-				File folder = new File("webapps/LoadGen/resources/tmpFiles");
-				if (folder.exists()) {
-					logger.info(folder.getAbsolutePath());
-					deleteFolder(folder);
-				} else {
-					logger.info(folder.getAbsolutePath());
-					logger.info("relative resolution failed");
-				}
-				File dir = new File("webapps/LoadGen/resources/tmpFiles");
-				if (!dir.exists()) {
-					if (dir.mkdir()) {
-						logger.info("Directory is created!");
-					} else {
-						logger.info("Failed to create directory!");
-					}
-				}
 				// Log File Creation
 				File f = new File(
 						"/home/stanly/Project/LoadGenerator/loadgen.log");
@@ -825,6 +869,23 @@ public class MainController implements Serializable {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+				File folder = new File("webapps/LoadGen/resources/tmpFiles");
+				if (folder.exists()) {
+					logger.info(folder.getAbsolutePath());
+					deleteFolder(folder);
+				} else {
+					logger.info(folder.getAbsolutePath());
+					logger.info("folder not exists");
+				}
+				File dir = new File("webapps/LoadGen/resources/tmpFiles");
+				if (!dir.exists()) {
+					if (dir.mkdir()) {
+						logger.info("Directory is created!");
+					} else {
+						logger.info("Failed to create directory!");
+					}
+				}
+
 				byte[] bytes = file.getBytes();
 				// System.out.println(file.getName());
 				// System.out.println(file.getOriginalFilename());
@@ -860,6 +921,263 @@ public class MainController implements Serializable {
 					+ " because the file was empty.";
 		}
 	}
+
+	@RequestMapping(value = "/createsummary", method = RequestMethod.POST)
+	public @ResponseBody String createSummary() throws Exception,
+			SuspendExecution {
+		Document document = new Document();
+		float fntSize, lineSpacing;
+		fntSize = 16f;
+		lineSpacing = 10f;
+		try {
+			PdfWriter writer = PdfWriter.getInstance(document,
+					new FileOutputStream(
+							"webapps/LoadGen/resources/tmpFiles/summary.pdf"));
+			document.open();
+			document.add(Chunk.NEWLINE);
+			document.add(Chunk.NEWLINE);
+			Paragraph heading = new Paragraph(new Phrase(lineSpacing,
+					"Test Summary", FontFactory.getFont(FontFactory.COURIER,
+							fntSize)));
+			heading.setAlignment(Element.ALIGN_CENTER);
+			document.add(heading);
+			document.add(Chunk.NEWLINE);
+			document.add(Chunk.NEWLINE);
+			for (int i = 0; i < outputlist.size(); i++) {
+
+				Paragraph title = new Paragraph(outputlist.get(i).getRequest());
+				document.add(Chunk.NEWLINE);
+				title.setAlignment(Element.ALIGN_CENTER);
+				document.add(title);
+				PdfPTable table = new PdfPTable(5); // 2 columns.
+				table.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.setWidthPercentage(90); // Width 100%
+				table.setSpacingBefore(10f); // Space before table
+				table.setSpacingAfter(10f); // Space after table
+				float[] columnWidths = { 1f, 1f, 1f, 1f, 1f };
+				table.setWidths(columnWidths);
+
+				PdfPCell cell1 = new PdfPCell(new Paragraph("Request Rate"));
+				cell1.setBorderColor(BaseColor.BLACK);
+				cell1.setPaddingLeft(10);
+				cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell1.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+				PdfPCell cell2 = new PdfPCell(new Paragraph("Duration"));
+				cell2.setBorderColor(BaseColor.BLACK);
+				cell2.setPaddingLeft(10);
+				cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+				PdfPCell cell3 = new PdfPCell(new Paragraph(
+						"Average Throughput"));
+				cell3.setBorderColor(BaseColor.BLACK);
+				cell3.setPaddingLeft(10);
+				cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell3.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+				PdfPCell cell4 = new PdfPCell(new Paragraph(
+						"Average Response Time"));
+				cell4.setBorderColor(BaseColor.BLACK);
+				cell4.setPaddingLeft(10);
+				cell4.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell4.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+				PdfPCell cell5 = new PdfPCell(new Paragraph("Error Rate"));
+				cell5.setBorderColor(BaseColor.BLACK);
+				cell5.setPaddingLeft(10);
+				cell5.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell5.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+				PdfPCell cell6 = new PdfPCell(new Paragraph(outputlist.get(i)
+						.getInputload()));
+				cell6.setBorderColor(BaseColor.BLACK);
+				cell6.setPaddingLeft(10);
+				cell6.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell6.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+				// System.out.println("durt"+ outputlist.get(i).getDuration());
+				PdfPCell cell7 = new PdfPCell(new Paragraph(outputlist.get(i)
+						.getDuration() + " sec"));
+				cell7.setBorderColor(BaseColor.BLACK);
+				cell7.setPaddingLeft(10);
+				cell7.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell7.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+				PdfPCell cell8 = new PdfPCell(new Paragraph(outputlist.get(i)
+						.getAvgThroughput()));
+				cell8.setBorderColor(BaseColor.BLACK);
+				cell8.setPaddingLeft(10);
+				cell8.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell8.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+				PdfPCell cell9 = new PdfPCell(new Paragraph(outputlist.get(i)
+						.getAvgResponsetime()));
+				cell9.setBorderColor(BaseColor.BLACK);
+				cell9.setPaddingLeft(10);
+				cell9.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell9.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+				PdfPCell cell10 = new PdfPCell(new Paragraph(outputlist.get(i)
+						.getErrorrate()));
+				cell10.setBorderColor(BaseColor.BLACK);
+				cell10.setPaddingLeft(10);
+				cell10.setHorizontalAlignment(Element.ALIGN_CENTER);
+				cell10.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+				table.addCell(cell1);
+				table.addCell(cell2);
+				table.addCell(cell3);
+				table.addCell(cell4);
+				table.addCell(cell5);
+				table.addCell(cell6);
+				table.addCell(cell7);
+				table.addCell(cell8);
+				table.addCell(cell9);
+				table.addCell(cell10);
+
+				document.add(table);
+				document.add(Chunk.NEWLINE);
+				document.add(Chunk.NEWLINE);
+				DefaultCategoryDataset tptgraph = new DefaultCategoryDataset();
+
+				try (BufferedReader br = new BufferedReader(new FileReader(
+						"webapps/LoadGen/resources/tmpFiles/"
+								+ outputlist.get(i).getRequest() + "tpt.txt"))) {
+					// tptgraph.addValue(0, "Throughput" , 0" );
+					for (String line; (line = br.readLine()) != null;) {
+						// process the line.
+						String values[] = line.split(" ", 2);
+						tptgraph.addValue(Integer.parseInt(values[1]),
+								"Throughput", values[0]);
+
+					}
+					// line is not visible here.
+				}
+
+				JFreeChart lineChartObject = ChartFactory.createLineChart(
+						"Time Vs Throughput", "Time", "Throughput", tptgraph,
+						PlotOrientation.VERTICAL, true, true, false);
+
+				int width = 640;
+				int height = 480;
+				File lineChart = new File("webapps/LoadGen/resources/tmpFiles/"
+						+ outputlist.get(i).getRequest() + "tpt.jpeg");
+				ChartUtilities.saveChartAsJPEG(lineChart, lineChartObject,
+						width, height);
+					/*	
+				Image image = Image.getInstance("webapps/LoadGen/resources/tmpFiles/"
+						+ outputlist.get(i).getRequest() + "tpt.jpeg");
+			    //Fixed Positioning
+				
+				//PdfWriter.getVerticalPosition();
+			    //image.setAbsolutePosition(100f, 550f);
+			    //Scale to new height and new width of image
+			    image.scaleAbsolute(200, 200);
+			    //Add to document
+			    document.add(image);*/
+				
+				DefaultCategoryDataset respgraph = new DefaultCategoryDataset();
+
+				try (BufferedReader br = new BufferedReader(new FileReader(
+						"webapps/LoadGen/resources/tmpFiles/"
+								+ outputlist.get(i).getRequest() + "resp.txt"))) {
+
+					for (String line; (line = br.readLine()) != null;) {
+						// process the line.
+						String values[] = line.split(" ", 2);
+						respgraph.addValue(Integer.parseInt(values[1]),
+								"Response Time", values[0]);
+
+					}
+					// line is not visible here.
+				}
+
+				lineChartObject = ChartFactory.createLineChart(
+						"Time Vs Response Time", "Time", "Response Time",
+						respgraph, PlotOrientation.VERTICAL, true, true, false);
+
+				lineChart = new File("webapps/LoadGen/resources/tmpFiles/"
+						+ outputlist.get(i).getRequest() + "resp.jpeg");
+				ChartUtilities.saveChartAsJPEG(lineChart, lineChartObject,
+						width, height);
+				/*image = Image.getInstance("webapps/LoadGen/resources/tmpFiles/"
+						+ outputlist.get(i).getRequest() + "resp.jpeg");
+			    //Fixed Positioning
+			    //image.setAbsolutePosition(100f, 550f);
+			    //Scale to new height and new width of image
+			    image.scaleAbsolute(200, 200);
+			    //Add to document
+			    document.add(image);
+				*/
+				
+				DefaultCategoryDataset errgraph = new DefaultCategoryDataset();
+
+				try (BufferedReader br = new BufferedReader(new FileReader(
+						"webapps/LoadGen/resources/tmpFiles/"
+								+ outputlist.get(i).getRequest() + "err.txt"))) {
+
+					for (String line; (line = br.readLine()) != null;) {
+						// process the line.
+						String values[] = line.split(" ", 2);
+						errgraph.addValue(Integer.parseInt(values[1]),
+								"Error Rate", values[0]);
+
+					}
+					// line is not visible here.
+				}
+
+				lineChartObject = ChartFactory.createLineChart(
+						"Time Vs Error Rate", "Time", "Error Rate",
+						errgraph, PlotOrientation.VERTICAL, true, true, false);
+
+				lineChart = new File("webapps/LoadGen/resources/tmpFiles/"
+						+ outputlist.get(i).getRequest() + "err.jpeg");
+				ChartUtilities.saveChartAsJPEG(lineChart, lineChartObject,
+						width, height);
+				
+			/*	image = Image.getInstance("webapps/LoadGen/resources/tmpFiles/"
+						+ outputlist.get(i).getRequest() + "err.jpeg");
+			    //Fixed Positioning
+			    //image.setAbsolutePosition(100f, 550f);
+			    //Scale to new height and new width of image
+			    image.scaleAbsolute(200, 200);
+			    //Add to document
+			    document.add(image);
+			    */
+			    
+			    table = new PdfPTable(3);
+		        table.setWidthPercentage(100);
+		        table.addCell(createImageCell("webapps/LoadGen/resources/tmpFiles/"
+						+ outputlist.get(i).getRequest() + "tpt.jpeg"));
+		        table.addCell(createImageCell("webapps/LoadGen/resources/tmpFiles/"
+						+ outputlist.get(i).getRequest() + "resp.jpeg"));
+		        table.addCell(createImageCell("webapps/LoadGen/resources/tmpFiles/"
+						+ outputlist.get(i).getRequest() + "err.jpeg"));
+		        document.add(table);
+			}
+			document.addAuthor("Stanly Thomas");
+			document.addCreationDate();
+			document.addCreator("LoadGen.com");
+			document.addTitle("Test Summary");
+			document.addSubject("The summary of the load test");
+			document.close();
+			writer.close();
+
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		return "success";
+	}
+	
+	public static PdfPCell createImageCell(String path) throws DocumentException, IOException {
+        Image img = Image.getInstance(path);
+        PdfPCell cell = new PdfPCell(img, true);
+        return cell;
+    }
 
 	@RequestMapping(value = "/normalsavetofile", method = RequestMethod.POST)
 	public @ResponseBody String normalsaveToFile() throws Exception,
@@ -917,7 +1235,7 @@ public class MainController implements Serializable {
 		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Graphs</td>";
 
 		firstrow += "</tr>";
-		 
+
 		tabledata += firstrow;
 		for (int i = 0; i < outputlist.size(); i++) {
 			String newrow = "<tr>";
@@ -945,39 +1263,44 @@ public class MainController implements Serializable {
 	}
 
 	@RequestMapping(value = "/graph", method = RequestMethod.POST)
-	public @ResponseBody String graph(@RequestParam("rownum") int rownum) throws SuspendExecution {
+	public @ResponseBody String graph(@RequestParam("rownum") int rownum)
+			throws SuspendExecution {
 		String data = "";
-		//for (int i = 0; i < outputlist.size(); i++) {
-			/*
-			 * data += outputlist.get(i).getCurThroughput().split(" ", 2)+" " +
-			 * outputlist.get(i).getResponsetime().split(" ", 2)+" " +
-			 * outputlist.get(i).getErrorrate().split("%", 2);
-			 */
-			rownum--;
-			String tpt[] = outputlist.get(rownum).getCurThroughput().split(" ", 2);
-			String rsp[] = outputlist.get(rownum).getResponsetime().split(" ", 2);
-			String err[] = outputlist.get(rownum).getErrorrate().split("%", 2);
-			String time[] = outputlist.get(rownum).getTime().split(" ",2);
-			//System.out.println(time);
-			data = tpt[0] + " " + rsp[0] + " " + err[0] + " " + time[0]+time[1];
-			//System.out.println(data);
-			//System.out.println(rownum);
-		//}
+		// for (int i = 0; i < outputlist.size(); i++) {
+		/*
+		 * data += outputlist.get(i).getCurThroughput().split(" ", 2)+" " +
+		 * outputlist.get(i).getResponsetime().split(" ", 2)+" " +
+		 * outputlist.get(i).getErrorrate().split("%", 2);
+		 */
+		rownum--;
+		String tpt[] = outputlist.get(rownum).getCurThroughput().split(" ", 2);
+		String rsp[] = outputlist.get(rownum).getResponsetime().split(" ", 2);
+		String err[] = outputlist.get(rownum).getErrorrate().split("%", 2);
+		String time[] = outputlist.get(rownum).getTime().split(" ", 2);
+		// System.out.println(time);
+		data = tpt[0] + " " + rsp[0] + " " + err[0] + " " + time[0] + time[1];
+		// System.out.println(data);
+		// System.out.println(rownum);
+		// }
 		return data;
 	}
 
 	public static void deleteFolder(File folder) throws SuspendExecution {
 		File[] files = folder.listFiles();
-		if (files != null) { // some JVMs return null for empty dirs
-			for (File f : files) {
-				if (f.isDirectory()) {
-					deleteFolder(f);
-				} else {
-					f.delete();
+		try {
+			if (files != null) { // some JVMs return null for empty dirs
+				for (File f : files) {
+					if (f.isDirectory()) {
+						deleteFolder(f);
+					} else {
+						f.delete();
+					}
 				}
 			}
+			folder.delete();
+		} catch (Exception e) {
+			logger.info("failed to delete folder");
 		}
-		folder.delete();
 	}
 
 	public static int randInt(int min, int max) throws SuspendExecution {
