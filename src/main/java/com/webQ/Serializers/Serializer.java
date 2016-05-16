@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.webQ.model.DbTestPlan;
 import com.webQ.model.Test;
 import com.webQ.model.TestPlan;
 
@@ -112,4 +113,24 @@ public class Serializer {
 		 */
 	}
 
+	public static void serializeDbTestPlanObject(List<DbTestPlan> testPlans,
+			String path) throws Exception {
+
+		XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+				new FileOutputStream(path)));
+		encoder.writeObject(testPlans);
+		encoder.close();
+		
+	}
+	
+	public static List<DbTestPlan> deserialzeDbTestPlanObject(String path)
+			throws FileNotFoundException {
+		XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(
+				new FileInputStream(path)));
+		List<DbTestPlan> testPlans = new ArrayList<DbTestPlan>();
+		testPlans =(List<DbTestPlan>) decoder.readObject();
+		decoder.close();
+		return testPlans;
+	}
+	
 }

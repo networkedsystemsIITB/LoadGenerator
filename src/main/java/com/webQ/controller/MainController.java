@@ -21,6 +21,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.webQ.Serializers.Serializer;
 import com.webQ.model.ConstantTimer;
+import com.webQ.model.DbTestPlan;
 import com.webQ.model.HttpRequest;
 import com.webQ.model.Output;
 import com.webQ.model.RegexExtractor;
@@ -49,6 +50,8 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -68,6 +71,12 @@ import org.springframework.web.servlet.ModelAndView;
 import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
+
+
+
+
+
+
 
 
 /*import org.apache.log4j.Logger;*/
@@ -102,6 +111,7 @@ public class MainController implements Serializable {
 	public static Boolean test = true;
 
 	private List<TestPlan> testPlans = new ArrayList<TestPlan>();
+	private List<DbTestPlan> dbTestPlans = new ArrayList<DbTestPlan>();
 	private static final HttpContext BASIC_RESPONSE_HANDLER = null;
 	private final HelloWorldService helloWorldService;
 	private List<Object> testPlan = new ArrayList<Object>();
@@ -125,6 +135,7 @@ public class MainController implements Serializable {
 	public ModelAndView home() throws SuspendExecution, IOReactorException {
 
 		testPlans.clear();
+		dbTestPlans.clear();
 		testPlan.clear();
 		httpreqlist.clear();
 		randomtest = new Test();
@@ -285,6 +296,44 @@ public class MainController implements Serializable {
 
 	}
 
+	@RequestMapping(value = "/savedbtestplan", method = RequestMethod.POST)
+	public @ResponseBody void db_save_plan(@RequestParam("dbdatas") String datas)
+			throws SuspendExecution {
+		//System.out.println(newTestPlan.getQuery().length);
+		DbTestPlan newTestPlan=new DbTestPlan();
+		/*JSONObject obj = new JSONObject(dbdatas);*/
+		String values[]=datas.split("---");
+		//System.out.println(values.length);
+		
+		newTestPlan.setReqRate(Integer.parseInt(values[0]));
+		newTestPlan.setDuration(Integer.parseInt(values[1]));
+		newTestPlan.setStartDelay(Integer.parseInt(values[2]));
+		newTestPlan.setDbUrl(values[3]);
+		newTestPlan.setDbDriver(values[4]);
+		newTestPlan.setUname(values[5]);
+		newTestPlan.setPasswd(values[6]);
+		newTestPlan.setMaxConnections(Integer.parseInt(values[7]));
+		//List<String> queries=(List<String>) obj.get("queries");
+		List<String> queries = new ArrayList<String>() ;
+		for(int i=8;i<values.length;i++)
+			queries.add(values[i]);
+		
+		newTestPlan.setQuery(queries);
+		dbTestPlans.add(newTestPlan);
+		
+		//System.out.println(newTestPlan.getQuery());
+		/*
+		newTestPlan.setTestPlan(testPlan);
+		newTestPlan.setHttpreqlist(httpreqlist);
+
+		testPlans.add(newTestPlan);
+
+		testPlan = new ArrayList<Object>();
+
+		httpreqlist = new ArrayList<Integer>();*/
+
+	}
+	
 	@RequestMapping(value = "/hello", method = RequestMethod.GET)
 	public String index(Map<String, Object> model) throws SuspendExecution,
 			InterruptedException {
@@ -307,10 +356,9 @@ public class MainController implements Serializable {
 	}
 
 	@RequestMapping(value = "/normalloadgen", method = RequestMethod.POST)
-	public void execute(ModelMap model) throws SuspendExecution,
+	public @ResponseBody ResponseEntity<String> execute(ModelMap model) throws SuspendExecution,
 			InterruptedException {
 		test = true;
-
 		File f = new File("/home/stanly/Project/LoadGenerator/loadgen.log");
 		PrintWriter writer;
 		try {
@@ -391,6 +439,7 @@ public class MainController implements Serializable {
 			logger.info("Test Finished");
 		}
 		System.out.println("Test Finished");
+		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 
 	static int log(int x, int base) {
@@ -398,7 +447,7 @@ public class MainController implements Serializable {
 	}
 
 	@RequestMapping(value = "/randomloadgen", method = RequestMethod.POST)
-	public void execute(@ModelAttribute("SpringWeb") Test newTest,
+	public @ResponseBody ResponseEntity<String> execute(@ModelAttribute("SpringWeb") Test newTest,
 			ModelMap model) throws SuspendExecution, InterruptedException {
 		test = true;
 		File f = new File("/home/stanly/Project/LoadGenerator/loadgen.log");
@@ -574,7 +623,96 @@ public class MainController implements Serializable {
 			logger.info("Test Finished");
 		}
 		System.out.println("Test Finished");
+		return new ResponseEntity<String>(HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/dbloadgen", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<String> executedb(ModelMap model) throws SuspendExecution,
+			InterruptedException {
+		test = true;
+
+		File f = new File("/home/stanly/Project/LoadGenerator/loadgen.log");
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(f);
+			writer.print("");
+			writer.close();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		File folder = new File("webapps/LoadGen/resources/tmpFiles");
+		if (folder.exists()) {
+			logger.info(folder.getAbsolutePath());
+			deleteFolder(folder);
+		} else {
+			logger.info(folder.getAbsolutePath());
+			logger.info("folder not exists");
+		}
+		File file = new File("webapps/LoadGen/resources/tmpFiles");
+		if (!file.exists()) {
+			if (file.mkdir()) {
+				logger.info("Directory is created!");
+			} else {
+				logger.info("Failed to create directory!");
+			}
+		}
+
+		int ArraySize = dbTestPlans.size();
+		Fiber[] fibers = new Fiber[ArraySize];
+		// System.out.println("");
+		logger.info("<------------------------LoadGen Starting-------------------------->");
+		// System.out.println("");
+		int rowstart = 0;
+		int i = 1;
+		// System.out.println("size "+testPlans.size());
+		for (DbTestPlan currtestplan : dbTestPlans) {
+			if (test) {
+				System.out.println("Testplan" + i);
+
+				currtestplan.setId(i);
+				currtestplan.setRandom(0);
+				currtestplan.setOutputrowstart(rowstart);
+				rowstart += currtestplan.getQuery().size();
+				i++;
+				for (int j = 0; j < currtestplan.getQuery().size(); j++)
+					outputlist.add(new Output());
+
+				Fiber<Void> testplansfiber = new Fiber<Void>(() -> {
+					currtestplan.execute(null);
+				}).start();
+				int index = i - 2;
+				fibers[index] = testplansfiber;
+			} else {
+				test = true;
+				break;
+			}
+		}
+		for (Fiber fiber : fibers) {
+			try {
+				if (!test)
+					break;
+				// System.out.println("hello");
+				fiber.join();
+				// System.out.println("da");
+
+			} catch (ExecutionException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		// test=false;
+		if (logger.isInfoEnabled()) {
+			logger.info("Test Finished");
+		}
+		System.out.println("Test Finished");
+		return new ResponseEntity<String>(HttpStatus.OK);
+
+	}
+
+	
+	
 
 	public TestPlan copyTestPlan(TestPlan orig) throws SuspendExecution {
 		TestPlan copy = new TestPlan();
@@ -761,6 +899,7 @@ public class MainController implements Serializable {
 			try {
 				testPlans.clear();
 				testPlan.clear();
+				dbTestPlans.clear();
 				httpreqlist.clear();
 				randomtest = new Test();
 				normaltest = new Test();
@@ -851,6 +990,7 @@ public class MainController implements Serializable {
 			try {
 				testPlans.clear();
 				testPlan.clear();
+				dbTestPlans.clear();
 				httpreqlist.clear();
 				randomtest = new Test();
 				normaltest = new Test();
@@ -922,6 +1062,84 @@ public class MainController implements Serializable {
 		}
 	}
 
+	@RequestMapping(value = "/dbuploadFile", method = RequestMethod.POST)
+	public @ResponseBody String dbuploadFile(
+			@RequestParam("fileName") MultipartFile file)
+			throws SuspendExecution {
+
+		if (!file.isEmpty()) {
+			try {
+				testPlans.clear();
+				testPlan.clear();
+				dbTestPlans.clear();
+				httpreqlist.clear();
+				randomtest = new Test();
+				normaltest = new Test();
+				globalregexmap.clear();
+				outputlist.clear();
+				test = true;
+				File f = new File(
+						"/home/stanly/Project/LoadGenerator/loadgen.log");
+				PrintWriter writer;
+				try {
+					writer = new PrintWriter(f);
+					writer.print("");
+					writer.close();
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				File folder = new File("webapps/LoadGen/resources/tmpFiles");
+				if (folder.exists()) {
+					logger.info(folder.getAbsolutePath());
+					deleteFolder(folder);
+				} else {
+					logger.info(folder.getAbsolutePath());
+					logger.info("folder not exists");
+				}
+				File dir = new File("webapps/LoadGen/resources/tmpFiles");
+				if (!dir.exists()) {
+					if (dir.mkdir()) {
+						logger.info("Directory is created!");
+					} else {
+						logger.info("Failed to create directory!");
+					}
+				}
+				byte[] bytes = file.getBytes();
+
+				/*
+				 * File dir = new File("webapps/LoadGen/resources/tmpFiles"); //
+				 * System.out.println(dir.getPath()); if (!dir.exists())
+				 * dir.mkdirs();
+				 */
+
+				// Create the file on server
+				File serverFile = new File(dir.getAbsolutePath()
+						+ File.separator + file.getOriginalFilename());
+				BufferedOutputStream stream = new BufferedOutputStream(
+						new FileOutputStream(serverFile));
+				stream.write(bytes);
+				stream.close();
+				/*
+				 * testPlans.clear(); globalregexmap.clear();
+				 */
+				dbTestPlans = Serializer.deserialzeDbTestPlanObject(dir
+						.getAbsolutePath()
+						+ File.separator
+						+ file.getOriginalFilename());
+
+				return "You successfully uploaded file="
+						+ file.getOriginalFilename();
+			} catch (Exception e) {
+				return "You failed to upload " + file.getOriginalFilename()
+						+ " => " + e.getMessage();
+			}
+		} else {
+			return "You failed to upload " + file.getOriginalFilename()
+					+ " because the file was empty.";
+		}
+	}
+	
 	@RequestMapping(value = "/createsummary", method = RequestMethod.POST)
 	public @ResponseBody String createSummary() throws Exception,
 			SuspendExecution {
@@ -1065,17 +1283,7 @@ public class MainController implements Serializable {
 						+ outputlist.get(i).getRequest() + "tpt.jpeg");
 				ChartUtilities.saveChartAsJPEG(lineChart, lineChartObject,
 						width, height);
-					/*	
-				Image image = Image.getInstance("webapps/LoadGen/resources/tmpFiles/"
-						+ outputlist.get(i).getRequest() + "tpt.jpeg");
-			    //Fixed Positioning
-				
-				//PdfWriter.getVerticalPosition();
-			    //image.setAbsolutePosition(100f, 550f);
-			    //Scale to new height and new width of image
-			    image.scaleAbsolute(200, 200);
-			    //Add to document
-			    document.add(image);*/
+
 				
 				DefaultCategoryDataset respgraph = new DefaultCategoryDataset();
 
@@ -1101,15 +1309,7 @@ public class MainController implements Serializable {
 						+ outputlist.get(i).getRequest() + "resp.jpeg");
 				ChartUtilities.saveChartAsJPEG(lineChart, lineChartObject,
 						width, height);
-				/*image = Image.getInstance("webapps/LoadGen/resources/tmpFiles/"
-						+ outputlist.get(i).getRequest() + "resp.jpeg");
-			    //Fixed Positioning
-			    //image.setAbsolutePosition(100f, 550f);
-			    //Scale to new height and new width of image
-			    image.scaleAbsolute(200, 200);
-			    //Add to document
-			    document.add(image);
-				*/
+
 				
 				DefaultCategoryDataset errgraph = new DefaultCategoryDataset();
 
@@ -1136,16 +1336,7 @@ public class MainController implements Serializable {
 				ChartUtilities.saveChartAsJPEG(lineChart, lineChartObject,
 						width, height);
 				
-			/*	image = Image.getInstance("webapps/LoadGen/resources/tmpFiles/"
-						+ outputlist.get(i).getRequest() + "err.jpeg");
-			    //Fixed Positioning
-			    //image.setAbsolutePosition(100f, 550f);
-			    //Scale to new height and new width of image
-			    image.scaleAbsolute(200, 200);
-			    //Add to document
-			    document.add(image);
-			    */
-			    
+
 			    table = new PdfPTable(3);
 		        table.setWidthPercentage(100);
 		        table.addCell(createImageCell("webapps/LoadGen/resources/tmpFiles/"
@@ -1182,17 +1373,30 @@ public class MainController implements Serializable {
 	@RequestMapping(value = "/normalsavetofile", method = RequestMethod.POST)
 	public @ResponseBody String normalsaveToFile() throws Exception,
 			SuspendExecution {
+		
+		File folder = new File("webapps/LoadGen/resources/tmpFiles");
+		if (folder.exists()) {
+			//logger.info(folder.getAbsolutePath());
+			deleteFolder(folder);
+		} else {
+			//logger.info(folder.getAbsolutePath());
+			//logger.info("folder not exists");
+		}
+		File file = new File("webapps/LoadGen/resources/tmpFiles");
+		if (!file.exists()) {
+			if (file.mkdir()) {
+				//logger.info("Directory is created!");
+			} else {
+				//logger.info("Failed to create directory!");
+			}
+		}
+		
 		File downloadtest = new File(
 				"webapps/LoadGen/resources/tmpFiles/test.xml");
 
 		Serializer.serializeTestPlanObject(testPlans,
 				downloadtest.getAbsolutePath());
-		/*
-		 * List<TestPlan> testlist = new ArrayList<TestPlan>();
-		 * testlist=Serializer
-		 * .deserialzeAddress(downloadtest.getAbsolutePath()); for(int
-		 * i=0;i<testlist.size();i++){ System.out.println(testlist.get(i)); }
-		 */
+	
 		return downloadtest.getAbsolutePath();
 	}
 
@@ -1200,6 +1404,23 @@ public class MainController implements Serializable {
 	public @ResponseBody String randomsaveToFile(
 			@ModelAttribute("SpringWeb") Test newTest) throws Exception,
 			SuspendExecution {
+		File folder = new File("webapps/LoadGen/resources/tmpFiles");
+		if (folder.exists()) {
+			//logger.info(folder.getAbsolutePath());
+			deleteFolder(folder);
+		} else {
+			//logger.info(folder.getAbsolutePath());
+			//logger.info("folder not exists");
+		}
+		File file = new File("webapps/LoadGen/resources/tmpFiles");
+		if (!file.exists()) {
+			if (file.mkdir()) {
+				//logger.info("Directory is created!");
+			} else {
+				//logger.info("Failed to create directory!");
+			}
+		}
+		
 		File downloadtest = new File(
 				"webapps/LoadGen/resources/tmpFiles/test.xml");
 
@@ -1211,6 +1432,36 @@ public class MainController implements Serializable {
 		 * .deserialzeAddress(downloadtest.getAbsolutePath()); for(int
 		 * i=0;i<testlist.size();i++){ System.out.println(testlist.get(i)); }
 		 */
+		return downloadtest.getAbsolutePath();
+	}
+	
+	@RequestMapping(value = "/dbsavetofile", method = RequestMethod.POST)
+	public @ResponseBody String dbsaveToFile() throws Exception,
+			SuspendExecution {
+		
+		
+		File folder = new File("webapps/LoadGen/resources/tmpFiles");
+		if (folder.exists()) {
+			//logger.info(folder.getAbsolutePath());
+			deleteFolder(folder);
+		} else {
+			//logger.info(folder.getAbsolutePath());
+			//logger.info("folder not exists");
+		}
+		File file = new File("webapps/LoadGen/resources/tmpFiles");
+		if (!file.exists()) {
+			if (file.mkdir()) {
+				//logger.info("Directory is created!");
+			} else {
+				//logger.info("Failed to create directory!");
+			}
+		}
+		
+		File downloadtest = new File(
+				"webapps/LoadGen/resources/tmpFiles/test.xml");
+		//System.out.println("hi");
+		Serializer.serializeDbTestPlanObject(dbTestPlans,
+				downloadtest.getAbsolutePath());
 		return downloadtest.getAbsolutePath();
 	}
 
