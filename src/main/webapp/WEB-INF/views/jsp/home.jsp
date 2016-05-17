@@ -50,8 +50,8 @@
 <body>
 
 	<div id="home" class="container">
-		<center>
 
+<center>
 			<div class="row">
 
 				<br>
@@ -104,8 +104,8 @@
 				</div>
 			</div>
 
-		</center>
-		<center>
+
+
 
 			<div id="openfile" class="row">
 				<form name="normaluploadForm" id="normaluploadForm" method="POST"
@@ -157,8 +157,7 @@
 				</form>
 
 			</div>
-		</center>
-		<center>
+
 			<br>
 			<div id="params" class="row" style="display: none">
 
@@ -278,8 +277,7 @@
 
 
 			</div>
-		</center>
-		<center>
+
 
 			<div id="features" class="row" style="display: none">
 
@@ -498,8 +496,8 @@
 				</div>
 			</div>
 			<div class="row" id="chart_div"></div>
-		</center>
-
+	
+</center>
 	</div>
 </body>
 </html>

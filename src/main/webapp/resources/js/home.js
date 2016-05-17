@@ -20,6 +20,7 @@ $(function() {
 	var saved = true;
 	var savedparam = true;
 
+	
 	$('#logo').click(function() {
 		location.reload();
 		$("#home").replaceWith(homeClone.clone());
@@ -1074,7 +1075,7 @@ $(function() {
 		$.ajax({
 			type : "POST",
 			url : "/LoadGen/normalloadgen",
-			timeout : 10000,
+			//timeout : 10000,
 			success : function(response) {
 				// we have the response
 
@@ -1083,9 +1084,9 @@ $(function() {
 				$("#status").delay(2000).fadeOut("slow");
 			},
 			error : function(e) {
-				$("#status").html("LoadGen failed to start");
+				/*$("#status").html("LoadGen failed to start");
 				$("#status").show();
-				$("#status").delay(2000).fadeOut("slow");
+				$("#status").delay(2000).fadeOut("slow");*/
 			}
 
 		});
@@ -1113,7 +1114,7 @@ $(function() {
 		$.ajax({
 			type : "POST",
 			url : "/LoadGen/randomloadgen",
-			timeout : 10000,
+			//timeout : 10000,
 			data : {
 
 				maxreqRate : maxreqrate,
@@ -1129,10 +1130,10 @@ $(function() {
 				$("#status").delay(2000).fadeOut("slow");
 			},
 			error : function(e) {
-
+/*
 				$("#status").html("LoadGen failed to start");
 				$("#status").show();
-				$("#status").delay(2000).fadeOut("slow");
+				$("#status").delay(2000).fadeOut("slow");*/
 			}
 		});
 
@@ -1152,7 +1153,7 @@ $(function() {
 		$.ajax({
 			type : "POST",
 			url : "/LoadGen/randomfileloadgen",
-			timeout : 10000,
+			//timeout : 10000,
 			success : function(response) {
 				// we have the response
 
@@ -1161,10 +1162,10 @@ $(function() {
 				$("#status").delay(2000).fadeOut("slow");
 			},
 			error : function(e) {
-
+/*
 				$("#status").html("LoadGen failed to start");
 				$("#status").show();
-				$("#status").delay(2000).fadeOut("slow");
+				$("#status").delay(2000).fadeOut("slow");*/
 			}
 		});
 
@@ -1184,7 +1185,7 @@ $(function() {
 		$.ajax({
 			type : "POST",
 			url : "/LoadGen/dbloadgen",
-			timeout : 10000,
+			//timeout : 10000,
 			success : function(response) {
 				// we have the response
 
@@ -1193,10 +1194,10 @@ $(function() {
 				$("#status").delay(2000).fadeOut("slow");
 			},
 			error : function(e) {
-
+/*
 				$("#status").html("LoadGen failed to start");
 				$("#status").show();
-				$("#status").delay(2000).fadeOut("slow");
+				$("#status").delay(2000).fadeOut("slow");*/
 			}
 
 		});
@@ -1289,9 +1290,9 @@ $(function() {
 				$("#status").delay(2000).fadeOut("slow");
 			},
 			error : function(e) {
-				$("#status").html("LoadGen failed to stop");
+				/*$("#status").html("LoadGen failed to stop");
 				$("#status").show();
-				$("#status").delay(2000).fadeOut("slow");
+				$("#status").delay(2000).fadeOut("slow");*/
 			}
 		});
 
@@ -1312,9 +1313,9 @@ $(function() {
 				$("#status").delay(2000).fadeOut("slow");
 			},
 			error : function(e) {
-				$("#status").html("LoadGen failed to stop");
+				/*$("#status").html("LoadGen failed to stop");
 				$("#status").show();
-				$("#status").delay(2000).fadeOut("slow");
+				$("#status").delay(2000).fadeOut("slow");*/
 			}
 		});
 
@@ -1336,9 +1337,9 @@ $(function() {
 				$("#status").delay(2000).fadeOut("slow");
 			},
 			error : function(e) {
-				$("#status").html("LoadGen failed to stop");
+				/*$("#status").html("LoadGen failed to stop");
 				$("#status").show();
-				$("#status").delay(2000).fadeOut("slow");
+				$("#status").delay(2000).fadeOut("slow");*/
 			}
 		});
 
