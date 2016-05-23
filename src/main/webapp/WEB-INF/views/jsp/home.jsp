@@ -63,10 +63,12 @@
 
 			<div id="testtypes" class="row">
 				<input type="button" id="normaltest" class="btn btn-default"
-					value="Normal Test"> <input type="button" id="randomtest"
-					class="btn btn-default" value="Random Test"> <input
+					value="Normal Http Test"> <input type="button" id="randomtest"
+					class="btn btn-default" value="Random Http Test"> <input
 					type="button" id="dbtest" class="btn btn-default"
-					value="Database Test">
+					value="Database Test"> <input
+					type="button" id="wstest" class="btn btn-default"
+					value="Web Service Test">
 			</div>
 			<div class="row" id="testhome">
 				<div id="normaltesthome" style="display: none">
@@ -84,6 +86,11 @@
 						value="Create Test"> <input type="button" id="dbopentest"
 						class="btn btn-primary" value="Open Test">
 				</div>
+				<div id="wstesthome" style="display: none">
+					<input type="button" id="wscrtest" class="btn btn-primary"
+						value="Create Test"> <input type="button" id="wsopentest"
+						class="btn btn-primary" value="Open Test">
+				</div>
 			</div>
 			<div class="row" id="testplanhome">
 				<div id="normaltestplan" style="display: none">
@@ -99,6 +106,12 @@
 				<div id="dbtestplan" class="row" style="display: none">
 
 					<input type="button" id="adddbtestplan" class="btn btn-primary"
+						value="Add TestPlan">
+
+				</div>
+				<div id="wstestplan" class="row" style="display: none">
+
+					<input type="button" id="addwstestplan" class="btn btn-primary"
 						value="Add TestPlan">
 
 				</div>
@@ -149,6 +162,22 @@
 								<td><input type="file" name="fileName" id="fileName"
 									form="dbuploadForm" data-filename-placement="inside"></td>
 								<td><input type="submit" id="dbuploadbutton"
+									class="btn btn-primary" value="Upload"> <!-- <input id="uploadbutton" type="image"
+									src="resources/images/upload.png" alt="upload"> --></td>
+						</table>
+					</div>
+
+				</form>
+				
+				<form name="wsuploadForm" id="wsuploadForm" method="POST"
+					action="javascript:;" enctype="multipart/form-data"
+					style="display: none">
+					<div class="input-group">
+						<table cellpadding='10' cellspacing='10'>
+							<tr>
+								<td><input type="file" name="fileName" id="fileName"
+									form="wsuploadForm" data-filename-placement="inside"></td>
+								<td><input type="submit" id="wsuploadbutton"
 									class="btn btn-primary" value="Upload"> <!-- <input id="uploadbutton" type="image"
 									src="resources/images/upload.png" alt="upload"> --></td>
 						</table>
@@ -275,7 +304,43 @@
 
 				</table>
 
+			<table id="wsparamtable"
+					class="table table-striped table-bordered table-condensed well"
+					style="width: 500px" style="display: none">
 
+					<tr>
+						<th colspan="2" class="ui-helper-center">Web Service Parameters</th>
+					</tr>
+					<tr>
+						<td class='ui-helper-center' style='vertical-align: middle;'><label
+							class="control-label">Request Rate(reqs/sec):</label></td>
+						<td class='ui-helper-center' style='vertical-align: middle;'><input
+							type='text' class='form-control' placeholder='Enter Request Rate'
+							value="" /></td>
+					</tr>
+
+
+					<tr>
+						<td class='ui-helper-center' style='vertical-align: middle;'><label
+							class="control-label">Duration(secs):</label></td>
+						<td class='ui-helper-center' style='vertical-align: middle;'><input
+							type='text' class='form-control' placeholder='Enter Duration'
+							value="" /></td>
+					</tr>
+					<tr style="height: 50px;">
+						<td class='ui-helper-center' style='vertical-align: middle;'>
+							<div style='display: inline;'>
+								<input type="checkbox" name="delay" id="wsdelay"
+									onchange="checkChange();" /> <label class="control-label">
+									Delay TestPlan Start</label>
+							</div>
+						</td>
+						<td class='ui-helper-center' style='vertical-align: middle;'><input
+							type='text' id="wsdelaybox" class='form-control'
+							placeholder='Enter Delay(secs)' value="" style="display: none" /></td>
+					</tr>
+
+				</table>
 			</div>
 
 
@@ -385,8 +450,8 @@
 					</tr>
 
 				</table>
-
-				<div class="col-lg-3" style='vertical-align: middle;'>
+<div class="row">
+				<div class="col-lg-2" style='vertical-align: middle;'>
 
 					<table
 						class="table table-striped table-bordered table-condensed well">
@@ -397,10 +462,10 @@
 						</tr>
 					</table>
 				</div>
-				<div id="querytable" class="col-lg-7 well" style="display: none">
+				<div id="querytable" class="col-lg-8 well" style="display: none">
 					<table id="dbquerytable"
 						class="table table-striped table-bordered table-condensed well"
-						style="width: 600px">
+						style="width: 700px">
 							<thead>
 							<tr>
 								<th class='ui-helper-center' style='vertical-align: middle;'>Query List</th>
@@ -410,8 +475,37 @@
 						<tbody id="dbtbody"></tbody>
 						
 					</table>
+				</div></div>
+			</div>
+			<div id="wsfeatures" class="row" style="display: none">
+
+			<div class="col-lg-2" style='vertical-align: middle;'>
+
+					<table
+						class="table table-striped table-bordered table-condensed well">
+						<tr>
+							<td><input type="button" id="wsaddparam"
+								class="btn btn-primary btn-lg btn-block" value="Add Param">
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div id="wsparams" class="col-lg-8 well" style="display: none">
+					<table id="wsparamstable"
+						class="table table-striped table-bordered table-condensed well"
+						style="width: 700px">
+							<thead>
+							<tr>
+								<th class='ui-helper-center' style='vertical-align: middle;' colspan='3'>WS Parameters</th>
+							</tr>
+						</thead>
+
+						<tbody id="wstbody"></tbody>
+						
+					</table>
 				</div>
 			</div>
+			
 
 			<div class="row" id="saveplan">
 				<div id="savenormalplan" style="display: none">
@@ -428,6 +522,10 @@
 				</div>
 				<div id="savedbplan" class="row" style="display: none">
 					<input type="button" id="savedbtestplan" class="btn btn-primary"
+						value="Save TestPlan">
+				</div>
+				<div id="savewsplan" class="row" style="display: none">
+					<input type="button" id="savewstestplan" class="btn btn-primary"
 						value="Save TestPlan">
 				</div>
 			</div>

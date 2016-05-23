@@ -266,7 +266,6 @@
       <extractDir>${project.build.directory}/extracts</extractDir>
     </zipUrlInstaller>
   </container>
-
   Configuration to use with the container (which will also configure the deployer)
   <configuration>
     <type>existing</type>
@@ -274,7 +273,6 @@
       [...]
     </properties>
   </configuration>
-
   Deployables configuration
   <deployables>
     <deployable>

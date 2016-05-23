@@ -15,6 +15,7 @@ import java.util.List;
 import com.webQ.model.DbTestPlan;
 import com.webQ.model.Test;
 import com.webQ.model.TestPlan;
+import com.webQ.model.WsTestPlan;
 
 public class Serializer {
 	public static void serializeTestObject(Test test, String path)
@@ -129,6 +130,27 @@ public class Serializer {
 				new FileInputStream(path)));
 		List<DbTestPlan> testPlans = new ArrayList<DbTestPlan>();
 		testPlans =(List<DbTestPlan>) decoder.readObject();
+		decoder.close();
+		return testPlans;
+	}
+	
+	
+	public static void serializeWsTestPlanObject(List<WsTestPlan> testPlans,
+			String path) throws Exception {
+
+		XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+				new FileOutputStream(path)));
+		encoder.writeObject(testPlans);
+		encoder.close();
+		
+	}
+	
+	public static List<WsTestPlan> deserialzeWsTestPlanObject(String path)
+			throws FileNotFoundException {
+		XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(
+				new FileInputStream(path)));
+		List<WsTestPlan> testPlans = new ArrayList<WsTestPlan>();
+		testPlans =(List<WsTestPlan>) decoder.readObject();
 		decoder.close();
 		return testPlans;
 	}

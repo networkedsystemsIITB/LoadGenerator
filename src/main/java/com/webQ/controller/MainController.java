@@ -27,6 +27,8 @@ import com.webQ.model.Output;
 import com.webQ.model.RegexExtractor;
 import com.webQ.model.Test;
 import com.webQ.model.TestPlan;
+import com.webQ.model.WsRequest;
+import com.webQ.model.WsTestPlan;
 import com.webQ.service.HelloWorldService;
 
 import org.apache.http.Header;
@@ -79,6 +81,8 @@ import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 
 
 
+
+
 /*import org.apache.log4j.Logger;*/
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -112,6 +116,7 @@ public class MainController implements Serializable {
 
 	private List<TestPlan> testPlans = new ArrayList<TestPlan>();
 	private List<DbTestPlan> dbTestPlans = new ArrayList<DbTestPlan>();
+	private List<WsTestPlan> wsTestPlans = new ArrayList<WsTestPlan>();
 	private static final HttpContext BASIC_RESPONSE_HANDLER = null;
 	private final HelloWorldService helloWorldService;
 	private List<Object> testPlan = new ArrayList<Object>();
@@ -136,6 +141,7 @@ public class MainController implements Serializable {
 
 		testPlans.clear();
 		dbTestPlans.clear();
+		wsTestPlans.clear();
 		testPlan.clear();
 		httpreqlist.clear();
 		randomtest = new Test();
@@ -334,6 +340,36 @@ public class MainController implements Serializable {
 
 	}
 	
+	
+	@RequestMapping(value = "/savewstestplan", method = RequestMethod.POST)
+	public @ResponseBody void ws_save_plan(@RequestParam("wsdatas") String datas)
+			throws SuspendExecution {
+		//System.out.println(newTestPlan.getQuery().length);
+		WsTestPlan newTestPlan=new WsTestPlan();
+		/*JSONObject obj = new JSONObject(dbdatas);*/
+		String values[]=datas.split("---");
+		//System.out.println(values.length);
+		
+		newTestPlan.setReqRate(Integer.parseInt(values[0]));
+		newTestPlan.setDuration(Integer.parseInt(values[1]));
+		newTestPlan.setStartDelay(Integer.parseInt(values[2]));
+		
+		//List<String> queries=(List<String>) obj.get("queries");
+		List<WsRequest> wsrequests = new ArrayList<WsRequest>() ;
+		for(int i=3;i<values.length;i++){
+			String invalues[]=values[i].split("___");
+			WsRequest wsRequest=new WsRequest();
+			wsRequest.setUrl(invalues[0]);
+			wsRequest.setSoapAction(invalues[1]);
+			wsRequest.setXml(invalues[2]);
+			wsrequests.add(wsRequest);
+			
+		}
+		newTestPlan.setTestPlan(wsrequests);
+		wsTestPlans.add(newTestPlan);
+
+
+	}
 	@RequestMapping(value = "/hello", method = RequestMethod.GET)
 	public String index(Map<String, Object> model) throws SuspendExecution,
 			InterruptedException {
@@ -357,7 +393,7 @@ public class MainController implements Serializable {
 
 	@RequestMapping(value = "/normalloadgen", method = RequestMethod.POST)
 	public @ResponseBody ResponseEntity<String> execute(ModelMap model) throws SuspendExecution,
-			InterruptedException {
+			InterruptedException, ExecutionException {
 		test = true;
 		File f = new File("/home/stanly/Project/LoadGenerator/loadgen.log");
 		PrintWriter writer;
@@ -422,17 +458,17 @@ public class MainController implements Serializable {
 			}
 		}
 		for (Fiber fiber : fibers) {
-			try {
+			//try {
 				if (!test)
 					break;
 				// System.out.println("hello");
 				fiber.join();
 				// System.out.println("da");
 
-			} catch (ExecutionException e1) {
+			/*} catch (ExecutionException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			}
+			}*/
 		}
 		// test=false;
 		if (logger.isInfoEnabled()) {
@@ -628,7 +664,7 @@ public class MainController implements Serializable {
 	
 	@RequestMapping(value = "/dbloadgen", method = RequestMethod.POST)
 	public @ResponseBody ResponseEntity<String> executedb(ModelMap model) throws SuspendExecution,
-			InterruptedException {
+			InterruptedException, ExecutionException {
 		test = true;
 
 		File f = new File("/home/stanly/Project/LoadGenerator/loadgen.log");
@@ -690,17 +726,17 @@ public class MainController implements Serializable {
 			}
 		}
 		for (Fiber fiber : fibers) {
-			try {
+		//	try {
 				if (!test)
 					break;
 				// System.out.println("hello");
 				fiber.join();
 				// System.out.println("da");
 
-			} catch (ExecutionException e1) {
+		/*	} catch (ExecutionException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			}
+			}*/
 		}
 		// test=false;
 		if (logger.isInfoEnabled()) {
@@ -712,7 +748,91 @@ public class MainController implements Serializable {
 	}
 
 	
-	
+	@RequestMapping(value = "/wsloadgen", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<String> executews(ModelMap model) throws SuspendExecution,
+			InterruptedException, ExecutionException {
+		test = true;
+
+		File f = new File("/home/stanly/Project/LoadGenerator/loadgen.log");
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(f);
+			writer.print("");
+			writer.close();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		File folder = new File("webapps/LoadGen/resources/tmpFiles");
+		if (folder.exists()) {
+			logger.info(folder.getAbsolutePath());
+			deleteFolder(folder);
+		} else {
+			logger.info(folder.getAbsolutePath());
+			logger.info("folder not exists");
+		}
+		File file = new File("webapps/LoadGen/resources/tmpFiles");
+		if (!file.exists()) {
+			if (file.mkdir()) {
+				logger.info("Directory is created!");
+			} else {
+				logger.info("Failed to create directory!");
+			}
+		}
+
+		int ArraySize = wsTestPlans.size();
+		Fiber[] fibers = new Fiber[ArraySize];
+		// System.out.println("");
+		logger.info("<------------------------LoadGen Starting-------------------------->");
+		// System.out.println("");
+		int rowstart = 0;
+		int i = 1;
+		// System.out.println("size "+testPlans.size());
+		for (WsTestPlan currtestplan : wsTestPlans) {
+			if (test) {
+				System.out.println("Testplan" + i);
+
+				currtestplan.setId(i);
+				currtestplan.setRandom(0);
+				currtestplan.setOutputrowstart(rowstart);
+				rowstart += currtestplan.getTestPlan().size();
+				i++;
+				for (int j = 0; j < currtestplan.getTestPlan().size(); j++)
+					outputlist.add(new Output());
+
+				Fiber<Void> testplansfiber = new Fiber<Void>(() -> {
+					currtestplan.execute(null);
+				}).start();
+				int index = i - 2;
+				fibers[index] = testplansfiber;
+			} else {
+				test = true;
+				break;
+			}
+		}
+		for (Fiber fiber : fibers) {
+			//try {
+				if (!test)
+					break;
+				// System.out.println("hello");
+				fiber.join();
+				// System.out.println("da");
+/*
+			} catch (ExecutionException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}*/
+		}
+		// test=false;
+		if (logger.isInfoEnabled()) {
+			logger.info("Test Finished");
+		}
+		System.out.println("Test Finished");
+		return new ResponseEntity<String>(HttpStatus.OK);
+
+	}
+
 
 	public TestPlan copyTestPlan(TestPlan orig) throws SuspendExecution {
 		TestPlan copy = new TestPlan();
@@ -900,6 +1020,7 @@ public class MainController implements Serializable {
 				testPlans.clear();
 				testPlan.clear();
 				dbTestPlans.clear();
+				wsTestPlans.clear();
 				httpreqlist.clear();
 				randomtest = new Test();
 				normaltest = new Test();
@@ -991,6 +1112,7 @@ public class MainController implements Serializable {
 				testPlans.clear();
 				testPlan.clear();
 				dbTestPlans.clear();
+				wsTestPlans.clear();
 				httpreqlist.clear();
 				randomtest = new Test();
 				normaltest = new Test();
@@ -1072,6 +1194,7 @@ public class MainController implements Serializable {
 				testPlans.clear();
 				testPlan.clear();
 				dbTestPlans.clear();
+				wsTestPlans.clear();
 				httpreqlist.clear();
 				randomtest = new Test();
 				normaltest = new Test();
@@ -1139,6 +1262,87 @@ public class MainController implements Serializable {
 					+ " because the file was empty.";
 		}
 	}
+	
+	
+	@RequestMapping(value = "/wsuploadFile", method = RequestMethod.POST)
+	public @ResponseBody String wsuploadFile(
+			@RequestParam("fileName") MultipartFile file)
+			throws SuspendExecution {
+
+		if (!file.isEmpty()) {
+			try {
+				testPlans.clear();
+				testPlan.clear();
+				dbTestPlans.clear();
+				wsTestPlans.clear();
+				httpreqlist.clear();
+				randomtest = new Test();
+				normaltest = new Test();
+				globalregexmap.clear();
+				outputlist.clear();
+				test = true;
+				File f = new File(
+						"/home/stanly/Project/LoadGenerator/loadgen.log");
+				PrintWriter writer;
+				try {
+					writer = new PrintWriter(f);
+					writer.print("");
+					writer.close();
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				File folder = new File("webapps/LoadGen/resources/tmpFiles");
+				if (folder.exists()) {
+					logger.info(folder.getAbsolutePath());
+					deleteFolder(folder);
+				} else {
+					logger.info(folder.getAbsolutePath());
+					logger.info("folder not exists");
+				}
+				File dir = new File("webapps/LoadGen/resources/tmpFiles");
+				if (!dir.exists()) {
+					if (dir.mkdir()) {
+						logger.info("Directory is created!");
+					} else {
+						logger.info("Failed to create directory!");
+					}
+				}
+				byte[] bytes = file.getBytes();
+
+				/*
+				 * File dir = new File("webapps/LoadGen/resources/tmpFiles"); //
+				 * System.out.println(dir.getPath()); if (!dir.exists())
+				 * dir.mkdirs();
+				 */
+
+				// Create the file on server
+				File serverFile = new File(dir.getAbsolutePath()
+						+ File.separator + file.getOriginalFilename());
+				BufferedOutputStream stream = new BufferedOutputStream(
+						new FileOutputStream(serverFile));
+				stream.write(bytes);
+				stream.close();
+				/*
+				 * testPlans.clear(); globalregexmap.clear();
+				 */
+				wsTestPlans = Serializer.deserialzeWsTestPlanObject(dir
+						.getAbsolutePath()
+						+ File.separator
+						+ file.getOriginalFilename());
+
+				return "You successfully uploaded file="
+						+ file.getOriginalFilename();
+			} catch (Exception e) {
+				return "You failed to upload " + file.getOriginalFilename()
+						+ " => " + e.getMessage();
+			}
+		} else {
+			return "You failed to upload " + file.getOriginalFilename()
+					+ " because the file was empty.";
+		}
+	}
+	
 	
 	@RequestMapping(value = "/createsummary", method = RequestMethod.POST)
 	public @ResponseBody String createSummary() throws Exception,
@@ -1465,6 +1669,36 @@ public class MainController implements Serializable {
 		return downloadtest.getAbsolutePath();
 	}
 
+	@RequestMapping(value = "/wssavetofile", method = RequestMethod.POST)
+	public @ResponseBody String wssaveToFile() throws Exception,
+			SuspendExecution {
+		
+		
+		File folder = new File("webapps/LoadGen/resources/tmpFiles");
+		if (folder.exists()) {
+			//logger.info(folder.getAbsolutePath());
+			deleteFolder(folder);
+		} else {
+			//logger.info(folder.getAbsolutePath());
+			//logger.info("folder not exists");
+		}
+		File file = new File("webapps/LoadGen/resources/tmpFiles");
+		if (!file.exists()) {
+			if (file.mkdir()) {
+				//logger.info("Directory is created!");
+			} else {
+				//logger.info("Failed to create directory!");
+			}
+		}
+		
+		File downloadtest = new File(
+				"webapps/LoadGen/resources/tmpFiles/test.xml");
+		//System.out.println("hi");
+		Serializer.serializeWsTestPlanObject(wsTestPlans,
+				downloadtest.getAbsolutePath());
+		return downloadtest.getAbsolutePath();
+	}
+	
 	@RequestMapping(value = "/stop", method = RequestMethod.POST)
 	public @ResponseBody void stopTest() throws SuspendExecution {
 		outputlist.clear();

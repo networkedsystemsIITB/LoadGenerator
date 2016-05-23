@@ -13,6 +13,7 @@ $(function() {
 	var paramsClone = $("#params").clone();
 	var featuresClone = $("#features").clone();
 	var dbFeaturesClone = $("#dbfeatures").clone();
+	var wsFeaturesClone = $("#wsfeatures").clone();
 
 	/* count for id creation */
 
@@ -47,6 +48,13 @@ $(function() {
 		$('#dbtesthome').show();
 
 	});
+	
+	$('#wstest').click(function() {
+
+		$('#testtypes').hide();
+		$('#wstesthome').show();
+
+	});
 
 	$('#normalcrtest').click(function() {
 
@@ -75,6 +83,20 @@ $(function() {
 		$('#dbuploadForm').show();
 
 	});
+	
+	$('#wscrtest').click(function() {
+
+		$('#wstesthome').hide();
+		$('#wstestplan').show();
+
+	});
+
+	$('#wsopentest').click(function() {
+
+		$('#wstesthome').hide();
+		$('#wsuploadForm').show();
+
+	});
 
 	$('#randomcrtest').click(function() {
 
@@ -97,6 +119,7 @@ $(function() {
 		$('#normalparamtable').show();
 		$('#randomparamtable').hide();
 		$('#dbparamtable').hide();
+		$('#wsparamtable').hide();
 		$('#features').show();
 		$('#dbfeatures').hide();
 
@@ -125,6 +148,7 @@ $(function() {
 		$('#params').show();
 		$('#randomparamtable').show();
 		$('#normalparamtable').hide();
+		$('#wsparamtable').hide();
 		$('#dbparamtable').hide();
 		$('#features').show();
 		$('#dbfeatures').hide();
@@ -154,13 +178,16 @@ $(function() {
 		$("#params").replaceWith(paramsClone.clone());
 		$("#features").replaceWith(featuresClone.clone());
 		$("#dbfeatures").replaceWith(dbFeaturesClone.clone());
+		
 		$('#params').show();
 		$('#dbparamtable').show();
+		$('#wsparamtable').hide();
 		$('#normalparamtable').hide();
 		$('#randomparamtable').hide();
 		$('#features').hide();
 
 		$('#dbfeatures').show();
+		$('#wsfeatures').hide();
 
 		$('#saveplan').show();
 		$('#savedbplan').show();
@@ -175,6 +202,35 @@ $(function() {
 		$("#testplanhome").hide();
 		$("#dbquery").off().on("click", AddQuery);
 
+	});
+	
+	$('#addwstestplan').click(function() {
+		$("#params").replaceWith(paramsClone.clone());
+		$("#features").replaceWith(featuresClone.clone());
+		$("#wsfeatures").replaceWith(wsFeaturesClone.clone());
+		$('#params').show();
+		$('#wsparamtable').show();
+		$('#dbparamtable').hide();
+		$('#normalparamtable').hide();
+		$('#randomparamtable').hide();
+		$('#features').hide();
+
+		$('#dbfeatures').hide();
+		$('#wsfeatures').show();
+
+		$('#saveplan').show();
+		$('#savewsplan').show();
+
+		$('#buttons').hide();
+		$('#start').hide();
+		$('#stop').hide();
+
+		$('#savetofile').hide();
+		$("#downloadlink").hide();
+		$("#summarylink").hide();
+		$("#testplanhome").hide();
+		$("#wsaddparam").off().on("click", AddWsParams);
+		
 	});
 
 	$('#savenormaltestplan').click(function() {
@@ -234,6 +290,26 @@ $(function() {
 		$("#start").off().on("click", DbStart);
 		$("#savetofile").off().on("click", DbSaveToFile);
 		SaveDbPlan();
+
+	});
+	
+	$('#savewstestplan').click(function() {
+		$('params').hide();
+		$('#wsparamtable').hide();
+		$('#wsfeatures').hide();
+		$('#saveplan').hide();
+		$('#savedbplan').hide();
+		$('#testplanhome').show();
+		$('#buttons').show();
+		$('#start').show();
+		$('#stop').hide();
+		$('#savetofile').show();
+		$("#downloadlink").hide();
+		$("#summarylink").hide();
+
+		$("#start").off().on("click", WsStart);
+		$("#savetofile").off().on("click", WsSaveToFile);
+		SaveWsPlan();
 
 	});
 
@@ -351,18 +427,48 @@ $(function() {
 
 	});
 
+	$("#wsuploadForm").submit(function(event) {
+		event.preventDefault();
+
+		var fileData = new FormData($('#wsuploadForm')[0]);
+		$('#buttons').show();
+		$('#start').show();
+		$('#stop').hide();
+		$('#savetofile').show();
+		$("#downloadlink").hide();
+		$("#summarylink").hide();
+
+		$("#start").off().on("click", WsStart);
+		$("#savetofile").off().on("click", WsSaveToFile);
+
+		$.ajax({
+			url : "/LoadGen/wsuploadFile",
+			type : "POST",
+			data : fileData,
+			processData : false,
+			contentType : false,
+			cache : false,
+
+			success : function() {
+
+				$("#status").html('File Uploaded');
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");
+			},
+			error : function() {
+
+				$("#status").html('File failed to upload');
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");
+			}
+		});
+
+	});
+
+	
 	$('input[type=file]').bootstrapFileInput();
 	$('.file-inputs').bootstrapFileInput();
 
-	/*
-	 * function getval(sel) {
-	 * 
-	 * var id = sel.parents('tr:first').children("td:nth-child(2)").children(
-	 * "div:nth-child(2)"); if (this.value === "POST") { id.show(); } else {
-	 * id.hide(); } }
-	 */
-	/* function delaySelect(){ */
-	/* $('#delay').change(function () { */
 
 	function SaveNormalPlan() {
 
@@ -375,10 +481,7 @@ $(function() {
 			var startDelay = tab.children().children("tr:nth-child(4)")
 					.children("td:nth-child(2)").children("input:nth-child(1)")
 					.val();
-			/*
-			 * #normalparamtable > tbody:nth-child(1) > tr:nth-child(4) >
-			 * td:nth-child(2) > input:nth-child(1)
-			 */
+
 		} else {
 			var startDelay = 0;
 
@@ -466,20 +569,7 @@ $(function() {
 				"td:nth-child(2)").children("input:nth-child(1)").val();
 		var maxconnections=tab2.children().children("tr:nth-child(5)").children(
 		"td:nth-child(2)").children("input:nth-child(1)").val();
-		/*var queries = tab3.children().children(
-		"td:nth-child(1)").children("input:nth-child(1)").map(function(){
-		       return $(this).val();
-		   }).get();
-		console.log(queries);*/
-		/*var queries=[];
-		for(j=1;j<rowCount;j++){
-			//console.log("hallo");
-			var dbquery=tab3.children().children("tr:nth-child("+j+")").children(
-			"td:nth-child(1)").children("input:nth-child(1)").val();
-			queries.push(dbquery);
-			//console.log(dbquery);
-		}*/
-		//console.log(queries);
+	
 		var datas=reqrate+"---"+duration+"---"+startDelay+"---"+dburl+"---"+dbdriver+"---"+uname+"---"+pwd+"---"+maxconnections;
 		for(j=1;j<rowCount;j++){
 			//console.log("hallo");
@@ -488,21 +578,7 @@ $(function() {
 			
 		datas+="---"+dbquery;
 		}
-		
-		/*var dbdata = {
-				"reqRate" : parseInt(reqrate),
-				"duration" : parseInt(duration),
-				"startDelay" : parseInt(startDelay),
-				"dbUrl" : dburl,
-				"dbDriver" : dbdriver,
-				"uname" : uname,
-				"passwd" : pwd,
-				"maxConnections" : parseInt(maxconnections)
-				};
-
-			$.toJSON(dbdata);
-		*/
-		//console.log(datas);
+	
 		$.ajax({
 			type : "POST",
 			url : "/LoadGen/savedbtestplan",
@@ -527,6 +603,66 @@ $(function() {
 	}
 	;
 
+	
+	function SaveWsPlan() {
+
+		var tab1 = $("#wsparamtable");
+		var tab2 = $("#wsparamstable");
+		var reqrate = tab1.children().children("tr:nth-child(2)").children(
+				"td:nth-child(2)").children("input:nth-child(1)").val();
+		var duration = tab1.children().children("tr:nth-child(3)").children(
+				"td:nth-child(2)").children("input:nth-child(1)").val();
+		if ($("#wsdelay").prop('checked') == true) {
+			var startDelay = tab1.children().children("tr:nth-child(4)")
+					.children("td:nth-child(2)").children("input:nth-child(1)")
+					.val();
+
+		} else {
+			var startDelay = 0;
+
+		}
+		
+		var i=0;
+		var rowCount = $('#wsparamstable tr').length;
+		var datas=reqrate+"---"+duration+"---"+startDelay;
+		for(j=1;j<rowCount;j++){
+			//console.log("hallo");
+			var url=tab2.children().children("tr:nth-child("+j+")").children(
+			"td:nth-child(1)").children("input:nth-child(1)").val();
+			var saction=tab2.children().children("tr:nth-child("+j+")").children(
+			"td:nth-child(2)").children("input:nth-child(1)").val();
+			var smessage=tab2.children().children("tr:nth-child("+j+")").children(
+			"td:nth-child(3)").children().val();
+			
+			datas+="---"+url+"___"+saction+"___"+smessage;
+			}
+		
+		//console.log(datas);
+		$.ajax({
+			type : "POST",
+			url : "/LoadGen/savewstestplan",
+			data : {
+				wsdatas : datas
+			},
+			success : function(response) {
+				// we have the response
+
+				$("#status").html("TestPlan Saved");
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");
+
+			},
+			error : function(e) {
+				$("#status").html("TestPlan failed to save");
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");
+			}
+		});
+
+	}
+	;
+
+	
 	function AddHttpReq() {
 		if (saved === true) {
 			/*$('#saveplan').hide();
@@ -682,6 +818,12 @@ $(function() {
 			$('#querytable').show();
 			var addRow = "<tr><td class='ui-helper-center'><input type='text' class='form-control' placeholder='Enter Query'/></td></tr>";
 			$('#dbquerytable > tbody:last-child').append(addRow);
+		};
+		
+		function AddWsParams() {
+			$('#wsparams').show();
+			var addRow = "<tr><td class='ui-helper-center' style='vertical-align: middle;'><input type='text' class='form-control' placeholder='Enter URL'/><td class='ui-helper-center' style='vertical-align: middle;'><input type='text' class='form-control' placeholder='Enter SOAPAction'/></td></td><td class='ui-helper-center'><textarea class='form-control' rows='5' placeholder='Enter Soap Envelope' style='vertical-align: middle;'></textarea></td></tr>";
+			$('#wsparamstable > tbody:last-child').append(addRow);
 		};
 	
 	function AddParam() {
@@ -1204,6 +1346,39 @@ $(function() {
 
 	}
 	;
+	function WsStart() {
+		$('#start').hide();
+		$('#stop').show();
+		$('#addwstestplan').hide();
+		var d = new Date();
+		testStartTime = d.getTime();
+		$("#stop").off().on("click", WsStop);
+		$('#output').show();
+		flag = 0;
+		prevData = "";
+		wsoutput();
+		$.ajax({
+			type : "POST",
+			url : "/LoadGen/wsloadgen",
+			//timeout : 10000,
+			success : function(response) {
+				// we have the response
+
+				$("#status").html("LoadGen Started");
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");
+			},
+			error : function(e) {
+/*
+				$("#status").html("LoadGen failed to start");
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");*/
+			}
+
+		});
+
+	}
+	;
 	function normaloutput() {
 		$.ajax({
 			type : "POST",
@@ -1271,6 +1446,30 @@ $(function() {
 				// Schedule the next request when the current one's complete
 				if (flag == 0)
 					setTimeout(dboutput, 1000);
+			}
+		});
+	}
+	;
+	
+	function wsoutput() {
+		$.ajax({
+			type : "POST",
+			url : '/LoadGen/output',
+			dataType : "HTML",
+			success : function(data) {
+				if (data == prevData) {
+					CreateSummary();
+					WsStop();
+					flag = 1;
+				}
+				$('#output').html(data);
+				prevData = data;
+				$(".btnGraph").off().on("click", CallGraph);
+			},
+			complete : function() {
+				// Schedule the next request when the current one's complete
+				if (flag == 0)
+					setTimeout(wsoutput, 1000);
 			}
 		});
 	}
@@ -1346,6 +1545,30 @@ $(function() {
 	}
 	;
 
+	function WsStop() {
+		$('#stop').hide();
+		$('#start').show();
+		$("#start").off().on("click", WsStart);
+		$.ajax({
+			type : "POST",
+			url : "/LoadGen/stop",
+
+			success : function(response) {
+
+				$("#status").html("LoadGen Stopped");
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");
+			},
+			error : function(e) {
+				/*$("#status").html("LoadGen failed to stop");
+				$("#status").show();
+				$("#status").delay(2000).fadeOut("slow");*/
+			}
+		});
+
+	}
+	;
+	
 	function CallGraph() {
 		var par = $(this).parent().parent();
 		graph(par.index(), testStartTime);
@@ -1475,6 +1698,33 @@ function DbSaveToFile() {
 	});
 
 };
+
+function WsSaveToFile() {
+
+	$.ajax({
+		type : "POST",
+		url : "/LoadGen/wssavetofile",
+
+		success : function(response) {
+			// we have the response
+			$("#buttons").show();
+			$("#start").show();
+			$("#stop").hide();
+			$("#downloadlink").show();
+			$("#savetofile").hide();
+			$("#summarylink").hide();
+			$("#status").html("Test Saved to file");
+			$("#status").show();
+			$("#status").delay(2000).fadeOut("slow");
+		},
+		error : function(e) {
+			$("#status").html("Test failed to save");
+			$("#status").show();
+			$("#status").delay(2000).fadeOut("slow");
+		}
+	});
+
+};
 function checkChange() {
 	//alert("hi");
 	if ($("#delay").prop('checked') == true) {
@@ -1487,46 +1737,10 @@ function checkChange() {
 	} else {
 		$('#dbdelaybox').hide();
 	}
+	if ($("#wsdelay").prop('checked') == true) {
+		$('#wsdelaybox').show();
+	} else {
+		$('#wsdelaybox').hide();
+	}
 };
 
-/*function drawChart() {
-
- // Create the data table.
- //console.log("start");
- var data = new google.visualization.DataTable();
- data.addColumn('number', 'Day');
- data.addColumn('number', 'Guardians of the Galaxy');
- data.addColumn('number', 'The Avengers');
- data.addColumn('number', 'Transformers: Age of Extinction');
-
- data.addRows([
- [1,  37.8, 80.8, 41.8],
- [2,  30.9, 69.5, 32.4],
- [3,  25.4,   57, 25.7],
- [4,  11.7, 18.8, 10.5],
- [5,  11.9, 17.6, 10.4],
- [6,   8.8, 13.6,  7.7],
- [7,   7.6, 12.3,  9.6],
- [8,  12.3, 29.2, 10.6],
- [9,  16.9, 42.9, 14.8],
- [10, 12.8, 30.9, 11.6],
- [11,  5.3,  7.9,  4.7],
- [12,  6.6,  8.4,  5.2],
- [13,  4.8,  6.3,  3.6],
- [14,  4.2,  6.2,  3.4]
- ]);
-
- var options = {
- chart: {
- title: 'Box Office Earnings in First Two Weeks of Opening',
- subtitle: 'in millions of dollars (USD)'
- },
- width: 900,
- height: 500
- };
- //.log("middle");
- var chart = new google.charts.Line(document.getElementById('chart_div'));
-
- chart.draw(data, options);
- // console.log("end");
- }*/
