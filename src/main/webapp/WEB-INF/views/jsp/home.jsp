@@ -563,11 +563,11 @@
 							class="btn btn-primary btn-block" value="Save To File"
 							style="display: none">
 							<div id="downloadlink" style="display: none">
-								<a href="resources/tmpFiles/test.xml"
+								<a href="resources/tmpFiles/${pageContext.session.id}test.xml"
 									class="btn btn-primary btn-block" download>Download</a>
 							</div>
 							<div id="summarylink" style="display: none">
-								<a href="resources/tmpFiles/summary.pdf"
+								<a href="resources/tmpFiles/${pageContext.session.id}summary.pdf"
 									class="btn btn-primary btn-block" download>Test Summary</a>
 							</div>
 						</td>

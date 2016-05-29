@@ -33,7 +33,7 @@ public class ConstantTimer implements Feature, Serializable {
 	}
 
 	@Override
-	public void execute(Response response) throws InterruptedException,
+	public void execute(Response response,Test curtest) throws InterruptedException,
 			SuspendExecution {
 		// TODO Auto-generated method stub
 		try {
@@ -72,7 +72,7 @@ public class ConstantTimer implements Feature, Serializable {
 				String refname = n.group(1);
 				int index = Integer.parseInt(n.group(2));
 				// System.out.println(MainController.globalregexmap);
-				for (Entry<String, List<String>> entry : MainController.globalregexmap
+				for (Entry<String, List<String>> entry : curtest.getGlobalregexmap()
 						.entrySet()) {
 
 					if (entry.getKey().equals(refname)) {

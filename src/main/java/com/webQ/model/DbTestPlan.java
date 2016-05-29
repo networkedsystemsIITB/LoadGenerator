@@ -190,7 +190,7 @@ public class DbTestPlan implements Feature, Serializable, Cloneable {
 	}
 
 	@Override
-	public void execute(Response resp) throws InterruptedException,
+	public void execute(Response resp,Test curtest) throws InterruptedException,
 			SuspendExecution {
 		// TODO Auto-generated method stub
 
@@ -240,20 +240,20 @@ public class DbTestPlan implements Feature, Serializable, Cloneable {
 				try {
 					tptwriter.add(new FileWriter(
 							"webapps/LoadGen/resources/tmpFiles/"
-									+ outputrow.getRequest() + "tpt.txt"));
+									+ curtest.getSessionId()+outputrow.getRequest() + "tpt.txt"));
 					respwriter.add(new FileWriter(
 							"webapps/LoadGen/resources/tmpFiles/"
-									+ outputrow.getRequest() + "resp.txt"));
+									+ curtest.getSessionId()+outputrow.getRequest() + "resp.txt"));
 					errwriter.add(new FileWriter(
 							"webapps/LoadGen/resources/tmpFiles/"
-									+ outputrow.getRequest() + "err.txt"));
+									+ curtest.getSessionId()+outputrow.getRequest() + "err.txt"));
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					logger.info("Error Creating file");
 					e.printStackTrace();
 				}
 
-				MainController.outputlist.set(this.getOutputrowstart() + i,
+				curtest.getOutputlist().set(this.getOutputrowstart() + i,
 						outputrow);
 				List<Long> temp = new ArrayList<Long>();
 
@@ -275,7 +275,7 @@ public class DbTestPlan implements Feature, Serializable, Cloneable {
 				// totalresptimes.put(httpreqlist.get(i), (long) 0);
 			}
 
-			this.outputFiber();
+			this.outputFiber(curtest);
 
 			Fiber.sleep(this.getStartDelay() * 1000);
 			int fiberArraysize = this.duration * this.reqRate;
@@ -292,7 +292,7 @@ public class DbTestPlan implements Feature, Serializable, Cloneable {
 			final Semaphore sem = new Semaphore(1500000);
 			int j = 0;
 			Fiber[] execfibers = new Fiber[num];
-			for (int i = 0; i < num && MainController.test; i++) {
+			for (int i = 0; i < num && curtest.getTest(); i++) {
 				rl.acquire();
 				if (sem.availablePermits() == 0)
 					logger.info("Maximum connections count reached, waiting...");
@@ -383,7 +383,7 @@ public class DbTestPlan implements Feature, Serializable, Cloneable {
 		logger.info("TestPlan Finished");
 	}
 
-	private void outputFiber() throws InterruptedException, SuspendExecution {
+	private void outputFiber(Test curtest) throws InterruptedException, SuspendExecution {
 		// TODO Auto-generated method stub
 
 		final String FILE_HEADER = String.format(
@@ -395,7 +395,7 @@ public class DbTestPlan implements Feature, Serializable, Cloneable {
 			long i = 1;
 			while (this.running) {
 				Fiber.sleep(1000);
-				printOutput(i);
+				printOutput(i,curtest);
 				i++;
 			}
 			try {
@@ -430,7 +430,7 @@ public class DbTestPlan implements Feature, Serializable, Cloneable {
 
 	}
 
-	private void printOutput(long timesec) throws InterruptedException,
+	private void printOutput(long timesec,Test curtest) throws InterruptedException,
 			SuspendExecution {
 		int l = 1;
 		try {
@@ -514,7 +514,7 @@ public class DbTestPlan implements Feature, Serializable, Cloneable {
 
 				entry.getValue().set(3, (long) 0);
 				entry.getValue().set(5, (long) 0);
-				MainController.outputlist.set(this.getOutputrowstart() + l - 1,
+				curtest.getOutputlist().set(this.getOutputrowstart() + l - 1,
 						outputrow);
 				String message = String.format(
 						"%-30s%-25s%-18s%-18s%-18s%-23s%-10s",

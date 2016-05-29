@@ -87,7 +87,7 @@ public class HttpRequest implements Feature, Serializable {
 	}
 
 	@Override
-	public void execute(Response resp) throws InterruptedException,
+	public void execute(Response resp,Test curtest) throws InterruptedException,
 			SuspendExecution {
 		try {
 
@@ -118,7 +118,7 @@ public class HttpRequest implements Feature, Serializable {
 				// System.out.println("inside http n");
 				String refname = n.group(1);
 				int index = Integer.parseInt(n.group(2));
-				for (Entry<String, List<String>> entry : MainController.globalregexmap
+				for (Entry<String, List<String>> entry : curtest.getGlobalregexmap()
 						.entrySet()) {
 					if (entry.getKey().equals(refname)) {
 
