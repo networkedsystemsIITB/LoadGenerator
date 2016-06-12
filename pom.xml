@@ -11,7 +11,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<servlet.port>8080</servlet.port>
+		<servlet.port>8090</servlet.port>
 		<quasar.version>0.7.2</quasar.version>
 		<comsat.version>0.4.0</comsat.version>
 		<slf4j.version>1.7.12</slf4j.version>
@@ -270,8 +270,8 @@
 								-Xmx10G
 								-XX:MaxNewSize=4G
 								-XX:NewSize=4G
-								-XX:PermSize=5G
-								-XX:MaxPermSize=5G
+								-XX:PermSize=4G
+								-XX:MaxPermSize=4G
 								-Dlogfile=${env.LOADGEN_HOME}
 								
 

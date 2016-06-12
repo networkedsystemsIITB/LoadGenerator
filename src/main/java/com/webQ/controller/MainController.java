@@ -1794,16 +1794,6 @@ public class MainController implements Serializable {
 
 	@RequestMapping(value = "/output", method = RequestMethod.POST)
 	public @ResponseBody String outputTable() throws SuspendExecution {
-		List<Output> outputlist = new ArrayList<Output>();
-		if (normaltest.getTest())
-			outputlist = normaltest.getOutputlist();
-		else if (randomtest.getTest())
-			outputlist = randomtest.getOutputlist();
-		else if (dbtest.getTest())
-			outputlist = dbtest.getOutputlist();
-		else if (wstest.getTest())
-			outputlist = wstest.getOutputlist();
-
 		String tabledata = "<table class='table table-striped table-bordered table-condensed well' id='outtable'>";
 		String firstrow = "<tr>";
 		firstrow += "<td class='ui-helper-center' style='vertical-align: middle;'>Time</td>";
@@ -1818,6 +1808,21 @@ public class MainController implements Serializable {
 		firstrow += "</tr>";
 
 		tabledata += firstrow;
+		List<Output> outputlist = new ArrayList<Output>();
+		if (normaltest.getTest())
+			outputlist = normaltest.getOutputlist();
+		else if (randomtest.getTest())
+			outputlist = randomtest.getOutputlist();
+		else if (dbtest.getTest())
+			outputlist = dbtest.getOutputlist();
+		else if (wstest.getTest())
+			outputlist = wstest.getOutputlist();
+		else{
+			tabledata += "</table>";
+			return tabledata;
+		}
+
+		
 		for (int i = 0; i < outputlist.size(); i++) {
 			String newrow = "<tr>";
 			newrow += "<td class='ui-helper-center' style='vertical-align: middle;'>"
