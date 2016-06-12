@@ -4,17 +4,9 @@ LoadGen is an HTTP load generator built based on user level threads. It can gene
 
 ##Overview
 
-LoadGen is a load testing tool developed as a web application. It is developed based on Java fibers 
-which is a thread based implementation in Java. It supports basic HTTP testing, database testing and web 
-service testing. The tool is useful in scenarios where the requests are having high response time.
-It have advanced features like regular expression extractor and delay timer to create complex test scenarios.
-
-
-##Types of testing
-
-- Http Testing
-- Database Testing
-- Web Service Testing
+LoadGen is a load testing tool which is developed as a web application. It is developed based on Java fibers 
+which is a user-level thread implementation in Java. It supports basic HTTP testing, database testing and web 
+service testing. The tool is useful in scenarios where the requests are having high response time where many existing tools failed to generate load. It have advanced features like regular expression extractor and delay timer to create complex test scenarios.
 
 ##Required software packages/tools
 
@@ -30,11 +22,11 @@ It have advanced features like regular expression extractor and delay timer to c
 
 ######User Manual
 
-Please find the document user_manual.pdf under the docs folder. It contains detailed instructions for downloading, installing and running the LoadGen and use it to run various tests.
+Please find the document User_Manual.pdf under the docs folder. It contains detailed instructions for downloading, installing and running the LoadGen and use it to run various tests.
 
 ######Developer Manual
 
-Please find the document developer_manual.pdf under the docs folder. It contains detailed instructions for understanding the codebase.
+Please find the document Developer_Manual.pdf under the docs folder. It contains detailed instructions for understanding the codebase.
 
 ######Authors
 
