@@ -12,20 +12,21 @@ It have advanced features like regular expression extractor and delay timer to c
 
 ##Types of testing
 
-Http Testing
-Database Testing
-Web Service Testing
+-Http Testing
+-Database Testing
+-Web Service Testing
 
 ##Required software packages/tools
 
-Apache Tomcat 8.0.23
-Apache Maven 
-Java jdk 1.8 or above
+-Apache Tomcat 8.0.23
+-Apache Maven 
+-Java jdk 1.8 or above
 
 ##Directory structure
 
-src: Contains source code files
-docs: Contains documents related to LoadGen
+-src: Contains source code files
+-docs: Contains documents related to LoadGen
+-pom.xml: File to install the dependencies for different libraries
 
 ######User Manual
 
@@ -37,10 +38,10 @@ Please find the document developer_manual.pdf under the docs folder. It contains
 
 ######Authors
 
-Stanly Thomas, Master's student (2014-2016), Dept. of Computer Science and Engineering, IIT Bombay.
-Prof. Mythili Vutukuru, Dept. of Computer Science and Engineering, IIT Bombay.
+-Stanly Thomas, Master's student (2014-2016), Dept. of Computer Science and Engineering, IIT Bombay.
+-Prof. Mythili Vutukuru, Dept. of Computer Science and Engineering, IIT Bombay.
 
 ######Contact
 
-Stanly Thomas, stanlyjohn2[At]gmail.com
-Prof. Mythili Vutukuru, mythili[AT]cse.iitb.ac.in
+-Stanly Thomas, stanlyjohn2@gmail.com
+-Prof. Mythili Vutukuru, mythili@cse.iitb.ac.in
