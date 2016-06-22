@@ -23,7 +23,7 @@ LoadGen is a  web application which is designed to load test client/server softw
 
 - Run the following command in Loadgen home directory: mvn -Ptomcat8x dependency:properties package cargo:run
 
-- Go to http://localhost:8080/LoadGen for the homepage of the loadgen.
+- Go to http://localhost:8090/LoadGen for the homepage of the loadgen.
 
 
 
